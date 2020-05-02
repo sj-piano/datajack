@@ -4,14 +4,24 @@
 
 
 def main():
+	# Create blank DotDict.
 	d1 = DotDict()
 	d1.a = 'hello'
 	d1.b = 'world'
 	print d1.a
 	print d1['b']
+	# Make a DocDict from a dict.
 	d2 = {'foo': 1, 'bar': 123123, 'baz': '5000'}
 	d3 = DotDict(d2)
-	print d3
+	print 'd3:', d3
+	print 'd3.foo:', d3.foo
+	print "d3['foo']:", d3['foo']
+	# Make a DocDict from a nested dict.
+	d4 = {'foo': 1, 'bar': {'jupiter': 5, 'mars': 123975}, 'baz': 5000}
+	d5 = DotDict(d4)
+	print 'd5:', d5
+	print 'd5.foo:', d5.foo
+	print 'd5.bar.jupiter:', d5.bar.jupiter
 
 
 
