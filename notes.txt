@@ -1,11 +1,20 @@
-
-
-
-
 ### GOAL
 
 
 Tool for reading and manipulating EML (Edgecase Markup Language).
+
+
+
+### LANGUAGE
+
+Python 2.7.5.
+
+
+
+### RUN TESTS
+
+
+$ python run_tests.py
 
 
 
