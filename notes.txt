@@ -16,7 +16,8 @@ Python 2.7.5.
 
 $ python run_tests.py
 
-
+All tests are designed to be run from the top-level directory ('datajack').
+Example: Paths to data files start at 'src', not 'data'.
 
 
 
