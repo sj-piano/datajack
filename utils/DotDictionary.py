@@ -36,20 +36,16 @@ class DotDict(dict):
 		if not d:
 			pass
 		elif isinstance(d, dict):
-			d2 = self.dictToDotDict(d)
-			for k, v in d2.items():
-				self[k] = v
+			self.importDict(d)
 		else:
 			raise TypeError("If an argument is passed to init function, it must be a dict.")
 	
-	def dictToDotDict(self, d):
-		newD = DotDict()
+	def importDict(self, d):
 		for k, v in d.items():
 			if isinstance(v, dict):
-				newD[k] = self.dictToDotDict(v) # recurse for nested dictionaries.
+				self[k] = DotDict(v) # recurse for nested dictionaries.
 			else:
-				newD[k] = v
-		return newD
+				self[k] = v
 
 	def __getattr__(self, key):
 		try:
