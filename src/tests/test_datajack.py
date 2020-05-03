@@ -1,5 +1,5 @@
 import unittest
-from datajack.datajack import *
+from src.datajack import *
 
 
 
