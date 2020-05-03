@@ -4,7 +4,7 @@
 import unittest
 
 # Import modules for testing.
-import test_datajack
+from tests import *
 
 # Initialize the test suite.
 loader = unittest.TestLoader()
