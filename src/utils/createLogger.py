@@ -32,9 +32,9 @@ def createLogger(settings):
 	if not isinstance(settings, dict):
 		raise TypeError("settings must be a dictionary.")
 	s = DotDict(settings)
-	keys = s.keys()
-	if 'name' not in keys or 'level' not in keys:
-		raise TypeError("At a minimum, settings must contain 'name' and 'level' keys.")
+	required = ('name', 'level')
+	if not all(k in s.keys() for k in required):
+		raise TypeError("Required keys: {r}".format(r=required))
 	if not isinstance(s.name, str):
 		raise TypeError("'name' must be a string.")
 	logLevels = {
@@ -54,10 +54,10 @@ def createLogger(settings):
 		'timestamp': bool,
 		'logToConsole': bool,
 	}
-	for oName, oType in options.items():
-		if oName in s:
-			if not isinstance(s[oName], oType):
-				raise TypeError("'{n}', if present, must be a {t}.".format(n=oName, t=oType.__name__))
+	for optionName, optionType in options.items():
+		if optionName in s:
+			if not isinstance(s[optionName], optionType):
+				raise TypeError("Option '{n}' must be a {t}.".format(n=optionName, t=optionType.__name__))
 	# Defaults.
 	if 'logToConsole' not in s:
 		s.logToConsole = True
@@ -66,7 +66,7 @@ def createLogger(settings):
 	if 'filepath' not in s:
 		s.filepath = None
 	if not (s.logToConsole or s.filepath):
-		raise ValueError("if 'logToConsole' is False, then 'filepath' must be present.")
+		raise ValueError("At least one of the options 'logToConsole' and 'filepath' must be used. logToConsole is True by default.")
 	# Create logger.
 	logger = logging.getLogger(s.name)
 	level = logLevels[s.level]
@@ -84,10 +84,10 @@ def createLogger(settings):
 		)
 	# Create console handler if specified in settings.
 	if s.logToConsole:
-		ch = logging.StreamHandler()
-		ch.setLevel(level)
-		ch.setFormatter(formatter)
-		logger.addHandler(ch)
+		consoleHandler = logging.StreamHandler()
+		consoleHandler.setLevel(level)
+		consoleHandler.setFormatter(formatter)
+		logger.addHandler(consoleHandler)
 	# Create file handler if specified in settings.
 	if s.filepath:
 		# Create filepath directory path if it doesn't exist.
@@ -95,13 +95,12 @@ def createLogger(settings):
 		if dPath != '':
 			if not os.path.exists(dPath):
 				os.makedirs(dPath)
-		fh = logging.FileHandler(s.filepath, mode='a', delay=True)
+		fileHandler = logging.FileHandler(s.filepath, mode='a', delay=True)
 		# Note: If log file already exists, new log lines will be appended to it.
-		fh.setLevel(level)
-		fh.setFormatter(formatter)
-		logger.addHandler(fh)
+		fileHandler.setLevel(level)
+		fileHandler.setFormatter(formatter)
+		logger.addHandler(fileHandler)
 	return logger
-
 
 
 
