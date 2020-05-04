@@ -29,17 +29,14 @@ def main():
 class DotDict(dict):
 	"""dot.notation access to dictionary attributes"""
 	
-	# https://stackoverflow.com/questions/2352181/how-to-use-a-dot-to-access-members-of-dictionary
-	# https://github.com/fabric/fabric/blob/1.13.1/fabric/utils.py#L186
+	def __init__(self, dictionary=None):
+		if dictionary is None:
+			return
+		if not isinstance(dictionary, dict):
+			raise TypeError()
+		self.importDict(dictionary)
 	
-	def __init__(self, d=None): # d = dictionary
-		if not d:
-			pass
-		elif isinstance(d, dict):
-			self.importDict(d)
-		else:
-			raise TypeError("If an argument is passed to init function, it must be a dict.")
-	
+
 	def importDict(self, d):
 		for k, v in d.items():
 			if isinstance(v, dict):
@@ -47,12 +44,14 @@ class DotDict(dict):
 			else:
 				self[k] = v
 
+
 	def __getattr__(self, key):
 		try:
 			return self[key]
 		except KeyError:
 			raise AttributeError(key)
-	
+
+
 	def __setattr__(self, key, value):
 		self[key] = value
 
