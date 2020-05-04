@@ -1,1 +1,1 @@
-from datajack import Datajack
+from Datajack import Datajack
