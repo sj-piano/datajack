@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 
-from utils.createLogger import createLogger
+import util
 import logging
 
 
