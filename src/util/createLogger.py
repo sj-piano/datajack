@@ -26,6 +26,26 @@ def main():
 
 
 
+def loadOrCreateLogger(parameters, loggerName):
+	# Load logger from the loggers storage if it's present.
+	# Otherwise, create a new logger so that the existing code still works (e.g. logger.info calls).
+	if not isinstance(parameters, dict):
+		raise TypeError
+	if not isinstance(loggerName, str):
+		raise TypeError
+	logger = None
+	if 'loggers' in parameters:
+		for existingLogger in parameters['loggers']:
+			if existingLogger.name == loggerName:
+				logger = existingLogger
+	if logger is None:
+		logger = createLogger({'name':loggerName, 'level':'error'})
+	log = logger.info
+	deb = logger.debug
+	return [logger, log, deb]
+
+
+
 
 def createLogger(settings):
 	# Validate input.
