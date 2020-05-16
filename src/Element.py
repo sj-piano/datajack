@@ -5,6 +5,17 @@ import util
 import logging
 
 
+# IMMUTABLE DATA
+elementNameChars = "0123456789abcdefghijklmnopqrstuvwxyz_-."
+entryChars = "!#$%&'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+entryChars += "\""
+escapedChars = "<>\\"
+whitespaceChars = " \t\n"
+entryChars += escapedChars + whitespaceChars
+# END IMMUTABLE DATA
+
+
+
 def main():
 
 	basicTests()
