@@ -4,7 +4,7 @@ from src import Datajack
 
 
 
-class TestDatajack(unittest.TestCase):
+class TestBasic(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(klass):
@@ -20,12 +20,12 @@ class TestExampleHello(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(klass):
-		klass.dj = Datajack()
 		with open('src/data/hello.txt') as f:
-			klass.exampleHello = f.read()
+			data = f.read()
+			klass.dj = Datajack(data)
 	
-	def test_value(self):
-		self.assertEqual(self.dj.hello, 'world')
+	def test_getElementValue(self):
+		self.assertEqual(self.dj.get('hello'), 'world')
 
 
 
