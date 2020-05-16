@@ -40,6 +40,14 @@ class Datajack():
 		return "world"
 
 
+	def get(self, key):
+		return self.root.get(key)
+
+
+
+def stop(msg=None):
+	if msg: print "\n%s\n" % msg
+	import sys; sys.exit()
 
 
 if __name__ == "__main__":
