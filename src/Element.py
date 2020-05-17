@@ -230,6 +230,31 @@ class Element:
 			return self.children[xpath]
 		raise ValueError
 
+	@property
+	def nc(self):
+		# calculate number of children.
+		return len(self.children)
+
+	@property
+	def typeX(self):
+		return self.__class__.__name__
+
+	@property
+	def child(self):
+		return self.children
+
+	@property
+	def value(self):
+		# this is leaf Elements only.
+		# get the value of the entry, delete any whitespace, and return it.
+		if not (self.nc == 1 and self.child[0].typeX == "Entry"):
+			raise ValueError("This method requires exactly 1 child that is an Entry.")
+		return self.deleteWhitespace(self.child[0].data)
+
+	@staticmethod
+	def deleteWhitespace(s):
+		return s.translate(None, whitespaceCharacters)
+
 
 
 
