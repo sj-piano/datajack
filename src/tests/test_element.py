@@ -1,5 +1,5 @@
 import unittest
-from src.Element import Element
+from src import Element
 from src.util.createLogger import createLogger
 
 
@@ -21,14 +21,14 @@ class TestExampleHello(unittest.TestCase):
 	@classmethod
 	def setUpClass(klass):
 		data = "<hello>world</hello>"
-		loggerSettings = {'name': 'element', 'level': 'debug'}
+		loggerSettings = {'name': 'element', 'level': 'info'}
 		logger = createLogger(loggerSettings)
 		loggers = [logger]
 		parameters = {'extraParameter': 123}
 		klass.e = Element.fromString(data=data, loggers=loggers, **parameters)
 	
 	def test_getValue(self):
-		self.assertEqual(self.e.get('hello'), 'world')
+		self.assertEqual(self.e.value, 'world')
 
 
 
