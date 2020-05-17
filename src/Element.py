@@ -235,6 +235,119 @@ class Element:
 
 
 
+
+
+
+class Entry:
+
+
+	def __init__(self):
+		self.data = "" # this contains the actual data in bytes of the Entry (after escape characters have been removed)
+		self.parent = None
+		self.logger = None
+		# dataIndex, lineNumber, and lineIndex exist with reference to the original data (which includes escape characters). They record the location of the start of an entry.
+		self.dataIndex = 0
+		self.lineNumber = 0
+		self.lineIndex = 0
+		
+	
+	
+	@classmethod
+	def fromString(self, *args, **kwargs):
+		util.confirmNoArgs(args)
+		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
+		entry = Entry()
+		# process data into an Entry.
+		dataIndex, lineNumber, lineIndex = entry.processString(**kwargs)
+		nBytes = len(entry.data)
+		z = 10 # how much of the entry's start/end data to show in the log.
+		value = entry.data
+		if nBytes > 2 * z:
+			value = value[:z] + "..." + value[-z:]
+		deb("Entry parsed. Length = {n} bytes. Value = '{v}'.".format(n=nBytes, v=value))
+		return entry, dataIndex, lineNumber, lineIndex
+
+
+	def processString(self, *args, **kwargs):
+		# Notes:
+		# - An entry consists of at least one printable ASCII byte.
+		util.confirmNoArgs(args)
+		required = 'data:s, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, parent'
+		data, dataLength, dataIndex, lineNumber, lineIndex, parent = util.getRequiredKeys(kwargs, required)
+		self.dataIndex = dataIndex
+		self.lineNumber = lineNumber
+		self.lineIndex = lineIndex
+		self.parent = parent
+		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
+		self.logger = logger
+		statusMsg = "Entry: context [{c}], byte [{b}], dataIndex [{di}], lineNumber [{ln}], lineIndex [{li}]."
+		context = "data"
+		# we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
+		success = False # have we successfully interpreted the current byte?
+		while True:
+			
+			try:
+				byte = data[dataIndex]
+			except IndexError as e:
+				statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
+				statusMsg += " No more data left, but Element is not complete."
+				raise Exception(statusMsg)
+
+			if byte == "\n": # we've moved to a new line.
+				lineIndex = 0
+				lineNumber += 1
+
+			deb(statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex))
+
+			if byte == "<":
+				if context == "data":
+					# we've encountered a new Element.
+					# rewind one byte so that the Element processing loop completes and begins again on this current byte.
+					dataIndex, lineNumber, lineIndex = self.rewindOneByte(dataIndex, lineNumber, lineIndex)
+					break
+			elif byte == ">":
+				pass
+			elif byte == "\\":
+				pass
+			elif byte in entryCharacters:
+				if context == "data":
+					self.data += byte
+					success = True
+
+
+			if not success:
+				statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
+				statusMsg += " Byte not successfully interpreted."
+				raise Exception(statusMsg)
+			success = False
+			dataIndex += 1
+			lineIndex += 1
+
+		return dataIndex, lineNumber, lineIndex
+
+	
+	@staticmethod
+	def rewindOneByte(dataIndex, lineNumber, lineIndex):
+		dataIndex -= 1
+		lineIndex -= 1
+		# if the current byte is a newline byte, then lineIndex will now be -1.
+		if lineIndex == -1:
+			lineIndex = 0
+			lineNumber -=1
+		return dataIndex, lineNumber, lineIndex
+
+	@property
+	def typeX(self):
+		return self.__class__.__name__
+
+
+
+
+
+
+
+
+
 def stop(msg=None):
 	if msg: print "\n%s\n" % msg
 	import sys; sys.exit()
