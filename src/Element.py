@@ -65,12 +65,14 @@ class Element:
 		data = util.getRequiredKeys(kwargs, required)
 		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
 		e = Element()
-		e.logger = logger
-		# process data into Element tree.
-		parameters = {'data': data, 'dataLength': len(data), 'dataIndex': 0}
-		e.logger.debug("Data: " + data)
+		# process data into an Element tree.
+		parameters = util.DotDict(kwargs)
+		parameters.dataLength = len(data)
+		parameters.dataIndex = 0
+		log("Begin parsing data into an Element tree.")
+		deb("Data: " + data)
 		e.processString(**parameters)
-		e.logger.info("Element parsed. Name = '{}'".format(self.name))
+		log("Element parsed. Name = '{name}'. Children = {c}.".format(name=e.name, c=e.nc))
 		return e
 
 
