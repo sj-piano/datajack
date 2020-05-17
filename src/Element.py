@@ -31,7 +31,7 @@ def basicTests():
 	# with logger
 	text3 = "<foo>hello<bar>mars</bar></foo>"
 	logger = util.createLogger({'name':'element','level':'debug'})
-	e3 = Element(data=text3, loggers=[logger])
+	e3 = Element.fromString(data=text3, loggers=[logger])
 	print e3.foo.bar
 
 
