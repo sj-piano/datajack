@@ -88,41 +88,120 @@ class Element:
 		# - An element consists of two identical tags, each enclosed in angle brackets. The end tag contains an extra forward slash.
 		# - Valid tag names can contain these characters: lower-case letters from a-z, underscore, hyphen, period, digits 0-9.
 		# - As we proceed through the data, we will encounter characters in several contexts: 
-		# -- empty (we haven't started yet)
-		# -- startTagOpen (we've just opened a startTag)
+		# -- empty (we haven't started yet, or we've just finished an Element or Entry)
+		# -- tagOpen (we've just opened a tag, but we don't yet know if it's a startTag or an endTag)
+		# -- startTagName (we're within the tagName of a startTag)
 		# -- startTagClose (we've just closed a startTag)
-		# -- endTagOpen, endTagClose
-		# -- insideElement (we're inside an Element (and not within its tags))
-		# -- insideEntry (we're within an entry)
+		# -- endTagOpen, endTagClose, endTagName
 		# - Approach: As we encounter each character, we interpret it based on the current context.
 		util.confirmNoArgs(args)
 		required = 'data:s, dataLength:i, dataIndex:i'
 		data, dataLength, dataIndex = util.getRequiredKeys(kwargs, required)
+		self.dataIndex = dataIndex
 		optional = 'parent, lineNumber:i, lineIndex:i'
 		defaults = (None, 0, 0)
-		self.parent, self.lineNumber, self.lineIndex = util.getOptionalKeys(kwargs, optional, defaults)
+		parent, lineNumber, lineIndex = util.getOptionalKeys(kwargs, optional, defaults)
+		parameters = util.DotDict(kwargs)
+		self.parent = parent
+		self.lineNumber = lineNumber
+		self.lineIndex = lineIndex
+		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
+		self.logger = logger
+		if self.parent is not None:
+			deb("Switch to Element")
 		statusMsg = "Element: context [{c}], byte [{b}], dataIndex [{di}], lineNumber [{ln}], lineIndex [{li}]."
-		lineNumber = self.lineNumber
-		lineIndex = self.lineIndex
 		context = "empty"
+		# we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
 		success = False # have we successfully interpreted the current byte?
 		while True:
+			
 			try:
 				byte = data[dataIndex]
 			except IndexError as e:
 				statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
 				statusMsg += " No more data left, but Element is not complete."
 				raise Exception(statusMsg)
-			lineIndex += 1
+			
 			if byte == "\n": # we've moved to a new line.
-				lineNumber += 1
 				lineIndex = 0
-			self.logger.debug(statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex))
+				lineNumber += 1
+			
+			deb(statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex))
+			
 			if byte == "<":
 				if context == "empty":
-					context = "startTagOpen"
+					context = "tagOpen"
 					success = True
-				elif context == "startTagClose"
+				elif context == "startTagClose":
+					context = "tagOpen"
+					success = True
+			elif byte == ">":
+				if context == "startTagName":
+					context = "startTagClose"
+					success = True
+				elif context == "endTagName":
+					context = "endTagClose"
+					# we've arrived at the end of this Element.
+					if self.name != self.endName:
+						statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
+						statusMsg += " Finished building Element, but endTagName ({e}) is not the same as startTagName ({s}).".format(e=self.endName, s=self.name)
+						raise Exception(statusMsg)
+					self.complete = True
+					if self.parent is not None:
+						deb("Element parsed. Name = '{name}'. Children = {c}.".format(name=self.name, c=len(self.children)))
+					break
+
+			elif byte == "/":
+				if context == "tagOpen":
+					context = "endTagOpen"
+					success = True
+				elif context == "startTagClose":
+					deb("Switch to Entry.")
+					parameters.dataIndex = dataIndex
+					parameters.lineNumber = lineNumber
+					parameters.lineIndex = lineIndex
+					parameters.parent = self
+					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
+					self.children.append(entry)
+					context = "empty"
+					success = True
+			elif byte in elementNameCharacters:
+				if context == "tagOpen":
+					context = "startTagName"
+					self.name += byte
+					success = True
+				elif context == "startTagName":
+					self.name += byte
+					success = True
+				elif context == "startTagClose":
+					deb("Switch to Entry.")
+					parameters.dataIndex = dataIndex
+					parameters.lineNumber = lineNumber
+					parameters.lineIndex = lineIndex
+					parameters.parent = self
+					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
+					self.children.append(entry)
+					context = "empty"
+					success = True
+				elif context == "endTagOpen":
+					context = "endTagName"
+					self.endName += byte
+					success = True
+				elif context == "endTagName":
+					self.endName += byte
+					success = True
+
+			elif byte in entryCharacters:
+				if context == "startTagClose":
+					deb("Switch to Entry.")
+					parameters.dataIndex = dataIndex
+					parameters.lineNumber = lineNumber
+					parameters.lineIndex = lineIndex
+					parameters.parent = self
+					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
+					self.children.append(entry)
+					context = "empty"
+					success = True
 
 
 			if not success:
@@ -131,12 +210,9 @@ class Element:
 				raise Exception(statusMsg)
 			success = False
 			dataIndex += 1
+			lineIndex += 1
 		
 		
-		stop()
-
-
-
 		if self.parent is None:
 			# This is the root Element of the data.
 			# If there is any data left over, this is an error.
