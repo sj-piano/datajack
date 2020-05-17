@@ -48,7 +48,8 @@ class Element:
 		self.children = []
 		self.parent = None
 		self.logger = None
-		# line and lineIndex exist with reference to the original data (which includes escape characters). They comprise the location of the start of an element.
+		# dataIndex, lineNumber, and lineIndex exist with reference to the original data (which includes escape characters). They record the location of the start of an element.
+		self.dataIndex = 0
 		self.lineNumber = 0
 		self.lineIndex = 0
 	
