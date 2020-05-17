@@ -6,12 +6,12 @@ import logging
 
 
 # IMMUTABLE DATA
-elementNameChars = "0123456789abcdefghijklmnopqrstuvwxyz_-."
-entryChars = "!#$%&'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
-entryChars += "\""
-escapedChars = "<>\\"
-whitespaceChars = " \t\n"
-entryChars += escapedChars + whitespaceChars
+elementNameCharacters = "0123456789abcdefghijklmnopqrstuvwxyz_-."
+entryCharacters = "!#$%&'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+entryCharacters += "\""
+escapedCharacters = "<>\\"
+whitespaceCharacters = " \t\n"
+entryCharacters += escapedCharacters + whitespaceCharacters
 # END IMMUTABLE DATA
 
 
