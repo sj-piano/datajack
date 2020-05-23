@@ -72,7 +72,7 @@ class Element:
 		log("Begin parsing data into an Element tree.")
 		deb("Data: " + data)
 		e.processString(**parameters)
-		log("Element parsed. Name = '{name}'. Children = {c}.".format(name=e.name, c=e.nc))
+		log("Element parsed. Name = '{name}'. Number of children = {c}.".format(name=e.name, c=e.nc))
 		return e
 
 
