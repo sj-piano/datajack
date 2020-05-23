@@ -88,10 +88,11 @@ class Element:
 		# - An element consists of two identical tags, each enclosed in angle brackets. The end tag contains an extra forward slash.
 		# - Valid tag names can contain these characters: lower-case letters from a-z, underscore, hyphen, period, digits 0-9.
 		# - As we proceed through the data, we will encounter characters in several contexts: 
-		# -- empty (we haven't started yet, or we've just finished an Element or Entry)
+		# -- empty (we haven't started yet)
 		# -- tagOpen (we've just opened a tag, but we don't yet know if it's a startTag or an endTag)
 		# -- startTagName (we're within the tagName of a startTag)
 		# -- startTagClose (we've just closed a startTag)
+		# -- insideElement (we're inside an unfinished Element, and we've just exited a child Element or Entry)
 		# -- endTagOpen, endTagClose, endTagName
 		# - Approach: As we encounter each character, we interpret it based on the current context.
 		util.confirmNoArgs(args)
@@ -163,7 +164,7 @@ class Element:
 					parameters.parent = self
 					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
 					self.children.append(entry)
-					context = "empty"
+					context = "insideTag"
 					success = True
 			elif byte in elementNameCharacters:
 				if context == "tagOpen":
@@ -181,7 +182,7 @@ class Element:
 					parameters.parent = self
 					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
 					self.children.append(entry)
-					context = "empty"
+					context = "insideTag"
 					success = True
 				elif context == "endTagOpen":
 					context = "endTagName"
@@ -200,7 +201,7 @@ class Element:
 					parameters.parent = self
 					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
 					self.children.append(entry)
-					context = "empty"
+					context = "insideTag"
 					success = True
 
 
