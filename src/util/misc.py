@@ -1,13 +1,15 @@
 from operator import itemgetter
+import inspect
 
 
 
 
 def confirmNoArgs(args):
+	callerName = inspect.stack()[1][3]
 	if not isinstance(args, tuple):
 		raise TypeError
-	if args:
-		raise ValueError("This function/method doesn't accept positional args.")
+	if args != ():
+		raise ValueError("Function/method '{c}' doesn't accept positional args.".format(c=callerName))
 
 
 
