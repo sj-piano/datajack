@@ -33,5 +33,20 @@ class TestExampleHello(unittest.TestCase):
 
 
 
+class TestNested(unittest.TestCase):
+
+	@classmethod
+	def setUpClass(klass):
+		data = "<foo>hello<bar>mars</bar></foo>"
+		logger = createLogger({'name': 'element', 'level': 'debug'})
+		klass.e = Element.fromString(data=data, loggers=[logger])
+	
+	def test_getValue(self):
+		xpath = 'foo/bar'
+		self.assertEqual(self.e.get(xpath).first.value, 'mars')
+
+
+
+
 if __name__ == '__main__':
 	main()
