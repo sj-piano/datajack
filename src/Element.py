@@ -224,13 +224,6 @@ class Element:
 		return self
 
 
-	def get(self, xpath):
-		if '/' in xpath:
-			raise ValueError
-		if xpath in self.children:
-			return self.children[xpath]
-		raise ValueError
-
 	@property
 	def nc(self):
 		# calculate number of children.
@@ -256,6 +249,12 @@ class Element:
 	def deleteWhitespace(s):
 		return s.translate(None, whitespaceCharacters)
 
+	def get(self, xpath):
+		if '/' in xpath:
+			raise ValueError
+		if xpath in self.children:
+			return self.children[xpath]
+		raise ValueError
 
 
 
