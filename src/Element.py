@@ -56,13 +56,13 @@ class Element:
 	
 	def hello(self):
 		return "world"
-	
+
 
 	@classmethod
 	def fromString(self, *args, **kwargs):
 		util.confirmNoArgs(args)
 		required = 'data:s'
-		data = util.getRequiredKeys(kwargs, required)
+		data = util.getRequiredItems(kwargs, required)
 		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
 		e = Element()
 		# process data into an Element tree.
@@ -96,11 +96,11 @@ class Element:
 		# - Approach: As we encounter each character, we interpret it based on the current context.
 		util.confirmNoArgs(args)
 		required = 'data:s, dataLength:i, dataIndex:i'
-		data, dataLength, dataIndex = util.getRequiredKeys(kwargs, required)
+		data, dataLength, dataIndex = util.getRequiredItems(kwargs, required)
 		self.dataIndex = dataIndex
 		optional = 'parent, lineNumber:i, lineIndex:i'
 		defaults = (None, 0, 0)
-		parent, lineNumber, lineIndex = util.getOptionalKeys(kwargs, optional, defaults)
+		parent, lineNumber, lineIndex = util.getOptionalItems(kwargs, optional, defaults)
 		parameters = util.DotDict(kwargs)
 		self.parent = parent
 		self.lineNumber = lineNumber
@@ -298,7 +298,7 @@ class Entry:
 		# - An entry consists of at least one printable ASCII byte.
 		util.confirmNoArgs(args)
 		required = 'data:s, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, parent'
-		data, dataLength, dataIndex, lineNumber, lineIndex, parent = util.getRequiredKeys(kwargs, required)
+		data, dataLength, dataIndex, lineNumber, lineIndex, parent = util.getRequiredItems(kwargs, required)
 		self.dataIndex = dataIndex
 		self.lineNumber = lineNumber
 		self.lineIndex = lineIndex

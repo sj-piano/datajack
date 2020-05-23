@@ -14,16 +14,16 @@ def confirmNoArgs(args):
 
 
 
-def getRequiredKeys(dictionary, requiredStr):
+def getRequiredItems(dictionary, requiredStr):
 	# Example requiredStr: 'data:s, logger'
 	if not isinstance(dictionary, dict):
 		raise TypeError
 	if not isinstance(requiredStr, str):
 		raise TypeError
-	required = requiredStr.split(', ')
+	requiredItems = requiredStr.split(', ')
 	results = []
 	types = {'i': int, 's': str}
-	for item in required:
+	for item in requiredItems:
 		if ':' in item:
 			key, valueTypeChar = item.split(':')
 			valueType = types[valueTypeChar]
@@ -45,7 +45,7 @@ def getRequiredKeys(dictionary, requiredStr):
 
 
 
-def getOptionalKeys(dictionary, optionalStr, defaults):
+def getOptionalItems(dictionary, optionalStr, defaults):
 	# Example optionalStr: 'parent, line:i, lineIndex:i'
 	if not isinstance(dictionary, dict):
 		raise TypeError
@@ -53,10 +53,10 @@ def getOptionalKeys(dictionary, optionalStr, defaults):
 		raise TypeError
 	if not isinstance(defaults, tuple):
 		raise TypeError
-	optional = optionalStr.split(', ')
+	optionalItems = optionalStr.split(', ')
 	results = []
 	types = {'i': int, 's': str}
-	for i, item in enumerate(optional):
+	for i, item in enumerate(optionalItems):
 		default = defaults[i]
 		if ':' in item:
 			key, valueTypeChar = item.split(':')
