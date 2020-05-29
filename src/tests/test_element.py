@@ -38,7 +38,8 @@ class TestNested(unittest.TestCase):
 	@classmethod
 	def setUpClass(klass):
 		data = "<foo>hello<bar>mars</bar></foo>"
-		logger = createLogger({'name': 'element', 'level': 'debug'})
+		logger = createLogger({'name': 'element', 'level': 'info'})
+		logger.info('Data: ' + data)
 		klass.e = Element.fromString(data=data, loggers=[logger])
 	
 	def test_getValue(self):
