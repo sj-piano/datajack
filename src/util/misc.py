@@ -72,7 +72,7 @@ def getOptionalItems(dictionary, optionalStr, defaults):
 			if not isinstance(value, valueType):
 				msg = "Optional dictionary item '{k}' found but is not a '{t}', as was specified. Instead, it is a '{t2}'.".format(k=key, t=valueType.__name__, t2=type(value).__name__)
 				raise TypeError(msg)
-		results.append(default)
+		results.append(value)
 	if len(results) == 1:
 		return results[0]
 	return results
