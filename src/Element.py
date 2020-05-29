@@ -52,6 +52,9 @@ class Element:
 		self.dataIndex = 0
 		self.lineNumber = 0
 		self.lineIndex = 0
+		self.finalDataIndex = 0
+		self.finalLineNumber = 0
+		self.finalLineIndex = 0
 	
 	
 	def hello(self):
@@ -60,19 +63,27 @@ class Element:
 
 	@classmethod
 	def fromString(self, *args, **kwargs):
+		# both the root element and any child elements are built using this method.
 		util.confirmNoArgs(args)
 		required = 'data:s'
 		data = util.getRequiredItems(kwargs, required)
+		optional = 'parent, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i'
+		defaults = (None, len(data), 0, 0, 0)
+		parent, dataLength, dataIndex, lineNumber, lineIndex = util.getOptionalItems(kwargs, optional, defaults)
 		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
 		e = Element()
 		# process data into an Element tree.
 		parameters = util.DotDict(kwargs)
-		parameters.dataLength = len(data)
-		parameters.dataIndex = 0
-		log("Begin parsing data into an Element tree.")
-		deb("Data: " + data)
+		parameters.parent = parent
+		parameters.dataLength = dataLength
+		parameters.dataIndex = dataIndex
+		parameters.lineNumber = lineNumber
+		parameters.lineIndex = lineIndex
+		if parent is None:
+			log("Begin parsing data into an Element tree.")
 		e.processString(**parameters)
-		log("Element parsed. Name = '{name}'. Number of children = {c}.".format(name=e.name, c=e.nc))
+		if e.parent is None:
+			log("Element parsed. Name = '{name}'. Number of children = {c}.".format(name=e.name, c=e.nc))
 		return e
 
 
@@ -89,23 +100,21 @@ class Element:
 		# - Valid tag names can contain these characters: lower-case letters from a-z, underscore, hyphen, period, digits 0-9.
 		# - As we proceed through the data, we will encounter characters in several contexts: 
 		# -- empty (we haven't started yet)
-		# -- tagOpen (we've just opened a tag, but we don't yet know if it's a startTag or an endTag)
+		# -- startTagOpen (we've processed the first character, which must be '<')
 		# -- startTagName (we're within the tagName of a startTag)
 		# -- startTagClose (we've just closed a startTag)
-		# -- insideElement (we're inside an unfinished Element, and we've just exited a child Element or Entry)
+		# -- tagOpen (we've just opened a tag, but we don't yet know if it's this Element's endTag or a child Element's startTag)
+		# -- insideElement (we're inside an unfinished Element, and we've just finished a child Element or Entry)
 		# -- endTagOpen, endTagClose, endTagName
 		# - Approach: As we encounter each character, we interpret it based on the current context.
 		util.confirmNoArgs(args)
-		required = 'data:s, dataLength:i, dataIndex:i'
-		data, dataLength, dataIndex = util.getRequiredItems(kwargs, required)
-		self.dataIndex = dataIndex
-		optional = 'parent, lineNumber:i, lineIndex:i'
-		defaults = (None, 0, 0)
-		parent, lineNumber, lineIndex = util.getOptionalItems(kwargs, optional, defaults)
-		parameters = util.DotDict(kwargs)
+		required = 'parent, data:s, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i'
+		parent, data, dataLength, dataIndex, lineNumber, lineIndex = util.getRequiredItems(kwargs, required)
 		self.parent = parent
+		self.dataIndex = dataIndex
 		self.lineNumber = lineNumber
 		self.lineIndex = lineIndex
+		parameters = util.DotDict(kwargs)
 		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
 		self.logger = logger
 		if self.parent is not None:
@@ -131,11 +140,15 @@ class Element:
 			
 			if byte == "<":
 				if context == "empty":
-					context = "tagOpen"
+					context = "startTagOpen"
 					success = True
 				elif context == "startTagClose":
 					context = "tagOpen"
 					success = True
+				elif context == "insideElement":
+					context = "tagOpen"
+					success = True
+			
 			elif byte == ">":
 				if context == "startTagName":
 					context = "startTagClose"
@@ -147,9 +160,12 @@ class Element:
 						statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
 						statusMsg += " Finished building Element, but endTagName ({e}) is not the same as startTagName ({s}).".format(e=self.endName, s=self.name)
 						raise Exception(statusMsg)
+					self.finalDataIndex = dataIndex
+					self.finalLineNumber = lineNumber
+					self.finalLineIndex = lineIndex
 					self.complete = True
 					if self.parent is not None:
-						deb("Element parsed. Name = '{name}'. Children = {c}.".format(name=self.name, c=len(self.children)))
+						deb("Element parsed. Name = '{name}'. Number of children = {c}.".format(name=self.name, c=len(self.children)))
 					break
 
 			elif byte == "/":
@@ -164,10 +180,10 @@ class Element:
 					parameters.parent = self
 					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
 					self.children.append(entry)
-					context = "insideTag"
+					context = "insideElement"
 					success = True
 			elif byte in elementNameCharacters:
-				if context == "tagOpen":
+				if context == "startTagOpen":
 					context = "startTagName"
 					self.name += byte
 					success = True
@@ -182,7 +198,7 @@ class Element:
 					parameters.parent = self
 					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
 					self.children.append(entry)
-					context = "insideTag"
+					context = "insideElement"
 					success = True
 				elif context == "endTagOpen":
 					context = "endTagName"
@@ -190,6 +206,20 @@ class Element:
 					success = True
 				elif context == "endTagName":
 					self.endName += byte
+					success = True
+				elif context == "tagOpen":
+					deb("Switch to child Element.")
+					dataIndex, lineNumber, lineIndex = self.rewindBytes(1, dataIndex, lineNumber, lineIndex)
+					parameters.dataIndex = dataIndex
+					parameters.lineNumber = lineNumber
+					parameters.lineIndex = lineIndex
+					parameters.parent = self
+					child = Element.fromString(**parameters)
+					self.children.append(child)
+					dataIndex = child.finalDataIndex
+					lineNumber = child.finalLineNumber
+					lineIndex = child.finalLineIndex
+					context = "insideElement"
 					success = True
 
 			elif byte in entryCharacters:
@@ -201,7 +231,7 @@ class Element:
 					parameters.parent = self
 					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
 					self.children.append(entry)
-					context = "insideTag"
+					context = "insideElement"
 					success = True
 
 
@@ -223,6 +253,27 @@ class Element:
 				raise ValueError(msg)
 		return self
 
+	def rewindBytes(self, nBytes, dataIndex, lineNumber, lineIndex):
+		# this doesn't handle newline bytes.
+		for i in xrange(nBytes):
+			dataIndex -= 1
+			lineIndex -= 1
+		return dataIndex, lineNumber, lineIndex 
+	
+	def __str__(self):
+		return "Element: [{}]".format(self.name)
+
+	def __iter__(self):
+		for child in self.children:
+			yield child
+	
+	@property
+	def startTag(self):
+		return "<" + self.name + ">"
+
+	@property
+	def endTag(self):
+		return "</" + self.endName + ">"
 
 	@property
 	def nc(self):
@@ -236,6 +287,21 @@ class Element:
 	@property
 	def child(self):
 		return self.children
+
+	@property
+	def tree(self):
+		return "\n".join(self.treeLines())
+
+	def treeLines(self):
+		if self.parent is None:
+			treeLines = ["Tree for " + str(self)]
+		else:
+			treeLines = [" " + str(self)]
+		for child in self:
+			childLines = child.treeLines()
+			childLines = [("-" + x) for x in childLines]
+			treeLines.extend(childLines)
+		return treeLines
 
 	@property
 	def value(self):
@@ -365,6 +431,22 @@ class Entry:
 	def typeX(self):
 		return self.__class__.__name__
 
+	def __str__(self):
+		return "Entry: [{} bytes]".format(len(self.data))
+
+	@property
+	def nb(self): # nb = number of bytes
+		return len(self.data)
+	
+	def treeLines(self):
+		treeLine = " " + str(self)
+		n = 5 # display this number of bytes from either end of the Entry.
+		m = self.nb
+		if m <= n*2:
+			treeLine += ": [{}]".format(repr(self.data))
+		else:
+			treeLine += ": [{} ... {}]".format(repr(self.data[:n], repr(self.data[-n:])))
+		return [treeLine]
 
 
 
