@@ -5,6 +5,7 @@
 
 import os
 import logging
+import logging.handlers
 from DotDictionary import DotDict
 
 
@@ -18,7 +19,7 @@ def main():
 		'timestamp': True,
 		'logToConsole': True,
 	}
-	testLogger = createLogger(loggerSettings)
+	#testLogger = createLogger(loggerSettings)
 	#testLogger.info('hello world') # will create a log file 'testLogger.log'
 	settings2 = {'name': 'testLogger2', 'level': 'info'}
 	testLogger2 = createLogger(settings2)
@@ -115,8 +116,9 @@ def createLogger(settings):
 		if dPath != '':
 			if not os.path.exists(dPath):
 				os.makedirs(dPath)
-		fileHandler = logging.FileHandler(s.filepath, mode='a', delay=True)
-		# Note: If log file already exists, new log lines will be appended to it.
+		# Store logs for 7 days, with 1 file per day.
+		fileHandler = logging.handlers.TimedRotatingFileHandler(
+			s.filepath, when='d', interval=1, backupCount=7)
 		fileHandler.setLevel(level)
 		fileHandler.setFormatter(formatter)
 		logger.addHandler(fileHandler)
