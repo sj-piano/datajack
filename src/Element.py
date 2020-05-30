@@ -67,9 +67,9 @@ class Element:
 		util.confirmNoArgs(args)
 		required = 'data:s'
 		data = util.getRequiredItems(kwargs, required)
-		optional = 'parent, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i'
-		defaults = (None, len(data), 0, 0, 0)
-		parent, dataLength, dataIndex, lineNumber, lineIndex = util.getOptionalItems(kwargs, optional, defaults)
+		optional = 'parent, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, recursiveDepth:i'
+		defaults = (None, len(data), 0, 0, 0, 0)
+		parent, dataLength, dataIndex, lineNumber, lineIndex, recursiveDepth = util.getOptionalItems(kwargs, optional, defaults)
 		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
 		e = Element()
 		# process data into an Element tree.
@@ -79,6 +79,7 @@ class Element:
 		parameters.dataIndex = dataIndex
 		parameters.lineNumber = lineNumber
 		parameters.lineIndex = lineIndex
+		parameters.recursiveDepth = recursiveDepth
 		if parent is None:
 			log("Begin parsing data into an Element tree.")
 		e.processString(**parameters)
@@ -108,12 +109,13 @@ class Element:
 		# -- endTagOpen, endTagClose, endTagName
 		# - Approach: As we encounter each character, we interpret it based on the current context.
 		util.confirmNoArgs(args)
-		required = 'parent, data:s, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i'
-		parent, data, dataLength, dataIndex, lineNumber, lineIndex = util.getRequiredItems(kwargs, required)
+		required = 'parent, data:s, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, recursiveDepth:i'
+		parent, data, dataLength, dataIndex, lineNumber, lineIndex, recursiveDepth = util.getRequiredItems(kwargs, required)
 		self.parent = parent
 		self.dataIndex = dataIndex
 		self.lineNumber = lineNumber
 		self.lineIndex = lineIndex
+		self.recursiveDepth = recursiveDepth
 		parameters = util.DotDict(kwargs)
 		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
 		self.logger = logger
@@ -214,6 +216,7 @@ class Element:
 					parameters.lineNumber = lineNumber
 					parameters.lineIndex = lineIndex
 					parameters.parent = self
+					parameters.recursiveDepth = self.recursiveDepth + 1
 					child = Element.fromString(**parameters)
 					self.children.append(child)
 					dataIndex = child.finalDataIndex
