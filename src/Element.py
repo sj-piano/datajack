@@ -284,7 +284,7 @@ class Element:
 		return len(self.children)
 
 	@property
-	def typeX(self):
+	def className(self):
 		return self.__class__.__name__
 
 	@property
@@ -431,7 +431,7 @@ class Entry:
 		return dataIndex, lineNumber, lineIndex
 
 	@property
-	def typeX(self):
+	def className(self):
 		return self.__class__.__name__
 
 	def __str__(self):
