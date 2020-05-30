@@ -271,6 +271,18 @@ class Element:
 			yield child
 	
 	@property
+	def elementChildren(self):
+		for child in self:
+			if child.className == "Element":
+				yield child
+	
+	@property
+	def entryChildren(self):
+		for child in self:
+			if child.className == "Entry":
+				yield child
+
+	@property
 	def startTag(self):
 		return "<" + self.name + ">"
 
@@ -310,23 +322,94 @@ class Element:
 	def value(self):
 		# this is leaf Elements only.
 		# get the value of the entry, delete any whitespace, and return it.
-		if not (self.nc == 1 and self.child[0].typeX == "Entry"):
+		if not (self.nc == 1 and self.child[0].className == "Entry"):
 			raise ValueError("This method requires exactly 1 child that is an Entry.")
 		return self.deleteWhitespace(self.child[0].data)
 
 	@staticmethod
 	def deleteWhitespace(s):
 		return s.translate(None, whitespaceCharacters)
+	
+	@property
+	def entryData(self):
+		data = ''
+		for child in self.entryChildren:
+			data += child.data
+		return data
+
+# example tree:
+# <article>
+# <title>James_Sullivan_on_the_nature_of_banks</title>
+# <author_name>stjohn_piano</author_name>
+# <date>2017-07-21</date>
+# <signed_by_author>no</signed_by_author>
+# <content>
+# hello world
+# <list>
+# <title>Guild_Members</title>
+# <name>StJohn_Piano</name>
+# <name>Robert_Smith</name>
+# <name>John_Smith</name>
+# <location>Cambridge</location>
+# </list>
+# <link>
+# <type>asset</type>
+# <filename>pkgconf-0.8.9.tar.bz2.asc</filename>
+# <text>pkgconf-0.8.9.tar.bz2.asc</text>
+# <sha256>d9a497da682c7c0990361bbdc9b7c5c961250ec4679e3feda19cfbec37695100</sha256>
+# </link>
+# <link>
+# <type>asset</type>
+# <filename>rotor-db-configure-fix.patch.asc</filename>
+# <text>rotor-db-configure-fix.patch.asc</text>
+# <sha256>bb8cfec3eceeb73e5994cc100a4106a85670a6cab3a622697c91d4c2f9ff083a</sha256>
+# </link>
+# <link>
+# <type>asset</type>
+# <filename>rotor.tar.gz.asc</filename>
+# <text>rotor.tar.gz.asc</text>
+# <sha256>c988aaa62000cfc0858f8526d8ffcd96d497e39b9f1e8b5d9d08ee1575813425</sha256>
+# </link>
+# </content>
+# </article>
+
+	# possible xpaths:
+	# 1) title (the title element that is a direct child of the root 'article' element)
+	# 2) content/list/title (the title element that is a particular descendant of the root article element)
+
+	# notes:
+	# - if xpath specifies multiple results, return list, even if only 1 result is found.
+	# - if xpath specifies one result, return a single item, not a list.
 
 	def get(self, xpath):
-		if '/' in xpath:
-			raise ValueError
-		if xpath in self.children:
-			return self.children[xpath]
-		raise ValueError
+		if '/' not in xpath:
+			name = xpath
+			result = self.getElementChildrenWithName(name)
+			if len(result) != 1:
+				raise ValueError("xpath {x} specified 1 child, but {n} found.".format(x=xpath, n=len(result)))
+			return result[0]
+		else:
+			sections = xpath.split('/')
+			name = sections[0]
+			restOfPath = '/'.join(sections[1:])
+			result1 = self.getElementChildrenWithName(name)
+			result2 = []
+			for child in result1:
+				result3 = child.get(restOfPath)
+				result2.append(result3)
+			if len(result2) != 1:
+				raise ValueError("xpath {x} specified 1 child, but {n} found.".format(x=xpath, n=len(result2)))
+			return result2[0]
 
+			
+		raise Exception("Shouldn't arrive at the end of this function.")
 
-
+	def getElementChildrenWithName(self, name):
+		result = []
+		for child in self.elementChildren:
+			if child.name == name:
+				result.append(child)
+		return result
 
 
 
