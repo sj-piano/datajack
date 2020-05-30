@@ -106,7 +106,7 @@ class Element:
 		# -- startTagClose (we've just closed a startTag)
 		# -- tagOpen (we've just opened a tag, but we don't yet know if it's this Element's endTag or a child Element's startTag)
 		# -- insideElement (we're inside an unfinished Element, and we've just finished a child Element or Entry)
-		# -- endTagOpen, endTagClose, endTagName
+		# -- endTagOpen, endTagName, endTagClose
 		# - Approach: As we encounter each character, we interpret it based on the current context.
 		util.confirmNoArgs(args)
 		required = 'parent, data:s, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, recursiveDepth:i'
@@ -122,7 +122,18 @@ class Element:
 		if self.parent is not None:
 			deb("Switch to Element")
 		statusMsg = "Element: context [{c}], byte [{b}], dataIndex [{di}], lineNumber [{ln}], lineIndex [{li}]."
-		context = "empty"
+		# define contexts
+		EMPTY = 0
+		START_TAG_OPEN = 1
+		START_TAG_NAME = 2
+		START_TAG_CLOSE = 3
+		TAG_OPEN = 4
+		INSIDE_ELEMENT = 5
+		END_TAG_OPEN = 6
+		END_TAG_NAME = 7
+		END_TAG_CLOSE = 8
+		# set initial context
+		context = EMPTY
 		# we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
 		success = False # have we successfully interpreted the current byte?
 		while True:
@@ -141,22 +152,22 @@ class Element:
 			deb(statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex))
 			
 			if byte == "<":
-				if context == "empty":
-					context = "startTagOpen"
+				if context == EMPTY:
+					context = START_TAG_OPEN
 					success = True
-				elif context == "startTagClose":
-					context = "tagOpen"
+				elif context == START_TAG_CLOSE:
+					context = TAG_OPEN
 					success = True
-				elif context == "insideElement":
-					context = "tagOpen"
+				elif context == INSIDE_ELEMENT:
+					context = TAG_OPEN
 					success = True
 			
 			elif byte == ">":
-				if context == "startTagName":
-					context = "startTagClose"
+				if context == START_TAG_NAME:
+					context = START_TAG_CLOSE
 					success = True
-				elif context == "endTagName":
-					context = "endTagClose"
+				elif context == END_TAG_NAME:
+					context = END_TAG_CLOSE
 					# we've arrived at the end of this Element.
 					if self.name != self.endName:
 						statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
@@ -171,10 +182,10 @@ class Element:
 					break
 
 			elif byte == "/":
-				if context == "tagOpen":
-					context = "endTagOpen"
+				if context == TAG_OPEN:
+					context = END_TAG_OPEN
 					success = True
-				elif context == "startTagClose":
+				elif context == START_TAG_CLOSE:
 					deb("Switch to Entry.")
 					parameters.dataIndex = dataIndex
 					parameters.lineNumber = lineNumber
@@ -182,17 +193,17 @@ class Element:
 					parameters.parent = self
 					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
 					self.children.append(entry)
-					context = "insideElement"
+					context = INSIDE_ELEMENT
 					success = True
 			elif byte in elementNameCharacters:
-				if context == "startTagOpen":
-					context = "startTagName"
+				if context == START_TAG_OPEN:
+					context = START_TAG_NAME
 					self.name += byte
 					success = True
-				elif context == "startTagName":
+				elif context == START_TAG_NAME:
 					self.name += byte
 					success = True
-				elif context == "startTagClose":
+				elif context == START_TAG_CLOSE:
 					deb("Switch to Entry.")
 					parameters.dataIndex = dataIndex
 					parameters.lineNumber = lineNumber
@@ -200,16 +211,16 @@ class Element:
 					parameters.parent = self
 					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
 					self.children.append(entry)
-					context = "insideElement"
+					context = INSIDE_ELEMENT
 					success = True
-				elif context == "endTagOpen":
-					context = "endTagName"
+				elif context == END_TAG_OPEN:
+					context = END_TAG_NAME
 					self.endName += byte
 					success = True
-				elif context == "endTagName":
+				elif context == END_TAG_NAME:
 					self.endName += byte
 					success = True
-				elif context == "tagOpen":
+				elif context == TAG_OPEN:
 					deb("Switch to child Element.")
 					dataIndex, lineNumber, lineIndex = self.rewindBytes(1, dataIndex, lineNumber, lineIndex)
 					parameters.dataIndex = dataIndex
@@ -222,11 +233,11 @@ class Element:
 					dataIndex = child.finalDataIndex
 					lineNumber = child.finalLineNumber
 					lineIndex = child.finalLineIndex
-					context = "insideElement"
+					context = INSIDE_ELEMENT
 					success = True
 
 			elif byte in entryCharacters:
-				if context == "startTagClose":
+				if context == START_TAG_CLOSE:
 					deb("Switch to Entry.")
 					parameters.dataIndex = dataIndex
 					parameters.lineNumber = lineNumber
@@ -234,7 +245,7 @@ class Element:
 					parameters.parent = self
 					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
 					self.children.append(entry)
-					context = "insideElement"
+					context = INSIDE_ELEMENT
 					success = True
 
 
