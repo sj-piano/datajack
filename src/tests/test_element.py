@@ -37,14 +37,18 @@ class TestNested(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(klass):
-		data = "<foo>hello<bar>mars</bar></foo>"
+		data = "<foo>hello<bar>mars<bas>ASD</bas></bar></foo>"
 		logger = createLogger({'name': 'element', 'level': 'info'})
 		logger.info('Data: ' + data)
 		klass.e = Element.fromString(data=data, loggers=[logger])
 	
+	def test_getEntryData(self):
+		xpath = 'bar'
+		self.assertEqual(self.e.get(xpath).entryData, 'mars')
+	
 	def test_getValue(self):
-		xpath = 'foo/bar'
-		self.assertEqual(self.e.get(xpath).first.value, 'mars')
+		xpath = 'bar/bas'
+		self.assertEqual(self.e.get(xpath).value, 'ASD')
 
 
 
