@@ -502,7 +502,8 @@ class Entry:
 		value = entry.data
 		if nBytes > 2 * z:
 			value = value[:z] + "..." + value[-z:]
-		deb("Entry parsed. Length = {n} bytes. Value = '{v}'.".format(n=nBytes, v=value))
+		value = repr(value)
+		deb("Entry parsed. Length = {n} bytes. Value = {v}.".format(n=nBytes, v=value))
 		return entry, dataIndex, lineNumber, lineIndex
 
 
