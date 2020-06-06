@@ -355,6 +355,12 @@ class Element:
 		for child in self.entryChildren:
 			data += child.data
 		return data
+	
+	def isValidElementName(self, name):
+		for char in name:
+			if char not in elementNameCharacters:
+				return False
+		return True
 
 # example tree:
 # <article>
@@ -395,39 +401,75 @@ class Element:
 	# possible xpaths:
 	# 1) title (the title element that is a direct child of the root 'article' element)
 	# 2) content/list/title (the title element that is a particular descendant of the root article element)
-
+	# 3) content/list/@name (all name elements that are direct children of the content/list element)
+	# 4) //@name (all name elements contained within the article element)
 	# notes:
-	# - if xpath specifies multiple results, return list, even if only 1 result is found.
-	# - if xpath specifies one result, return a single item, not a list.
+	# - the result is always a list, which may be empty. use other wrapper functions to return more specific results (e.g. get exactly one result or raise error).
 
 	def get(self, xpath):
+		if len(xpath) >= 3:
+			if xpath[:3] == '//@':
+				name = xpath[3:]
+				if not self.isValidElementName(name):
+					raise ValueError("xpath {x} contains an invalid element name.".format(x=xpath))
+				result = self.getElementDescendantsWithName(name)
+				return result
 		if '/' not in xpath:
 			name = xpath
+			multiple = False
+			if name[0] == '@':
+				multiple = True
+				name = name[1:]
 			result = self.getElementChildrenWithName(name)
-			if len(result) != 1:
-				raise ValueError("xpath {x} specified 1 child, but {n} found.".format(x=xpath, n=len(result)))
-			return result[0]
+			if multiple == False:
+				if len(result) != 1:
+					raise ValueError("xpath {x} specified 1 child, but {n} found.".format(x=repr(xpath), n=len(result)))
+			return result
 		else:
 			sections = xpath.split('/')
 			name = sections[0]
 			restOfPath = '/'.join(sections[1:])
+			multiple = False
+			if name[0] == '@':
+				multiple = True
+				name = name[1:]
 			result1 = self.getElementChildrenWithName(name)
+			if multiple == False:
+				if len(result1) > 1:
+					raise ValueError("xpath {x} specified 1 child, but {n} found.".format(x=repr(xpath), n=len(result1)))
 			result2 = []
 			for child in result1:
 				result3 = child.get(restOfPath)
-				result2.append(result3)
-			if len(result2) != 1:
-				raise ValueError("xpath {x} specified 1 child, but {n} found.".format(x=xpath, n=len(result2)))
-			return result2[0]
+				result2.extend(result3)
+			return result2
 
 			
 		raise Exception("Shouldn't arrive at the end of this function.")
+
+	def getOne(self, xpath):
+		result = self.get(xpath)
+		if len(result) != 1:
+			raise ValueError("Expected 1 result, but got {n}.".format(n=len(result)))
+		return result[0]
+
+	def getAll(self, xpath):
+		result = self.get(xpath)
+		if len(result) == 0:
+			raise ValueError("Expected at least 1 result, but got 0.")
+		return result
 
 	def getElementChildrenWithName(self, name):
 		result = []
 		for child in self.elementChildren:
 			if child.name == name:
 				result.append(child)
+		return result
+
+	def getElementDescendantsWithName(self, name):
+		result = []
+		result.extend(self.getElementChildrenWithName(name))
+		for child in self.elementChildren:
+			result.extend(child.getElementDescendantsWithName(name))
 		return result
 
 
