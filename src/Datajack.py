@@ -33,7 +33,7 @@ class Datajack():
 			raise TypeError()
 		# remove spurious whitespace e.g. final newline.
 		text = text.strip()
-		self.root = Element.fromString(text)
+		self.root = Element.fromString(data=text)
 
 
 	def hello(self):
