@@ -147,7 +147,7 @@ class Element:
 			try:
 				byte = data[dataIndex]
 			except IndexError as e:
-				statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
+				statusMsg = statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex)
 				statusMsg += " No more data left, but Element is not complete."
 				raise Exception(statusMsg)
 			
@@ -155,7 +155,7 @@ class Element:
 				lineIndex = 0
 				lineNumber += 1
 			
-			deb(statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex))
+			deb(statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex))
 			
 			if byte == "<":
 				if context == EMPTY:
@@ -176,7 +176,7 @@ class Element:
 					context = END_TAG_CLOSE
 					# we've arrived at the end of this Element.
 					if self.name != self.endName:
-						statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
+						statusMsg = statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex)
 						statusMsg += " Finished building Element, but endTagName ({e}) is not the same as startTagName ({s}).".format(e=self.endName, s=self.name)
 						raise Exception(statusMsg)
 					self.finalDataIndex = dataIndex
@@ -254,9 +254,13 @@ class Element:
 					context = INSIDE_ELEMENT
 					success = True
 
+			elif byte in whitespaceCharacters:
+				if context == INSIDE_ELEMENT:
+					pass
+
 
 			if not success:
-				statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
+				statusMsg = statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex)
 				statusMsg += " Byte not successfully interpreted."
 				raise Exception(statusMsg)
 			success = False
@@ -483,7 +487,7 @@ class Entry:
 			try:
 				byte = data[dataIndex]
 			except IndexError as e:
-				statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
+				statusMsg = statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex)
 				statusMsg += " No more data left, but Element is not complete."
 				raise Exception(statusMsg)
 
@@ -504,13 +508,13 @@ class Entry:
 			elif byte == "\\":
 				pass
 			elif byte in entryCharacters:
-				if context == "data":
+				if context == DATA:
 					self.data += byte
 					success = True
 
 
 			if not success:
-				statusMsg = statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex)
+				statusMsg = statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex)
 				statusMsg += " Byte not successfully interpreted."
 				raise Exception(statusMsg)
 			success = False
