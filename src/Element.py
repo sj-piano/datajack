@@ -12,6 +12,22 @@ entryCharacters += "\""
 escapedCharacters = "<>\\"
 whitespaceCharacters = " \t\n"
 entryCharacters += escapedCharacters + whitespaceCharacters
+# define contexts
+EMPTY = 0
+START_TAG_OPEN = 1
+START_TAG_NAME = 2
+START_TAG_CLOSE = 3
+TAG_OPEN = 4
+INSIDE_ELEMENT = 5
+END_TAG_OPEN = 6
+END_TAG_NAME = 7
+END_TAG_CLOSE = 8
+DATA = 9
+contextNames = {0: 'EMPTY', 1: 'START_TAG_OPEN', 2: 'START_TAG_NAME',
+	3: 'START_TAG_CLOSE', 4: 'TAG_OPEN', 5: 'INSIDE_ELEMENT',
+	6: 'END_TAG_OPEN', 7: 'END_TAG_NAME', 8: 'END_TAG_CLOSE',
+	9: 'DATA'
+}
 # END IMMUTABLE DATA
 
 
@@ -122,16 +138,6 @@ class Element:
 		if self.parent is not None:
 			deb("Switch to Element")
 		statusMsg = "Element: context [{c}], byte [{b}], dataIndex [{di}], lineNumber [{ln}], lineIndex [{li}]."
-		# define contexts
-		EMPTY = 0
-		START_TAG_OPEN = 1
-		START_TAG_NAME = 2
-		START_TAG_CLOSE = 3
-		TAG_OPEN = 4
-		INSIDE_ELEMENT = 5
-		END_TAG_OPEN = 6
-		END_TAG_NAME = 7
-		END_TAG_CLOSE = 8
 		# set initial context
 		context = EMPTY
 		# we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
@@ -469,7 +475,7 @@ class Entry:
 		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
 		self.logger = logger
 		statusMsg = "Entry: context [{c}], byte [{b}], dataIndex [{di}], lineNumber [{ln}], lineIndex [{li}]."
-		context = "data"
+		context = DATA
 		# we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
 		success = False # have we successfully interpreted the current byte?
 		while True:
@@ -485,10 +491,10 @@ class Entry:
 				lineIndex = 0
 				lineNumber += 1
 
-			deb(statusMsg.format(c=context, b=byte, di=dataIndex, ln=lineNumber, li=lineIndex))
+			deb(statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex))
 
 			if byte == "<":
-				if context == "data":
+				if context == DATA:
 					# we've encountered a new Element.
 					# rewind one byte so that the Element processing loop completes and begins again on this current byte.
 					dataIndex, lineNumber, lineIndex = self.rewindOneByte(dataIndex, lineNumber, lineIndex)
