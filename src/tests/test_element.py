@@ -21,7 +21,7 @@ class TestExampleHello(unittest.TestCase):
 	@classmethod
 	def setUpClass(klass):
 		data = "<hello>world</hello>"
-		loggerSettings = {'name': 'element', 'level': 'info'}
+		loggerSettings = {'name': 'element', 'level': 'error'}
 		logger = createLogger(loggerSettings)
 		loggers = [logger]
 		parameters = {'extraParameter': 123}
@@ -38,7 +38,7 @@ class TestNested(unittest.TestCase):
 	@classmethod
 	def setUpClass(klass):
 		data = "<foo>hello<bar>mars<bas>ASD</bas></bar></foo>"
-		logger = createLogger({'name': 'element', 'level': 'info'})
+		logger = createLogger({'name': 'element', 'level': 'error'})
 		logger.info('Data: ' + data)
 		klass.e = Element.fromString(data=data, loggers=[logger])
 	
