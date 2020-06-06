@@ -53,5 +53,30 @@ class TestNested(unittest.TestCase):
 
 
 
+class TestMultiple(unittest.TestCase):
+
+	@classmethod
+	def setUpClass(klass):
+		data = """
+<list>
+<title>Fruit</title>
+<item>Orange</item>
+<item>Apple</item>
+<item>Cake</item>
+</list>
+"""
+		data = data.strip()
+		logger = createLogger({'name': 'element', 'level': 'debug'})
+		#logger.info('Data: ' + data)
+		klass.e = Element.fromString(data=data, loggers=[logger])
+	
+	def test_getMultiple(self):
+		xpath = "title"
+		print self.e.get(xpath)
+		#self.assertEqual(self.e.get(xpath), 'Fruit')
+
+
+
+
 if __name__ == '__main__':
 	main()
