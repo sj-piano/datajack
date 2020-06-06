@@ -243,7 +243,7 @@ class Element:
 					success = True
 
 			elif byte in entryCharacters:
-				if context == START_TAG_CLOSE:
+				if context in [START_TAG_CLOSE, INSIDE_ELEMENT]:
 					deb("Switch to Entry.")
 					parameters.dataIndex = dataIndex
 					parameters.lineNumber = lineNumber
@@ -254,9 +254,7 @@ class Element:
 					context = INSIDE_ELEMENT
 					success = True
 
-			elif byte in whitespaceCharacters:
-				if context == INSIDE_ELEMENT:
-					pass
+					
 
 
 			if not success:
