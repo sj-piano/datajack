@@ -1,5 +1,5 @@
 import unittest
-from src import Element
+from src.Element import Element
 from src.util.createLogger import createLogger
 
 
