@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 
-import util
+from .. import util
 import logging
 
 
