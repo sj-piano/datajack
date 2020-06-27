@@ -1,5 +1,5 @@
 import unittest
-from src.code.Element import Element
+from src.code.Element import Element, Entry
 from src.util.createLogger import createLogger
 
 
@@ -170,6 +170,15 @@ class CRUDFunctionality(unittest.TestCase):
 		x = self.e.getOne(xpath)
 		x.setValue('Foods')
 		self.assertEquals(x.value, 'Foods')
+	
+	
+	def test_set2(self):
+		newEntry = Entry.fromValue('\n')
+		self.e.add(newEntry)
+		newElement = Element.fromString(data="<item>Cake</item>")
+		self.e.add(newElement)
+		items = self.e.getAll('@item')
+		self.assertEquals(items[2].value, 'Cake')
 
 
 
