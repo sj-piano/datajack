@@ -360,11 +360,20 @@ class Element:
 
 
 	@property
+	def isLeaf(self):
+		if self.nc == 0:
+			return True
+		if self.nc == 1 and self.child[0].className == "Entry":
+			return True
+		return False
+
+
+	@property
 	def value(self):
-		# This is for leaf Elements only.
+		if not self.isLeaf:
+			raise ValueError
+		if self.nc == 0: return ''
 		# Get the value of the entry, delete any whitespace, and return it.
-		if not (self.nc == 1 and self.child[0].className == "Entry"):
-			raise ValueError("This method requires exactly 1 child that is an Entry.")
 		return self.deleteWhitespace(self.child[0].data)
 
 
@@ -505,17 +514,10 @@ class Element:
 
 
 	def setValue(self, value):
-		# This is for leaf Elements only.
-		# Result: This leaf Element has a single Entry child with the new value.
-		if self.nc not in [0,1]:
+		if not self.isLeaf:
 			raise ValueError
-		if self.nc == 0:
-			self.children = [(Entry.fromValue(value, parent=self))]
-			return
-		child = self.child[0]
-		if self.child[0].className != 'Entry':
-			raise TypeError
-		self.child[0] = Entry.fromValue(value, parent=self)
+		# Result: This leaf Element has a single Entry child with the new value.
+		self.children = [(Entry.fromValue(value, parent=self))]
 	
 
 
