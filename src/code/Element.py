@@ -591,15 +591,19 @@ class Element:
 
 
 	def prevChild(self, child):
+		# get the previous child with reference to the parent of the child, not self.
 		i = child.getIndex()
+		parent = child.parent
 		if i == 0: raise KeyError
-		return self.children[i-1]
+		return parent.children[i-1]
 
 	
 	def nextChild(self, child):
+		# get the next child with reference to the parent of the child, not self.
 		i = child.getIndex()
-		if i == self.nc - 1: raise KeyError
-		return self.children[i+1]
+		parent = child.parent
+		if i == parent.nc - 1: raise KeyError
+		return parent.children[i+1]
 
 	
 	def detach(self, element):
