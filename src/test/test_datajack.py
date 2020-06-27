@@ -101,6 +101,35 @@ class TestCRUDFunctionality(unittest.TestCase):
 
 
 
+class TestFile(unittest.TestCase):
+
+
+	@classmethod
+	def setUpClass(klass):
+		klass.filePath1 = 'src/data/hello.txt'
+		klass.filePath2 = 'src/data/test1.txt'
+		klass.filePath3 = 'src/data/test1_output.txt'
+	
+
+	def test_getValue(self):
+		d = Datajack.fromFile(self.filePath2)
+		xpath = 'sublist/title'
+		e = d.getOne(xpath)
+		self.assertEqual(e.value, 'Planets')
+	
+
+	def test_setValue(self):
+		d = Datajack.fromFile(self.filePath2)
+		xpath = 'sublist/@planet/name'
+		nameItems = d.getAll(xpath)
+		self.assertEqual(nameItems[3].value, 'Mars')
+		nameItems[3].setValue('Sol_4')
+		d.writeToFile(self.filePath3)
+		d2 = Datajack.fromFile(self.filePath3)
+		xpath = 'sublist/@planet/name'
+		nameItems = d2.getAll(xpath)
+		self.assertEqual(nameItems[3].value, 'Sol_4')
+	
 
 
 
