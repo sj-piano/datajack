@@ -553,7 +553,7 @@ class Element:
 		# look through siblings, and find our own index among them.
 		# nameIndex allows this method to choose one child from among several with the same name.
 		if self.parent == None:
-			raise Exception
+			raise AttributeError
 		for i, child in enumerate(self.parent.children):
 			if id(child) == id(self):
 				return i
