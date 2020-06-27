@@ -478,6 +478,21 @@ class Element:
 		for child in self.elementChildren:
 			result.extend(child.getElementDescendantsWithName(name))
 		return result
+	
+	def setValue(self, value):
+		# This is for leaf Elements only.
+		# Result: This leaf Element has a single Entry child with the new value.
+		if self.nc not in [0,1]:
+			raise ValueError
+		if self.nc == 0:
+			self.children = [(Entry.fromValue(value, parent=self))]
+			return
+		child = self.child[0]
+		if self.child[0].className != 'Entry':
+			raise TypeError
+		self.child[0] = Entry.fromValue(value, parent=self)
+	
+
 
 
 
@@ -496,6 +511,16 @@ class Entry:
 		self.lineIndex = 0
 		
 	
+	@classmethod
+	def fromValue(self, value, parent):
+		# This is for creating a new Entry that will be inserted into an existing Element.
+		for byte in value:
+			if byte not in entryCharacters:
+				raise ValueError
+		entry = Entry()
+		entry.data = value
+		return entry
+
 	
 	@classmethod
 	def fromString(self, *args, **kwargs):
