@@ -2,6 +2,7 @@
 
 
 from Element import Element
+import os
 
 
 
@@ -54,6 +55,23 @@ class Datajack():
 		return a
 
 	
+	@classmethod
+	def fromFile(klass, filePath):
+		with open(filePath) as f:
+			data = f.read()
+		return Datajack(data)
+
+
+	def writeToFile(self, filePath):
+		with open(filePath, 'w') as f:
+			f.write(self.data)
+			f.write('\n')
+	
+
+	def writeToNewFile(self, filePath):
+		if os.path.isfile(filePath):
+			raise OSError("File exists.")
+		self.writeToFile(filePath)
 
 
 
