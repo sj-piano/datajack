@@ -197,7 +197,7 @@ class CRUDFunctionality(unittest.TestCase):
 	def test_delete(self):
 		e = Element.fromString(data=self.e.data)
 		orangeItem = e.getOneByValue('@item', 'Orange')
-		entry = e.nextChild(orangeItem)
+		entry = orangeItem.nextSibling
 		e.detachAll([orangeItem, entry])
 		itemValues = [x.value for x in e.get('@item')]
 		self.assertEqual(itemValues, ['Apple'])
@@ -206,28 +206,28 @@ class CRUDFunctionality(unittest.TestCase):
 	def test_delete2(self):
 		e = Element.fromString(data=self.e.data)
 		orangeItem = e.getOneByValue('@item', 'Orange')
-		entry = e.prevChild(orangeItem)
+		entry = orangeItem.prevSibling
 		e.detachAll([orangeItem, entry])
 		itemValues = [x.value for x in e.get('@item')]
 		self.assertEqual(itemValues, ['Apple'])
 		
 	
-	def test_prevChild(self):
+	def test_prevSibling(self):
 		e = Element.fromString(data=self.e.data)
 		appleItem = e.getOneByValue('@item', 'Apple')
-		entry = e.prevChild(appleItem)
+		entry = appleItem.prevSibling
 		self.assertEqual(entry.data, '\n')
-		orangeItem = e.prevChild(entry)
+		orangeItem = entry.prevSibling
 		self.assertEqual(orangeItem.value, 'Orange')
 	
 
-	def test_nextChild(self):
+	def test_nextSibling(self):
 		e = Element.fromString(data=self.e.data)
 		appleItem = e.getOneByValue('@item', 'Apple')
-		entry = e.nextChild(appleItem)
+		entry = appleItem.nextSibling
 		self.assertEqual(entry.data, '\n')
 		with self.assertRaises(KeyError):
-			newItem = e.nextChild(entry)
+			newItem = entry.nextSibling
 
 
 
