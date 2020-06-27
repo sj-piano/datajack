@@ -118,6 +118,26 @@ class TestMultiple(unittest.TestCase):
 
 
 
+class TestCRUDFunctionality(unittest.TestCase):
+
+	@classmethod
+	def setUpClass(klass):
+		data = """
+<list>
+<title>Fruit</title>
+<item>Orange</item>
+<item>Apple</item>
+</list>
+"""
+		data = data.strip()
+		logger = createLogger({'name': 'element', 'level': 'error'})
+		#logger.info('Data: ' + data)
+		klass.e = Element.fromString(data=data, loggers=[logger])
+	
+	def test_get(self):
+		xpath = "title"
+		x = self.e.get(xpath)
+		print(x)
 
 
 
