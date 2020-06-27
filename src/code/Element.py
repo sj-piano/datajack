@@ -539,7 +539,9 @@ class Element:
 		if not self.isLeaf:
 			raise ValueError
 		# Result: This leaf Element has a single Entry child with the new value.
-		self.children = [(Entry.fromValue(value, parent=self))]
+		entry = Entry.fromValue(value)
+		entry.parent = self
+		self.children = [entry]
 	
 
 
@@ -561,7 +563,7 @@ class Entry:
 		
 	
 	@classmethod
-	def fromValue(self, value, parent):
+	def fromValue(self, value):
 		# This is for creating a new Entry that will be inserted into an existing Element.
 		for byte in value:
 			if byte not in entryCharacters:
