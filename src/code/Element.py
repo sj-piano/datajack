@@ -303,6 +303,16 @@ class Element:
 
 
 	@property
+	def isEntry(self):
+		return False
+
+
+	@property
+	def isElement(self):
+		return True
+
+
+	@property
 	def elementChildren(self):
 		for child in self:
 			if child.className == "Element":
@@ -359,16 +369,6 @@ class Element:
 		return treeLines
 
 	
-	@property
-	def isEntry(self):
-		return False
-
-
-	@property
-	def isElement(self):
-		return True
-
-
 	@property
 	def isLeaf(self):
 		if self.nc == 0:
