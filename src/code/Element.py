@@ -315,14 +315,14 @@ class Element:
 	@property
 	def elementChildren(self):
 		for child in self:
-			if child.className == "Element":
+			if child.isElement:
 				yield child
 
 
 	@property
 	def entryChildren(self):
 		for child in self:
-			if child.className == "Entry":
+			if child.isEntry:
 				yield child
 
 
