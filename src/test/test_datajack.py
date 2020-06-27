@@ -88,6 +88,20 @@ class Test1(unittest.TestCase):
 		self.assertEqual(sorted(expectedNames), sorted(names))
 
 
+	def test_add(self):
+		d = Datajack(self.data)
+		xpath = 'sublist'
+		e = d.getOne(xpath)
+		planet = Element.fromString(data='<planet>5<name>Jupiter</name></planet>')
+		entry = Entry.fromValue('\n')
+		e.addAll([planet, entry])
+		xpath = 'sublist/@planet/name'
+		names = [x.value for x in d.get(xpath)]
+		self.assertEqual(names[4], 'Jupiter')
+
+
+
+
 
 
 if __name__ == '__main__':
