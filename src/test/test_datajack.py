@@ -63,6 +63,29 @@ class Test1(unittest.TestCase):
 		self.assertEqual(e2.value, 'Earth')
 
 
+	def test_setValue(self):
+		d = Datajack(self.data)
+		xpath = '//@name'
+		nameItems = d.getAll(xpath)
+		marsNameItem = [x for x in nameItems if x.value == 'Mars'][0]
+		self.assertEqual(marsNameItem.parent.name, 'planet')
+		marsNameItem.setValue('Sol_4')
+		xpath = 'sublist/@planet/name'
+		names = [x.value for x in d.get(xpath)]
+		expectedNames = 'Mercury Venus Earth Sol_4'.split()
+		self.assertEqual(sorted(expectedNames), sorted(names))
+
+
+	def test_delete(self):
+		d = Datajack(self.data)
+		xpath = 'sublist/@planet'
+		e = d.getOneByEntryData(xpath, '3')
+		e2 = d.nextChild(e)
+		d.detachAll([e, e2])
+		xpath = 'sublist/@planet/name'
+		names = [x.value for x in d.get(xpath)]
+		expectedNames = 'Mercury Venus Mars'.split()
+		self.assertEqual(sorted(expectedNames), sorted(names))
 
 
 
