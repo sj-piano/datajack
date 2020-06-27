@@ -44,6 +44,8 @@ def main():
 	basicTests()
 
 
+
+
 def basicTests():
 	# blank
 	e = Element()
@@ -282,56 +284,68 @@ class Element:
 				raise ValueError(msg)
 		return self
 
+
 	def rewindBytes(self, nBytes, dataIndex, lineNumber, lineIndex):
 		# this doesn't handle newline bytes.
 		for i in xrange(nBytes):
 			dataIndex -= 1
 			lineIndex -= 1
 		return dataIndex, lineNumber, lineIndex 
-	
+
+
 	def __str__(self):
 		return "Element: [{}]".format(self.name)
+
 
 	def __iter__(self):
 		for child in self.children:
 			yield child
-	
+
+
 	@property
 	def elementChildren(self):
 		for child in self:
 			if child.className == "Element":
 				yield child
-	
+
+
 	@property
 	def entryChildren(self):
 		for child in self:
 			if child.className == "Entry":
 				yield child
 
+
 	@property
 	def startTag(self):
 		return "<" + self.name + ">"
 
+
 	@property
 	def endTag(self):
 		return "</" + self.endName + ">"
+
 
 	@property
 	def nc(self):
 		# calculate number of children.
 		return len(self.children)
 
+
 	@property
 	def className(self):
 		return self.__class__.__name__
+
 
 	@property
 	def child(self):
 		return self.children
 
+
 	@property
 	def tree(self):
 		return "\n".join(self.treeLines())
+
 
 	def treeLines(self):
 		if self.parent is None:
@@ -344,6 +358,7 @@ class Element:
 			treeLines.extend(childLines)
 		return treeLines
 
+
 	@property
 	def value(self):
 		# This is for leaf Elements only.
@@ -352,22 +367,26 @@ class Element:
 			raise ValueError("This method requires exactly 1 child that is an Entry.")
 		return self.deleteWhitespace(self.child[0].data)
 
+
 	@staticmethod
 	def deleteWhitespace(s):
 		return s.translate(None, whitespaceCharacters)
-	
+
+
 	@property
 	def entryData(self):
 		data = ''
 		for child in self.entryChildren:
 			data += child.data
 		return data
-	
+
+
 	def isValidElementName(self, name):
 		for char in name:
 			if char not in elementNameCharacters:
 				return False
 		return True
+
 
 # example tree:
 # <article>
@@ -413,6 +432,7 @@ class Element:
 	# notes:
 	# - the result is always a list, which may be empty. use other wrapper functions to return more specific results (e.g. get exactly one result or raise error).
 
+
 	def get(self, xpath):
 		if len(xpath) >= 3:
 			if xpath[:3] == '//@':
@@ -453,17 +473,20 @@ class Element:
 			
 		raise Exception("Shouldn't arrive at the end of this function.")
 
+
 	def getOne(self, xpath):
 		result = self.get(xpath)
 		if len(result) != 1:
 			raise ValueError("Expected 1 result, but got {n}.".format(n=len(result)))
 		return result[0]
 
+
 	def getAll(self, xpath):
 		result = self.get(xpath)
 		if len(result) == 0:
 			raise ValueError("Expected at least 1 result, but got 0.")
 		return result
+
 
 	def getElementChildrenWithName(self, name):
 		result = []
@@ -472,13 +495,15 @@ class Element:
 				result.append(child)
 		return result
 
+
 	def getElementDescendantsWithName(self, name):
 		result = []
 		result.extend(self.getElementChildrenWithName(name))
 		for child in self.elementChildren:
 			result.extend(child.getElementDescendantsWithName(name))
 		return result
-	
+
+
 	def setValue(self, value):
 		# This is for leaf Elements only.
 		# Result: This leaf Element has a single Entry child with the new value.
@@ -607,17 +632,21 @@ class Entry:
 			lineNumber -=1
 		return dataIndex, lineNumber, lineIndex
 
+
 	@property
 	def className(self):
 		return self.__class__.__name__
 
+
 	def __str__(self):
 		return "Entry: [{} bytes]".format(len(self.data))
+
 
 	@property
 	def nb(self): # nb = number of bytes
 		return len(self.data)
-	
+
+
 	def treeLines(self):
 		treeLine = " " + str(self)
 		n = 5 # display this number of bytes from either end of the Entry.
