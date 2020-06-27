@@ -543,6 +543,14 @@ class Element:
 		entry.parent = self
 		self.children = [entry]
 	
+	
+	def add(self, child, index=-1):
+		if child.className not in ['Element', 'Entry']:
+			raise TypeError
+		self.children.insert(index, child)
+
+
+
 
 
 
