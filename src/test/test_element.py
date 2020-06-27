@@ -182,6 +182,18 @@ class CRUDFunctionality(unittest.TestCase):
 		e.add(newElement)
 		items = e.getAll('@item')
 		self.assertEquals(items[2].value, 'Cake')
+	
+
+	def test_add2(self):
+		e = Element.fromString(data=self.e.data)
+		items = e.get('@item')
+		orangeItemIndex = e.getIndexByValue('@item', 'Orange')
+		newEntry = Entry.fromValue('\n')
+		newElement = Element.fromString(data="<item>Cake</item>")
+		e.addAll([newEntry, newElement], index = orangeItemIndex + 1)
+		items = e.getAll('@item')
+		self.assertEquals(items[1].value, 'Cake')
+
 
 
 
