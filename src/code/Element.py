@@ -568,10 +568,13 @@ class Element:
 		self.children = [entry]
 	
 	
-	def add(self, child, index=-1):
-		if child.className not in ['Element', 'Entry']:
+	def add(self, item, index=None):
+		if index == None: index = self.nc
+		if index < 0 or index > self.nc:
+			raise ValueError
+		if item.className not in ['Element', 'Entry']:
 			raise TypeError
-		self.children.insert(index, child)
+		self.children.insert(index, item)
 
 
 
