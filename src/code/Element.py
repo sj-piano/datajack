@@ -584,6 +584,7 @@ class Element:
 
 	
 	def addAll(self, items, index=None):
+		if not isinstance(items, list): raise TypeError
 		if index == None: index = self.nc
 		for i, item in enumerate(items):
 			self.add(item, index + i)
@@ -611,6 +612,7 @@ class Element:
 	
 
 	def detachAll(self, items):
+		if not isinstance(items, list): raise TypeError
 		for item in items:
 			self.detach(item)
 	
