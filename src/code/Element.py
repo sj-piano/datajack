@@ -387,6 +387,18 @@ class Element:
 		return self.deleteWhitespace(self.child[0].data)
 
 
+	@property
+	def data(self):
+		data = self.startTag
+		for child in self.children:
+			if child.isEntry:
+				data += child.data
+			elif child.isElement:
+				data += child.data
+		data += self.endTag
+		return data
+
+
 	@staticmethod
 	def deleteWhitespace(s):
 		return s.translate(None, whitespaceCharacters)
