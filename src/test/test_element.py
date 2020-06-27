@@ -211,6 +211,27 @@ class CRUDFunctionality(unittest.TestCase):
 		itemValues = [x.value for x in e.get('@item')]
 		self.assertEqual(itemValues, ['Apple'])
 		
+	
+	def test_prevChild(self):
+		e = Element.fromString(data=self.e.data)
+		appleItem = e.getOneByValue('@item', 'Apple')
+		entry = e.prevChild(appleItem)
+		self.assertEqual(entry.data, '\n')
+		orangeItem = e.prevChild(entry)
+		self.assertEqual(orangeItem.value, 'Orange')
+	
+
+	def test_nextChild(self):
+		e = Element.fromString(data=self.e.data)
+		appleItem = e.getOneByValue('@item', 'Apple')
+		entry = e.nextChild(appleItem)
+		self.assertEqual(entry.data, '\n')
+		with self.assertRaises(KeyError):
+			newItem = e.nextChild(entry)
+
+
+
+
 
 
 
