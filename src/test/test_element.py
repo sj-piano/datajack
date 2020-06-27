@@ -186,7 +186,6 @@ class CRUDFunctionality(unittest.TestCase):
 
 	def test_add2(self):
 		e = Element.fromString(data=self.e.data)
-		items = e.get('@item')
 		orangeItemIndex = e.getIndexByValue('@item', 'Orange')
 		newEntry = Entry.fromValue('\n')
 		newElement = Element.fromString(data="<item>Cake</item>")
