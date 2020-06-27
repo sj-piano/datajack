@@ -581,6 +581,37 @@ class Element:
 			self.add(item, index + i)
 
 
+	def prevChild(self, child):
+		i = child.getIndex()
+		if i == 0: raise KeyError
+		return self.children[i-1]
+
+	
+	def nextChild(self, child):
+		i = child.getIndex()
+		if i == self.nc - 1: raise KeyError
+		return self.children[i+1]
+
+	
+	def detach(self, element):
+		# This removes an element from the list of its parent's children.
+		# Note: This doesn't actually make use of self, so it's not really a method.
+		# However, this is easier to handle mentally as a sibling of setValue, get, add, etc.
+		i = element.getIndex()
+		children = element.parent.children
+		element.parent.children = children[:i] + children[i+1:]
+	
+
+	def detachAll(self, items):
+		for item in items:
+			self.detach(item)
+	
+
+
+
+
+
+
 
 
 
@@ -730,6 +761,18 @@ class Entry:
 	@property
 	def isElement(self):
 		return False
+
+
+	def getIndex(self):
+		# look through siblings, and find our own index among them.
+		# nameIndex allows this method to choose one child from among several with the same name.
+		if self.parent == None:
+			raise Exception
+		for i, child in enumerate(self.parent.children):
+			if id(child) == id(self):
+				return i
+		raise KeyError
+
 
 
 
