@@ -37,7 +37,7 @@ class TestExampleHello(unittest.TestCase):
 
 
 
-class Test1(unittest.TestCase):
+class TestCRUDFunctionality(unittest.TestCase):
 
 
 	@classmethod
