@@ -194,6 +194,24 @@ class CRUDFunctionality(unittest.TestCase):
 		self.assertEquals(items[1].value, 'Cake')
 
 
+	def test_delete(self):
+		e = Element.fromString(data=self.e.data)
+		orangeItem = e.getOneByValue('@item', 'Orange')
+		entry = e.nextChild(orangeItem)
+		e.detachAll([orangeItem, entry])
+		itemValues = [x.value for x in e.get('@item')]
+		self.assertEqual(itemValues, ['Apple'])
+
+
+	def test_delete2(self):
+		e = Element.fromString(data=self.e.data)
+		orangeItem = e.getOneByValue('@item', 'Orange')
+		entry = e.prevChild(orangeItem)
+		e.detachAll([orangeItem, entry])
+		itemValues = [x.value for x in e.get('@item')]
+		self.assertEqual(itemValues, ['Apple'])
+		
+
 
 
 
