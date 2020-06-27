@@ -506,33 +506,33 @@ class Element:
 
 
 	def getOne(self, xpath):
-		result = self.get(xpath)
-		if len(result) != 1:
-			raise ValueError("Expected 1 result, but got {n}.".format(n=len(result)))
-		return result[0]
+		items = self.get(xpath)
+		if len(items) != 1:
+			raise ValueError("Expected 1 items, but got {n}.".format(n=len(items)))
+		return items[0]
 
 
 	def getAll(self, xpath):
-		result = self.get(xpath)
-		if len(result) == 0:
-			raise ValueError("Expected at least 1 result, but got 0.")
-		return result
+		items = self.get(xpath)
+		if len(items) == 0:
+			raise ValueError("Expected at least 1 items, but got 0.")
+		return items
 
 
 	def getElementChildrenWithName(self, name):
-		result = []
+		items = []
 		for child in self.elementChildren:
 			if child.name == name:
-				result.append(child)
-		return result
+				items.append(child)
+		return items
 
 
 	def getElementDescendantsWithName(self, name):
-		result = []
-		result.extend(self.getElementChildrenWithName(name))
+		items = []
+		items.extend(self.getElementChildrenWithName(name))
 		for child in self.elementChildren:
-			result.extend(child.getElementDescendantsWithName(name))
-		return result
+			items.extend(child.getElementDescendantsWithName(name))
+		return items
 
 
 	def getOneByValue(self, xpath, value):
