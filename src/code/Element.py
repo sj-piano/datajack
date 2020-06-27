@@ -541,6 +541,14 @@ class Element:
 		return items[0]
 
 
+	def getOneByEntryData(self, xpath, value):
+		items = self.getAll(xpath)
+		items = [x for x in items if x.entryData == value]
+		if len(items) != 1:
+			raise KeyError
+		return items[0]
+
+
 	def getIndex(self):
 		# look through siblings, and find our own index among them.
 		# nameIndex allows this method to choose one child from among several with the same name.
