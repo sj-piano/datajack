@@ -27,6 +27,7 @@ class TestExampleHello(unittest.TestCase):
 	def setUpClass(klass):
 		with open('src/data/hello.txt') as f:
 			data = f.read()
+			klass.data = data
 			klass.d = Datajack(data)
 
 
