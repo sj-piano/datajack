@@ -358,6 +358,16 @@ class Element:
 			treeLines.extend(childLines)
 		return treeLines
 
+	
+	@property
+	def isEntry(self):
+		return False
+
+
+	@property
+	def isElement(self):
+		return True
+
 
 	@property
 	def isLeaf(self):
@@ -660,6 +670,14 @@ class Entry:
 		return [treeLine]
 
 
+	@property
+	def isEntry(self):
+		return True
+
+
+	@property
+	def isElement(self):
+		return False
 
 
 
