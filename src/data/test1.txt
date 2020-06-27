@@ -1,0 +1,13 @@
+<list>
+<title>Fruit</title>
+<item>Orange</item>
+<item>Apple</item>
+<item>Cake</item>
+<sublist>
+<title>Planets</title>
+<planet>1<name>Mercury</name></planet>
+<planet>2<name>Venus</name></planet>
+<planet>3<name>Earth</name></planet>
+<planet>4<name>Mars</name></planet>
+</sublist>
+</list>
