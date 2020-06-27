@@ -500,8 +500,6 @@ class Element:
 				result3 = child.get(restOfPath)
 				result2.extend(result3)
 			return result2
-
-			
 		raise Exception("Shouldn't arrive at the end of this function.")
 
 
