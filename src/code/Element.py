@@ -346,8 +346,8 @@ class Element:
 
 	@property
 	def value(self):
-		# this is leaf Elements only.
-		# get the value of the entry, delete any whitespace, and return it.
+		# This is for leaf Elements only.
+		# Get the value of the entry, delete any whitespace, and return it.
 		if not (self.nc == 1 and self.child[0].className == "Entry"):
 			raise ValueError("This method requires exactly 1 child that is an Entry.")
 		return self.deleteWhitespace(self.child[0].data)
