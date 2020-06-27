@@ -32,6 +32,13 @@ contextNames = {0: 'EMPTY', 1: 'START_TAG_OPEN', 2: 'START_TAG_NAME',
 
 
 
+
+# NOTES:
+# - The various indices used for tracking position within the data (e.g. lineNumber) are only used during the processing of an entire Element from a string value, primarily for the detection of errors. As changes are made to the Element (e.g. changing Entry values, adding new Elements), these indices will become inaccurate, and should not be used.
+
+
+
+
 def main():
 
 	basicTests()
