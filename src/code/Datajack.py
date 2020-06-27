@@ -4,6 +4,8 @@
 from Element import Element
 
 
+
+
 def main():
 	
 	basicTests()
@@ -17,7 +19,6 @@ def basicTests():
 	with open('data/hello.txt') as f:
 		dj2 = Datajack(f.read())
 		print dj.hello
-	# from file
 
 
 
