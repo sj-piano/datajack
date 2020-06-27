@@ -535,6 +535,30 @@ class Element:
 		return result
 
 
+	def getOneByValue(self, xpath, value):
+		items = self.getAll(xpath)
+		items = [x for x in items if x.value == value]
+		if len(items) != 1:
+			raise KeyError
+		return items[0]
+
+
+	def getIndex(self):
+		# look through siblings, and find our own index among them.
+		# nameIndex allows this method to choose one child from among several with the same name.
+		if self.parent == None:
+			raise Exception
+		for i, child in enumerate(self.parent.children):
+			if id(child) == id(self):
+				return i
+		raise KeyError
+
+
+	def getIndexByValue(self, xpath, value):
+		element = self.getOneByValue(xpath, value)
+		return element.getIndex()
+
+
 	def setValue(self, value):
 		if not self.isLeaf:
 			raise ValueError
