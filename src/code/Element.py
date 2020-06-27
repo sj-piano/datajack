@@ -576,6 +576,11 @@ class Element:
 			raise TypeError
 		self.children.insert(index, item)
 
+	
+	def addAll(self, items, index=None):
+		if index == None: index = self.nc
+		for i, item in enumerate(items):
+			self.add(item, index + i)
 
 
 
