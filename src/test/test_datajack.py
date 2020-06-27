@@ -80,7 +80,7 @@ class Test1(unittest.TestCase):
 		d = Datajack(self.data)
 		xpath = 'sublist/@planet'
 		e = d.getOneByEntryData(xpath, '3')
-		e2 = d.nextChild(e)
+		e2 = e.nextSibling
 		d.detachAll([e, e2])
 		xpath = 'sublist/@planet/name'
 		names = [x.value for x in d.get(xpath)]
