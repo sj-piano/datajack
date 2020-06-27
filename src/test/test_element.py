@@ -118,7 +118,7 @@ class TestMultiple(unittest.TestCase):
 
 
 
-class TestCRUDFunctionality(unittest.TestCase):
+class CRUDFunctionality(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(klass):
@@ -135,9 +135,22 @@ class TestCRUDFunctionality(unittest.TestCase):
 		klass.e = Element.fromString(data=data, loggers=[logger])
 	
 	def test_get(self):
-		xpath = "title"
-		x = self.e.get(xpath)
-		print(x)
+		xpath = 'title'
+		x = self.e.getOne(xpath)
+		self.assertEquals(x.value, 'Fruit')
+	
+	def test_get2(self):
+		xpath = '@item'
+		x = self.e.getAll(xpath)
+		y = x[0]
+		self.assertEquals(y.value, 'Orange')
+	
+	def test_set(self):
+		xpath = 'title'
+		x = self.e.getOne(xpath)
+		x.setValue('Foods')
+		self.assertEquals(x.value, 'Foods')
+
 
 
 
