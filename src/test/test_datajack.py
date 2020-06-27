@@ -37,5 +37,35 @@ class TestExampleHello(unittest.TestCase):
 
 
 
+class Test1(unittest.TestCase):
+
+
+	@classmethod
+	def setUpClass(klass):
+		with open('src/data/test1.txt') as f:
+			data = f.read()
+			klass.data = data
+			klass.d = Datajack(data)
+	
+
+	def test_getValue(self):
+		d = self.d
+		xpath = "sublist/title"
+		e = d.getOne(xpath)
+		self.assertEqual(e.value, 'Planets')
+	
+	
+	def test_getValue2(self):
+		d = self.d
+		xpath = 'sublist/@planet'
+		e = d.getOneByEntryData(xpath, '3')
+		e2 = e.getOne('name')
+		self.assertEqual(e2.value, 'Earth')
+
+
+
+
+
+
 if __name__ == '__main__':
 	unittest.main()
