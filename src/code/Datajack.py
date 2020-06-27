@@ -45,6 +45,23 @@ class Datajack():
 		return self.root.get(key)
 
 
+	def __getattr__(self, name):
+		# Handle unknown methods.
+		# Check if the root Element has this method.
+		if not hasattr(self.root, name):
+			raise AttributeError
+		a = getattr(self.root, name)
+		return a
+
+	
+
+
+
+
+
+
+
+
 
 def stop(msg=None):
 	if msg: print "\n%s\n" % msg
