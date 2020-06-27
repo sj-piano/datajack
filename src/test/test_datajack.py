@@ -50,7 +50,7 @@ class Test1(unittest.TestCase):
 
 	def test_getValue(self):
 		d = self.d
-		xpath = "sublist/title"
+		xpath = 'sublist/title'
 		e = d.getOne(xpath)
 		self.assertEqual(e.value, 'Planets')
 	
