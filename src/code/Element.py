@@ -590,18 +590,18 @@ class Element:
 			self.add(item, index + i)
 
 
-	def prevChild(self, child):
-		# get the previous child with reference to the parent of the child, not self.
-		i = child.getIndex()
-		parent = child.parent
+	@property
+	def prevSibling(self):
+		i = self.getIndex()
+		parent = self.parent
 		if i == 0: raise KeyError
 		return parent.children[i-1]
 
 	
-	def nextChild(self, child):
-		# get the next child with reference to the parent of the child, not self.
-		i = child.getIndex()
-		parent = child.parent
+	@property
+	def nextSibling(self):
+		i = self.getIndex()
+		parent = self.parent
 		if i == parent.nc - 1: raise KeyError
 		return parent.children[i+1]
 
@@ -786,6 +786,23 @@ class Entry:
 			if id(child) == id(self):
 				return i
 		raise KeyError
+
+
+	@property
+	def prevSibling(self):
+		i = self.getIndex()
+		parent = self.parent
+		if i == 0: raise KeyError
+		return parent.children[i-1]
+
+	
+	@property
+	def nextSibling(self):
+		i = self.getIndex()
+		parent = self.parent
+		if i == parent.nc - 1: raise KeyError
+		return parent.children[i+1]
+
 
 
 
