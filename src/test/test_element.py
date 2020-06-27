@@ -147,6 +147,7 @@ class CRUDFunctionality(unittest.TestCase):
 </list>
 """
 		data = data.strip()
+		klass.data = data
 		logger = createLogger({'name': 'element', 'level': 'error'})
 		#logger.info('Data: ' + data)
 		klass.e = Element.fromString(data=data, loggers=[logger])
@@ -166,18 +167,20 @@ class CRUDFunctionality(unittest.TestCase):
 
 
 	def test_set(self):
+		e = Element.fromString(data=self.e.data)
 		xpath = 'title'
-		x = self.e.getOne(xpath)
+		x = e.getOne(xpath)
 		x.setValue('Foods')
 		self.assertEquals(x.value, 'Foods')
 	
 	
-	def test_set2(self):
+	def test_add(self):
+		e = Element.fromString(data=self.e.data)
 		newEntry = Entry.fromValue('\n')
-		self.e.add(newEntry)
+		e.add(newEntry)
 		newElement = Element.fromString(data="<item>Cake</item>")
-		self.e.add(newElement)
-		items = self.e.getAll('@item')
+		e.add(newElement)
+		items = e.getAll('@item')
 		self.assertEquals(items[2].value, 'Cake')
 
 
