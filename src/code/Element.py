@@ -218,7 +218,7 @@ class Element:
 				elif context == START_TAG_NAME:
 					self.name += byte
 					success = True
-				elif context == START_TAG_CLOSE:
+				elif context in [START_TAG_CLOSE, INSIDE_ELEMENT]:
 					deb("Switch to Entry.")
 					parameters.dataIndex = dataIndex
 					parameters.lineNumber = lineNumber
