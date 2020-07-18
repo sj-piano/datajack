@@ -320,6 +320,11 @@ class Element(object):
 
 
 	@property
+	def elementChildrenNames(self):
+		return [c.name for c in self.elementChildren]
+
+
+	@property
 	def entryChildren(self):
 		for child in self:
 			if child.isEntry:
@@ -508,6 +513,10 @@ class Element(object):
 		if len(items) != 1:
 			raise ValueError("Expected 1 items, but got {n}.".format(n=len(items)))
 		return items[0]
+
+
+	def getValue(self, xpath):
+		return self.getOne(xpath).value
 
 
 	def getAll(self, xpath):
