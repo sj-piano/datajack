@@ -36,10 +36,11 @@ class Datajack(object):
 			raise TypeError()
 		# remove spurious whitespace e.g. final newline.
 		text = text.strip()
-		logger = None
+		loggers = []
 		if debug == True:
 			logger = util.createLogger({'name':'element','level':'debug'})
-		self.root = Element.fromString(data=text, loggers=[logger])
+			loggers = [logger]
+		self.root = Element.fromString(data=text, loggers=loggers)
 
 
 	def hello(self):
