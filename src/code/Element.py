@@ -386,7 +386,7 @@ class Element(object):
 	@property
 	def value(self):
 		if not self.isLeaf:
-			raise ValueError
+			raise ValueError('{} is not a leaf element.'.format(self))
 		if self.nc == 0: return ''
 		# Get the value of the entry, delete any whitespace, and return it.
 		return self.deleteWhitespace(self.child[0].data)
@@ -470,6 +470,7 @@ class Element(object):
 
 
 	def get(self, xpath):
+		if xpath == '': return [self]
 		if len(xpath) >= 3:
 			if xpath[:3] == '//@':
 				name = xpath[3:]
