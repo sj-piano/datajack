@@ -62,7 +62,7 @@ def basicTests():
 
 
 
-class Element:
+class Element(object):
 	"""EML object"""
 
 	
