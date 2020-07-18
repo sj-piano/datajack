@@ -25,7 +25,7 @@ def basicTests():
 
 
 
-class Datajack():
+class Datajack(object):
 	"""Tool for creating and manipulating an EML object."""
 	
 
