@@ -268,7 +268,7 @@ class Element:
 
 			if not success:
 				statusMsg = statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex)
-				statusMsg += " Byte not successfully interpreted."
+				statusMsg += " Previous bytes: [{p}]. Byte not successfully interpreted.".format(p=data[dataIndex-50:dataIndex])
 				raise Exception(statusMsg)
 			success = False
 			dataIndex += 1
@@ -722,7 +722,7 @@ class Entry:
 
 			if not success:
 				statusMsg = statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex)
-				statusMsg += " Byte not successfully interpreted."
+				statusMsg += " Previous bytes: [{p}]. Byte not successfully interpreted.".format(p=data[dataIndex-50:dataIndex])
 				raise Exception(statusMsg)
 			success = False
 			dataIndex += 1
