@@ -2,6 +2,7 @@
 
 
 from Element import Element
+from .. import util
 import os
 
 
@@ -28,14 +29,17 @@ class Datajack():
 	"""Tool for creating and manipulating an EML object."""
 	
 
-	def __init__(self, text=None):
+	def __init__(self, text=None, debug=False):
 		if text == None:
 			return
 		if not isinstance(text, str):
 			raise TypeError()
 		# remove spurious whitespace e.g. final newline.
 		text = text.strip()
-		self.root = Element.fromString(data=text)
+		logger = None
+		if debug == True:
+			logger = util.createLogger({'name':'element','level':'debug'})
+		self.root = Element.fromString(data=text, loggers=[logger])
 
 
 	def hello(self):
@@ -56,10 +60,10 @@ class Datajack():
 
 	
 	@classmethod
-	def fromFile(klass, filePath):
+	def fromFile(klass, filePath, debug=False):
 		with open(filePath) as f:
 			data = f.read()
-		return Datajack(data)
+		return Datajack(data, debug)
 
 
 	def writeToFile(self, filePath):
