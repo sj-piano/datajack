@@ -386,12 +386,18 @@ class Element(object):
 
 
 	@property
+	def text(self):
+		# Get only the text contained by the element. Ignore its element children.
+		if self.nc == 0: return ''
+		return ''.join([child.data for child in self.entryChildren])
+
+
+	@property
 	def value(self):
+		# This is for accessing values stored in leaf elements that need to be used for something. Whitespace makes using them difficult.
 		if not self.isLeaf:
 			raise ValueError('{} is not a leaf element.'.format(self))
-		if self.nc == 0: return ''
-		# Get the value of the entry, delete any whitespace, and return it.
-		return self.deleteWhitespace(self.child[0].data)
+		return self.deleteWhitespace(self.text)
 
 
 	@property
