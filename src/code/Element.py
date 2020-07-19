@@ -75,7 +75,7 @@ class Element(object):
 		self.logger = None
 		# dataIndex, lineNumber, and lineIndex exist with reference to the original data (which includes escape characters). They record the location of the start of an element.
 		self.dataIndex = 0
-		self.lineNumber = 0
+		self.lineNumber = 1 # text editors start at line number 1.
 		self.lineIndex = 0
 		self.finalDataIndex = 0
 		self.finalLineNumber = 0
@@ -93,7 +93,7 @@ class Element(object):
 		required = 'data:s'
 		data = util.getRequiredItems(kwargs, required)
 		optional = 'parent, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, recursiveDepth:i'
-		defaults = (None, len(data), 0, 0, 0, 0)
+		defaults = (None, len(data), 0, 1, 0, 0)
 		parent, dataLength, dataIndex, lineNumber, lineIndex, recursiveDepth = util.getOptionalItems(kwargs, optional, defaults)
 		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
 		e = Element()
@@ -255,6 +255,7 @@ class Element(object):
 				if context in [START_TAG_CLOSE, INSIDE_ELEMENT]:
 					deb("Switch to Entry.")
 					parameters.dataIndex = dataIndex
+					if byte == '\n': lineNumber -= 1 # we added 1 at the start of this loop.
 					parameters.lineNumber = lineNumber
 					parameters.lineIndex = lineIndex
 					parameters.parent = self
