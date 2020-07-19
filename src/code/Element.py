@@ -210,6 +210,7 @@ class Element(object):
 					self.children.append(entry)
 					context = INSIDE_ELEMENT
 					success = True
+
 			elif byte in elementNameCharacters:
 				if context == START_TAG_OPEN:
 					context = START_TAG_NAME
