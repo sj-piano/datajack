@@ -775,7 +775,7 @@ class Entry:
 		if m <= n*2:
 			treeLine += ": [{}]".format(repr(self.data))
 		else:
-			treeLine += ": [{} ... {}]".format(repr(self.data[:n], repr(self.data[-n:])))
+			treeLine += ": [{} ... {}]".format(repr(self.data[:n]), repr(self.data[-n:]))
 		return [treeLine]
 
 
