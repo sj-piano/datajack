@@ -23,10 +23,11 @@ END_TAG_OPEN = 6
 END_TAG_NAME = 7
 END_TAG_CLOSE = 8
 DATA = 9
+ESCAPED = 10
 contextNames = {0: 'EMPTY', 1: 'START_TAG_OPEN', 2: 'START_TAG_NAME',
 	3: 'START_TAG_CLOSE', 4: 'TAG_OPEN', 5: 'INSIDE_ELEMENT',
 	6: 'END_TAG_OPEN', 7: 'END_TAG_NAME', 8: 'END_TAG_CLOSE',
-	9: 'DATA'
+	9: 'DATA', 10: 'ESCAPED'
 }
 # END IMMUTABLE DATA
 
@@ -771,10 +772,24 @@ class Entry:
 					# rewind one byte so that the Element processing loop completes and begins again on this current byte.
 					dataIndex, lineNumber, lineIndex = self.rewindOneByte(dataIndex, lineNumber, lineIndex)
 					break
+				elif context == ESCAPED:
+					self.data += byte
+					context = DATA
+					success = True
+
 			elif byte == ">":
 				pass
+
 			elif byte == "\\":
-				pass
+				if context == DATA:
+					# The next character will treated as "escaped".
+					context = ESCAPED
+					success = True
+				elif context == ESCAPED:
+					self.data += byte
+					context = DATA
+					success = True
+
 			elif byte in entryCharacters:
 				if context == DATA:
 					self.data += byte
