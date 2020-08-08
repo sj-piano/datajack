@@ -87,6 +87,30 @@ class Element(object):
 
 
 	@classmethod
+	def fromFile(klass, filePath, debug=False):
+		with open(filePath) as f:
+			text = f.read()
+			text = text.rstrip('\n') # remove final newline if it exists.
+		loggers = []
+		if debug == True:
+			logger = util.createLogger({'name':'element','level':'debug'})
+			loggers = [logger]
+		return Element.fromString(data=text, loggers=loggers)
+
+
+	def writeToFile(self, filePath):
+		with open(filePath, 'w') as f:
+			f.write(self.data)
+			f.write('\n')
+	
+
+	def writeToNewFile(self, filePath):
+		if os.path.isfile(filePath):
+			raise OSError("File exists.")
+		self.writeToFile(filePath)
+
+
+	@classmethod
 	def fromString(self, *args, **kwargs):
 		# both the root element and any child elements are built using this method.
 		util.confirmNoArgs(args)
