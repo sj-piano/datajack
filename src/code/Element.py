@@ -438,6 +438,19 @@ class Element(object):
 		return data
 
 
+	@property
+	def escapedData(self):
+		# insert backslash before any escape characters.
+		data = self.startTag
+		for child in self.children:
+			if child.isEntry:
+				data += child.escapedData
+			elif child.isElement:
+				data += child.escapedData
+		data += self.endTag
+		return data
+
+
 	@staticmethod
 	def deleteWhitespace(s):
 		return s.translate(None, whitespaceCharacters)
@@ -889,6 +902,20 @@ class Entry:
 		parent = self.parent
 		if i == parent.nc - 1: raise KeyError
 		return parent.children[i+1]
+
+
+	@property
+	def escapedData(self):
+		# insert backslash before any escape characters.
+		result = ''
+		for c in self.data:
+			if c in escapedCharacters:
+				result += "\\" + c
+			else:
+				result += c
+		return result
+
+
 
 
 
