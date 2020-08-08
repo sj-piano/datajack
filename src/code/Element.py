@@ -236,6 +236,7 @@ class Element(object):
 					context = INSIDE_ELEMENT
 					success = True
 
+
 			elif byte in elementNameCharacters:
 				if context == START_TAG_OPEN:
 					context = START_TAG_NAME
@@ -684,6 +685,16 @@ class Element(object):
 		while i != -1:
 			yield i
 			i = s.find(p, i+1)
+
+
+
+
+
+
+
+
+
+
 
 
 
