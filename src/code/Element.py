@@ -138,7 +138,7 @@ class Element(object):
 
 
 	def processString(self, *args, **kwargs):
-		# This is a recursive function. It will be called on the next Element that we find.
+		# Together, fromString and processString are a recursive function. fromString will be called on the next Element that we find, and it will then call this function.
 		# Notes:
 		# - An Element can contain 0 items, where an item is an Element or an Entry.
 		# Examples: 
