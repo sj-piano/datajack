@@ -464,6 +464,12 @@ class Element(object):
 		return data
 
 
+	@property
+	def branchValue(self):
+		# This is for accessing values stored in branch elements (which can contain other elements) that need to be used for something. Whitespace makes using these values difficult.
+		return self.deleteWhitespace(self.entryData)
+
+
 	def isValidElementName(self, name):
 		for char in name:
 			if char not in elementNameCharacters:
@@ -565,6 +571,10 @@ class Element(object):
 
 	def getValue(self, xpath):
 		return self.getOne(xpath).value
+
+
+	def getBranchValue(self, xpath):
+		return self.getOne(xpath).branchValue
 
 
 	def getAll(self, xpath):
