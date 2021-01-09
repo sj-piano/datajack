@@ -2,6 +2,11 @@
 
 
 from .. import util
+confirmNoArgs = util.misc.confirmNoArgs
+getRequiredItems = util.misc.getRequiredItems
+getOptionalItems = util.misc.getOptionalItems
+loadOrCreateLogger = util.createLogger.loadOrCreateLogger
+DotDict = util.DotDictionary.DotDict
 import logging
 
 
@@ -56,7 +61,7 @@ def basicTests():
 	print e2.hello
 	# with logger
 	text3 = "<foo>hello<bar>mars</bar></foo>"
-	logger = util.createLogger({'name':'element','level':'debug'})
+	logger = createLogger({'name':'element','level':'debug'})
 	e3 = Element.fromString(data=text3, loggers=[logger])
 	print e3.foo.bar
 
@@ -94,7 +99,7 @@ class Element(object):
 			text = text.rstrip('\n') # remove final newline if it exists.
 		loggers = []
 		if debug == True:
-			logger = util.createLogger({'name':'element','level':'debug'})
+			logger = createLogger({'name':'element','level':'debug'})
 			loggers = [logger]
 		return Element.fromString(data=text, loggers=loggers)
 
@@ -114,16 +119,16 @@ class Element(object):
 	@classmethod
 	def fromString(self, *args, **kwargs):
 		# both the root element and any child elements are built using this method.
-		util.confirmNoArgs(args)
+		confirmNoArgs(args)
 		required = 'data:s'
-		data = util.getRequiredItems(kwargs, required)
+		data = getRequiredItems(kwargs, required)
 		optional = 'parent, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, recursiveDepth:i'
 		defaults = (None, len(data), 0, 1, 0, 0)
-		parent, dataLength, dataIndex, lineNumber, lineIndex, recursiveDepth = util.getOptionalItems(kwargs, optional, defaults)
-		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
+		parent, dataLength, dataIndex, lineNumber, lineIndex, recursiveDepth = getOptionalItems(kwargs, optional, defaults)
+		logger, log, deb = loadOrCreateLogger(kwargs, 'element')
 		e = Element()
 		# process data into an Element tree.
-		parameters = util.DotDict(kwargs)
+		parameters = DotDict(kwargs)
 		parameters.parent = parent
 		parameters.dataLength = dataLength
 		parameters.dataIndex = dataIndex
@@ -158,16 +163,16 @@ class Element(object):
 		# -- insideElement (we're inside an unfinished Element, and we've just finished a child Element or Entry)
 		# -- endTagOpen, endTagName, endTagClose
 		# - Approach: As we encounter each character, we interpret it based on the current context.
-		util.confirmNoArgs(args)
+		confirmNoArgs(args)
 		required = 'parent, data:s, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, recursiveDepth:i'
-		parent, data, dataLength, dataIndex, lineNumber, lineIndex, recursiveDepth = util.getRequiredItems(kwargs, required)
+		parent, data, dataLength, dataIndex, lineNumber, lineIndex, recursiveDepth = getRequiredItems(kwargs, required)
 		self.parent = parent
 		self.dataIndex = dataIndex
 		self.lineNumber = lineNumber
 		self.lineIndex = lineIndex
 		self.recursiveDepth = recursiveDepth
-		parameters = util.DotDict(kwargs)
-		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
+		parameters = DotDict(kwargs)
+		logger, log, deb = loadOrCreateLogger(kwargs, 'element')
 		self.logger = logger
 		if self.parent is not None:
 			deb("Switch to Element")
@@ -754,8 +759,8 @@ class Entry:
 	
 	@classmethod
 	def fromString(self, *args, **kwargs):
-		util.confirmNoArgs(args)
-		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
+		confirmNoArgs(args)
+		logger, log, deb = loadOrCreateLogger(kwargs, 'element')
 		entry = Entry()
 		# process data into an Entry.
 		dataIndex, lineNumber, lineIndex = entry.processString(**kwargs)
@@ -772,14 +777,14 @@ class Entry:
 	def processString(self, *args, **kwargs):
 		# Notes:
 		# - An entry consists of at least one printable ASCII byte.
-		util.confirmNoArgs(args)
+		confirmNoArgs(args)
 		required = 'data:s, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, parent'
-		data, dataLength, dataIndex, lineNumber, lineIndex, parent = util.getRequiredItems(kwargs, required)
+		data, dataLength, dataIndex, lineNumber, lineIndex, parent = getRequiredItems(kwargs, required)
 		self.dataIndex = dataIndex
 		self.lineNumber = lineNumber
 		self.lineIndex = lineIndex
 		self.parent = parent
-		logger, log, deb = util.loadOrCreateLogger(kwargs, 'element')
+		logger, log, deb = loadOrCreateLogger(kwargs, 'element')
 		self.logger = logger
 		statusMsg = "Entry: context [{c}], byte [{b}], dataIndex [{di}], lineNumber [{ln}], lineIndex [{li}]."
 		context = DATA
