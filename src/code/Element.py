@@ -1,13 +1,30 @@
-#!/usr/bin/python
-
-
 from .. import util
+import logging
+from argparse import Namespace
+
+
+# Set up logger for this module. By default, it produces no output.
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
+log = logger.info
+deb = logger.debug
+
+
+def setup(args=Namespace()):
+	args.logger = logger
+	# Configure logger for this module.
+	util.moduleLogger.configureModuleLogger(args)
+
+
+
+
+# More imports.
 confirmNoArgs = util.misc.confirmNoArgs
 getRequiredItems = util.misc.getRequiredItems
 getOptionalItems = util.misc.getOptionalItems
-loadOrCreateLogger = util.createLogger.loadOrCreateLogger
 DotDict = util.DotDictionary.DotDict
-import logging
+
+
 
 
 # IMMUTABLE DATA
@@ -61,7 +78,6 @@ def basicTests():
 	print e2.hello
 	# with logger
 	text3 = "<foo>hello<bar>mars</bar></foo>"
-	logger = createLogger({'name':'element','level':'debug'})
 	e3 = Element.fromString(data=text3, loggers=[logger])
 	print e3.foo.bar
 
@@ -93,15 +109,11 @@ class Element(object):
 
 
 	@classmethod
-	def fromFile(klass, filePath, debug=False):
+	def fromFile(klass, filePath):
 		with open(filePath) as f:
 			text = f.read()
 			text = text.rstrip('\n') # remove final newline if it exists.
-		loggers = []
-		if debug == True:
-			logger = createLogger({'name':'element','level':'debug'})
-			loggers = [logger]
-		return Element.fromString(data=text, loggers=loggers)
+		return Element.fromString(data=text)
 
 
 	def writeToFile(self, filePath):
@@ -125,7 +137,6 @@ class Element(object):
 		optional = 'parent, dataLength:i, dataIndex:i, lineNumber:i, lineIndex:i, recursiveDepth:i'
 		defaults = (None, len(data), 0, 1, 0, 0)
 		parent, dataLength, dataIndex, lineNumber, lineIndex, recursiveDepth = getOptionalItems(kwargs, optional, defaults)
-		logger, log, deb = loadOrCreateLogger(kwargs, 'element')
 		e = Element()
 		# process data into an Element tree.
 		parameters = DotDict(kwargs)
@@ -172,8 +183,6 @@ class Element(object):
 		self.lineIndex = lineIndex
 		self.recursiveDepth = recursiveDepth
 		parameters = DotDict(kwargs)
-		logger, log, deb = loadOrCreateLogger(kwargs, 'element')
-		self.logger = logger
 		if self.parent is not None:
 			deb("Switch to Element")
 		statusMsg = "Element: context [{c}], byte [{b}], dataIndex [{di}], lineNumber [{ln}], lineIndex [{li}]."
@@ -739,7 +748,6 @@ class Entry:
 	def __init__(self):
 		self.data = "" # this contains the actual data in bytes of the Entry (after escape characters have been removed)
 		self.parent = None
-		self.logger = None
 		# dataIndex, lineNumber, and lineIndex exist with reference to the original data (which includes escape characters). They record the location of the start of an entry.
 		self.dataIndex = 0
 		self.lineNumber = 0
@@ -760,7 +768,6 @@ class Entry:
 	@classmethod
 	def fromString(self, *args, **kwargs):
 		confirmNoArgs(args)
-		logger, log, deb = loadOrCreateLogger(kwargs, 'element')
 		entry = Entry()
 		# process data into an Entry.
 		dataIndex, lineNumber, lineIndex = entry.processString(**kwargs)
@@ -784,8 +791,6 @@ class Entry:
 		self.lineNumber = lineNumber
 		self.lineIndex = lineIndex
 		self.parent = parent
-		logger, log, deb = loadOrCreateLogger(kwargs, 'element')
-		self.logger = logger
 		statusMsg = "Entry: context [{c}], byte [{b}], dataIndex [{di}], lineNumber [{ln}], lineIndex [{li}]."
 		context = DATA
 		# we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
