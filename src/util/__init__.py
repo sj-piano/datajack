@@ -1,1 +1,2 @@
-import createLogger, misc, DotDictionary
+import misc, DotDictionary
+import moduleLogger
