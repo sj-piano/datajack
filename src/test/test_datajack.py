@@ -1,6 +1,7 @@
-# The tests are run in the 'datajack' package directory,
-# so the import paths start from there.
-from src import *
+from .. import code
+Datajack = code.Datajack.Datajack
+Element = code.Element.Element
+Entry = code.Element.Entry
 import unittest
 
 

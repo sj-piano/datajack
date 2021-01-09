@@ -1,5 +1,7 @@
-# These tests are executed in the 'datajack' package directory.
-from src import *
+from .. import code, util
+Element = code.Element.Element
+Entry = code.Element.Entry
+createLogger = util.createLogger.createLogger
 import unittest
 
 
