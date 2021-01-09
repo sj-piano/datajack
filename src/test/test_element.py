@@ -1,7 +1,6 @@
 from .. import code, util
 Element = code.Element.Element
 Entry = code.Element.Entry
-createLogger = util.createLogger.createLogger
 import unittest
 
 
@@ -27,11 +26,8 @@ class TestExampleHello(unittest.TestCase):
 	@classmethod
 	def setUpClass(klass):
 		data = "<hello>world</hello>"
-		loggerSettings = {'name': 'element', 'level': 'error'}
-		logger = createLogger(loggerSettings)
-		loggers = [logger]
 		parameters = {'extraParameter': 123}
-		klass.e = Element.fromString(data=data, loggers=loggers, **parameters)
+		klass.e = Element.fromString(data=data, **parameters)
 	
 
 	def test_getValue(self):
@@ -46,9 +42,7 @@ class TestNested(unittest.TestCase):
 	@classmethod
 	def setUpClass(klass):
 		data = "<foo>hello<bar>mars<bas>ASD</bas></bar></foo>"
-		logger = createLogger({'name': 'element', 'level': 'error'})
-		logger.info('Data: ' + data)
-		klass.e = Element.fromString(data=data, loggers=[logger])
+		klass.e = Element.fromString(data=data)
 	
 
 	def test_getEntryData(self):
@@ -89,9 +83,7 @@ class TestMultiple(unittest.TestCase):
 </list>
 """
 		data = data.strip()
-		logger = createLogger({'name': 'element', 'level': 'error'})
-		logger.info('Data: ' + data)
-		klass.e = Element.fromString(data=data, loggers=[logger])
+		klass.e = Element.fromString(data=data)
 	
 
 	def test_getMultiple(self):
@@ -150,9 +142,7 @@ class CRUDFunctionality(unittest.TestCase):
 """
 		data = data.strip()
 		klass.data = data
-		logger = createLogger({'name': 'element', 'level': 'error'})
-		#logger.info('Data: ' + data)
-		klass.e = Element.fromString(data=data, loggers=[logger])
+		klass.e = Element.fromString(data=data)
 
 
 	def test_get(self):
