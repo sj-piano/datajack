@@ -485,7 +485,8 @@ class Element(object):
 		return self.deleteWhitespace(self.entryData)
 
 
-	def isValidElementName(self, name):
+	@staticmethod
+	def isElementName(name):
 		for char in name:
 			if char not in elementNameCharacters:
 				return False
