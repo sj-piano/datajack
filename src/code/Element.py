@@ -497,6 +497,7 @@ class Element(object):
 # <article>
 # <title>James_Sullivan_on_the_nature_of_banks</title>
 # <author_name>stjohn_piano</author_name>
+# <author_name>Demo second author name</author_name>
 # <date>2017-07-21</date>
 # <signed_by_author>no</signed_by_author>
 # <content>
