@@ -8,23 +8,6 @@ import os
 
 
 
-def main():
-	
-	basicTests()
-
-
-def basicTests():
-	# blank
-	dj = Datajack()
-	print dj.hello()
-	# from text
-	with open('data/hello.txt') as f:
-		dj2 = Datajack(f.read())
-		print dj.hello
-
-
-
-
 class Datajack(object):
 	"""Tool for creating and manipulating an EML object."""
 	
@@ -90,6 +73,3 @@ def stop(msg=None):
 	if msg: print "\n%s\n" % msg
 	import sys; sys.exit()
 
-
-if __name__ == "__main__":
-	main()
