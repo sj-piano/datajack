@@ -105,6 +105,7 @@ class Element(object):
 	
 	
 	def hello(self):
+		log('hello')
 		return "world"
 
 
