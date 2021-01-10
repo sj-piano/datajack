@@ -62,28 +62,6 @@ contextNames = {0: 'EMPTY', 1: 'START_TAG_OPEN', 2: 'START_TAG_NAME',
 
 
 
-def main():
-
-	basicTests()
-
-
-
-
-def basicTests():
-	# blank
-	e = Element()
-	# from text
-	text2 = "<hello>world</hello>"
-	e2 = Element.fromString(data=text2)
-	print e2.hello
-	# with logger
-	text3 = "<foo>hello<bar>mars</bar></foo>"
-	e3 = Element.fromString(data=text3, loggers=[logger])
-	print e3.foo.bar
-
-
-
-
 class Element(object):
 	"""EML object"""
 
@@ -970,7 +948,3 @@ class Entry:
 def stop(msg=None):
 	if msg: print "\n%s\n" % msg
 	import sys; sys.exit()
-
-
-if __name__ == "__main__":
-	main()
