@@ -75,17 +75,29 @@ def e1():
 	yield e1
 
 
+@pytest.fixture(scope="module")
+def e2():
+	d = """
+<foo>hello
+<bar>mars<bas>ASD</bas></bar>
+</foo>
+"""
+	code.Element.setup(NS(logLevel='info'))
+	e2 = Element.fromString(data=d.strip())
+	code.Element.setup(NS(logLevel='debug'))
+	yield e2
+
+
 
 
 ### SECTION
 # Basic xpath checks
 
 
-
 def test_xpath_1(e1):
 	xpath = 'title'
-	e2 = e1.get(xpath)[0]
-	assert e2.value == 'Fruit'
+	e = e1.get(xpath)[0]
+	assert e.value == 'Fruit'
 
 
 def test_xpath_2(e1):
@@ -98,8 +110,8 @@ def test_xpath_2(e1):
 
 def test_xpath_3(e1):
 	xpath = 'sublist/title'
-	e2 = e1.get(xpath)[0]
-	assert e2.value == 'Planets'
+	e = e1.get(xpath)[0]
+	assert e.value == 'Planets'
 
 
 def test_xpath_4(e1):
@@ -130,9 +142,9 @@ def test_xpath_7(e1):
 	xpath = "sublist[title='Planets']"
 	e_list = e1.get(xpath)
 	assert len(e_list) == 1
-	e2 = e_list[0]
-	assert e2.name == 'sublist'
-	assert e2.getOne('title').value == 'Planets'
+	e = e_list[0]
+	assert e.name == 'sublist'
+	assert e.getOne('title').value == 'Planets'
 
 
 def test_xpath_8(e1):
@@ -145,7 +157,36 @@ def test_xpath_8(e1):
 
 
 
+### SECTION
+# Property tests
 
+
+def test_entryData(e2):
+	xpath = 'bar'
+	assert e2.get(xpath)[0].entryData == 'mars'
+
+
+def test_value(e2):
+	xpath = 'bar/bas'
+	assert e2.get(xpath)[0].value == 'ASD'
+
+
+def test_value2(e2):
+	xpath = 'bar/bas'
+	assert e2.getOne(xpath).value == 'ASD'
+
+
+def basicTests():
+	# blank
+	e = Element()
+	# from text
+	text2 = "<hello>world</hello>"
+	e2 = Element.fromString(data=text2)
+	print e2.hello
+	# with logger
+	text3 = "<foo>hello<bar>mars</bar></foo>"
+	e3 = Element.fromString(data=text3, loggers=[logger])
+	print e3.foo.bar
 
 
 
