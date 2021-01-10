@@ -530,53 +530,73 @@ class Element(object):
 # </content>
 # </article>
 
-	# possible xpaths:
-	# 1) title (the title element that is a direct child of the root 'article' element)
-	# 2) content/list/title (the title element that is a particular descendant of the root article element)
-	# 3) content/list/@name (all name elements that are direct children of the content/list element)
-	# 4) //@name (all name elements contained within the article element)
+	# possible xs:
+	# - title (the title element that is a direct child of the root 'article' element)
+	# - @author_name (all author_name elements that are direct children of the root 'article' element)
+	# - content/list/title (the title element that is a particular descendant of the root article element)
+	# - content/list/@name (all name elements that are direct children of the content/list element)
+	# - //@name (all name elements contained within the article element)
+	# - link[type='asset'] (single link child that has a 'type' child with value='asset')
+	# - content/@link[type='asset'] (all content/link elements that have a 'type' child with value='asset')
 	# notes:
 	# - the result is always a list, which may be empty. use other wrapper functions to return more specific results (e.g. get exactly one result or raise error).
 
 
-	def get(self, xpath):
-		if xpath == '': return [self]
-		if len(xpath) >= 3:
-			if xpath[:3] == '//@':
-				name = xpath[3:]
-				if not self.isValidElementName(name):
-					raise ValueError("xpath {x} contains an invalid element name.".format(x=xpath))
-				result = self.getElementDescendantsWithName(name)
-				return result
-		if '/' not in xpath:
-			name = xpath
-			multiple = False
-			if name[0] == '@':
-				multiple = True
-				name = name[1:]
-			result = self.getElementChildrenWithName(name)
-			if multiple == False:
-				if len(result) != 1:
-					raise ValueError("xpath {x} specified 1 child, but {n} found.".format(x=repr(xpath), n=len(result)))
+	def get(self, x): # x = x
+		deb('\n\n')
+		deb('xpath: ' + x)
+		# xpath: ''
+		if x == '': return [self]	
+		# xpath: //@name
+		# note: this doesn't accept conditions. would need to break condition processing into a separate function, I think. 
+		if len(x) > 3:
+			if x[:3] == '//@':
+				name = x[3:]
+				if self.isElementName(name):
+					return self.getElementDescendantsWithName(name)
+		# xpaths that contain sections split by '/'
+		# x: 'content/list/title'
+		# x: content/list/@name
+		if x.count('/') > 0:
+			sections = x.split('/')
+			x1 = sections[0] # first section of path
+			x2 = '/'.join(sections[1:]) # rest of path
+			children = self.get(x1)
+			result = []
+			for child in children:
+				# recurse
+				result.extend(child.get(x2))
 			return result
-		else:
-			sections = xpath.split('/')
-			name = sections[0]
-			restOfPath = '/'.join(sections[1:])
-			multiple = False
-			if name[0] == '@':
-				multiple = True
-				name = name[1:]
-			result1 = self.getElementChildrenWithName(name)
-			if multiple == False:
-				if len(result1) > 1:
-					raise ValueError("xpath {x} specified 1 child, but {n} found.".format(x=repr(xpath), n=len(result1)))
-			result2 = []
-			for child in result1:
-				result3 = child.get(restOfPath)
-				result2.extend(result3)
-			return result2
-		raise Exception("Shouldn't arrive at the end of this function.")
+		# get condition if it exists.
+		# xpath: @link[type='asset']
+		condition = False
+		if x.count('[') == 1:
+			x2, c = x.split('[') # c = condition
+			if c[-1] != ']': raise ValueError
+			c = c[:-1]
+			# Example c: type='asset'
+			if '=' not in c: raise ValueError
+			cName, cValue = c.split('=')
+			cValue = cValue.replace("'","")
+			x = x2
+			condition = True
+		# xpath: 'title'
+		if self.isElementName(x):
+			result = self.getElementChildrenWithName(x)
+			if condition:
+				result = [e for e in result if e.getOne(cName).value == cValue]
+			return result
+		# xpath: '@author_name'
+		if x[0] == '@':
+			name = x.replace('@','')
+			if self.isElementName(name):
+				if x.count('@') > 1:
+					raise ValueError
+				result = self.getElementChildrenWithName(name)
+				if condition:
+					result = [e for e in result if e.getOne(cName).value == cValue]
+				return result
+		raise Exception("Shouldn't arrive here")
 
 
 	def getOne(self, xpath):
