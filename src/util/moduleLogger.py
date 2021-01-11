@@ -5,6 +5,7 @@ import colorlog
 
 def configureModuleLogger(args):
 	logger = args.logger
+	logger.propagate = False
 	logLevel = 'error' # default
 	if 'logLevel' in args:
 		logLevel = args.logLevel # override
