@@ -101,7 +101,7 @@ def test_xpath_1(e1):
 
 
 def test_xpath_2(e1):
-	xpath = '@item'
+	xpath = 'item'
 	e_list = e1.get(xpath)
 	assert len(e_list) == 3
 	e_values = sorted([e.value for e in e_list])
@@ -115,7 +115,7 @@ def test_xpath_3(e1):
 
 
 def test_xpath_4(e1):
-	xpath = 'sublist/@planet'
+	xpath = 'sublist/planet'
 	e_list = e1.get(xpath)
 	assert len(e_list) == 4
 	e_texts = sorted([e.text for e in e_list])
@@ -123,7 +123,7 @@ def test_xpath_4(e1):
 
 
 def test_xpath_5(e1):
-	xpath = 'sublist/@planet/name'
+	xpath = 'sublist/planet/name'
 	e_list = e1.get(xpath)
 	assert len(e_list) == 4
 	e_values = sorted([e.value for e in e_list])
@@ -131,7 +131,7 @@ def test_xpath_5(e1):
 
 
 def test_xpath_6(e1):
-	xpath = '//@name'
+	xpath = '//name'
 	e_list = e1.get(xpath)
 	assert len(e_list) == 4
 	e_values = sorted([e.value for e in e_list])
@@ -148,7 +148,7 @@ def test_xpath_7(e1):
 
 
 def test_xpath_8(e1):
-	xpath = "languages/@language[category='Python']"
+	xpath = "languages/language[category='Python']"
 	e_list = e1.get(xpath)
 	assert len(e_list) == 2
 	versions = [e.getOne('version').value for e in e_list]
