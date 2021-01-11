@@ -564,16 +564,6 @@ class Element(object):
 			if predicate:
 				result = [e for e in result if e.getOne(pName).value == pValue]
 			return result
-		# xpath: '@author_name'
-		if x[0] == '@':
-			name = x.replace('@','')
-			if self.isElementName(name):
-				if x.count('@') > 1:
-					raise ValueError
-				result = self.getElementChildrenWithName(name)
-				if condition:
-					result = [e for e in result if e.getOne(cName).value == cValue]
-				return result
 		raise Exception("Shouldn't arrive here")
 
 
