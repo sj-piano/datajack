@@ -510,61 +510,69 @@ class Element(object):
 
 	# possible xs:
 	# - title (the title element that is a direct child of the root 'article' element)
-	# - @author_name (all author_name elements that are direct children of the root 'article' element)
+	# - author_name (all author_name elements that are direct children of the root 'article' element)
 	# - content/list/title (the title element that is a particular descendant of the root article element)
-	# - content/list/@name (all name elements that are direct children of the content/list element)
-	# - //@name (all name elements contained within the article element)
-	# - link[type='asset'] (single link child that has a 'type' child with value='asset')
-	# - content/@link[type='asset'] (all content/link elements that have a 'type' child with value='asset')
+	# - content/list/name (all name elements that are direct children of the content/list element)
+	# - //name (all name elements contained within the article element)
+	# - link[@type='asset'] (single link child that has a 'type' child with value='asset')
+	# - content/link[@type='asset'] (all content/link elements that have a 'type' child with value='asset')
+	# - //list[@title='Guild_Members'][@name='StJohn_Piano']
 	# notes:
 	# - the result is always a list, which may be empty. use other wrapper functions to return more specific results (e.g. get exactly one result or raise error).
 
 
 	def get(self, x): # x = x
+		# Working principle: Handle any prefixes. Then handle the first section of the xpath. Then recurse.
 		deb('\n\n')
 		deb('xpath: ' + x)
+		xOriginal = x
 		# xpath: ''
-		if x == '': return [self]	
+		if x == '': return [self]
+		# handle double-slash at begining.
 		# xpath: //name
-		# note: this doesn't accept conditions. would need to break condition processing into a separate function, I think. 
+		descendants = False
 		if len(x) > 2:
 			if x[:2] == '//':
-				name = x[2:]
-				if self.isElementName(name):
-					return self.getElementDescendantsWithName(name)
+				x = x[2:]
+				descendants = True
+				#if self.isElementName(name):
+					#return self.getElementDescendantsWithName(name)
 		# xpaths that contain sections split by '/'
 		# x: 'content/list/title'
-		# x: content/list/@name
+		x2 = None
 		if x.count('/') > 0:
 			sections = x.split('/')
-			x1 = sections[0] # first section of path
+			x = sections[0] # first section of path
 			x2 = '/'.join(sections[1:]) # rest of path
-			children = self.get(x1)
-			result = []
-			for child in children:
-				# recurse
-				result.extend(child.get(x2))
-			return result
 		# get predicate if it exists.
-		# xpath: @link[type='asset']
-		predicate = False
-		if x.count('[') == 1:
-			x2, p = x.split('[') # p = predicate
-			if p[-1] != ']': raise ValueError
-			p = p[:-1]
-			# Example p: type='asset'
-			if '=' not in p: raise ValueError
-			pName, pValue = p.split('=')
-			pValue = pValue.replace("'","")
-			x = x2
-			predicate = True
-		# xpath: 'title'
-		if self.isElementName(x):
-			result = self.getElementChildrenWithName(x)
-			if predicate:
-				result = [e for e in result if e.getOne(pName).value == pValue]
-			return result
-		raise Exception("Shouldn't arrive here")
+		# xpath: link[type='asset']
+		# xpath: //list[@title='Guild_Members'][@name='StJohn_Piano']
+		predicates = {}
+		if x.count('[') > 0:
+			sections = x.split('[')
+			x = sections[0]
+			ps = sections[1:]
+			for p in ps:
+				p = p.replace('@','').replace(']','')
+				n, v = p.split('=')
+				v = v.replace("'","")
+				predicates[n] = v
+		# get children / descendants that match conditions.
+		elements = []
+		if not self.isElementName(x):
+			raise ValueError(x)
+		if descendants:
+			elements = self.getElementDescendantsWithName(x)
+		else:
+			elements = self.getElementChildrenWithName(x)
+		for k, v in predicates.iteritems():
+			elements = [e for e in elements if e.getValue(k) == v]
+		if x2:
+			elements2 = []
+			for e in elements:
+				elements2.extend(e.get(x2))
+			elements = elements2
+		return elements
 
 
 	def getOne(self, xpath):
