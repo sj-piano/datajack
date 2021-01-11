@@ -527,9 +527,9 @@ class Element(object):
 		if x == '': return [self]	
 		# xpath: //name
 		# note: this doesn't accept conditions. would need to break condition processing into a separate function, I think. 
-		if len(x) > 3:
-			if x[:3] == '//@':
-				name = x[3:]
+		if len(x) > 2:
+			if x[:2] == '//':
+				name = x[2:]
 				if self.isElementName(name):
 					return self.getElementDescendantsWithName(name)
 		# xpaths that contain sections split by '/'
