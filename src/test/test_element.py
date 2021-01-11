@@ -139,7 +139,7 @@ def test_xpath_6(e1):
 
 
 def test_xpath_7(e1):
-	xpath = "sublist[title='Planets']"
+	xpath = "sublist[@title='Planets']"
 	e_list = e1.get(xpath)
 	assert len(e_list) == 1
 	e = e_list[0]
@@ -148,7 +148,7 @@ def test_xpath_7(e1):
 
 
 def test_xpath_8(e1):
-	xpath = "languages/language[category='Python']"
+	xpath = "languages/language[@category='Python']"
 	e_list = e1.get(xpath)
 	assert len(e_list) == 2
 	versions = [e.getOne('version').value for e in e_list]
