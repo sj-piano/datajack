@@ -566,7 +566,7 @@ class Element(object):
 		else:
 			elements = self.getElementChildrenWithName(x)
 		for k, v in predicates.iteritems():
-			elements = [e for e in elements if e.getValue(k) == v]
+			elements = [e for e in elements if e.getValueIfExists(k) == v]
 		if x2:
 			elements2 = []
 			for e in elements:
@@ -584,6 +584,13 @@ class Element(object):
 
 	def getValue(self, xpath):
 		return self.getOne(xpath).value
+
+
+	def getValueIfExists(self, xpath):
+		r = self.get(xpath)
+		if len(r) == 0: return ''
+		elif len(r) > 1: raise ValueError
+		return r[0].value
 
 
 	def getBranchValue(self, xpath):
