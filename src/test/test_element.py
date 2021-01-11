@@ -144,14 +144,14 @@ def test_xpath_7(e1):
 	assert len(e_list) == 1
 	e = e_list[0]
 	assert e.name == 'sublist'
-	assert e.getOne('title').value == 'Planets'
+	assert e.getValue('title') == 'Planets'
 
 
 def test_xpath_8(e1):
 	xpath = "languages/language[@category='Python']"
 	e_list = e1.get(xpath)
 	assert len(e_list) == 2
-	versions = [e.getOne('version').value for e in e_list]
+	versions = [e.getValue('version') for e in e_list]
 	assert sorted(versions) == ['2','3']
 
 
