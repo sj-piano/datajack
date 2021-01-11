@@ -525,7 +525,7 @@ class Element(object):
 		deb('xpath: ' + x)
 		# xpath: ''
 		if x == '': return [self]	
-		# xpath: //@name
+		# xpath: //name
 		# note: this doesn't accept conditions. would need to break condition processing into a separate function, I think. 
 		if len(x) > 3:
 			if x[:3] == '//@':
@@ -545,24 +545,24 @@ class Element(object):
 				# recurse
 				result.extend(child.get(x2))
 			return result
-		# get condition if it exists.
+		# get predicate if it exists.
 		# xpath: @link[type='asset']
-		condition = False
+		predicate = False
 		if x.count('[') == 1:
-			x2, c = x.split('[') # c = condition
-			if c[-1] != ']': raise ValueError
-			c = c[:-1]
-			# Example c: type='asset'
-			if '=' not in c: raise ValueError
-			cName, cValue = c.split('=')
-			cValue = cValue.replace("'","")
+			x2, p = x.split('[') # p = predicate
+			if p[-1] != ']': raise ValueError
+			p = p[:-1]
+			# Example p: type='asset'
+			if '=' not in p: raise ValueError
+			pName, pValue = p.split('=')
+			pValue = pValue.replace("'","")
 			x = x2
-			condition = True
+			predicate = True
 		# xpath: 'title'
 		if self.isElementName(x):
 			result = self.getElementChildrenWithName(x)
-			if condition:
-				result = [e for e in result if e.getOne(cName).value == cValue]
+			if predicate:
+				result = [e for e in result if e.getOne(pName).value == pValue]
 			return result
 		# xpath: '@author_name'
 		if x[0] == '@':
