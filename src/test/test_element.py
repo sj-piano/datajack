@@ -155,6 +155,14 @@ def test_xpath_8(e1):
 	assert sorted(versions) == ['2','3']
 
 
+def test_xpath_9(e1):
+	xpath = "languages/language[@category='Python'][@version='2']"
+	e_list = e1.get(xpath)
+	assert len(e_list) == 1
+	versions = [e.getValue('version') for e in e_list]
+	assert sorted(versions) == ['2']
+
+
 
 
 ### SECTION
