@@ -1,6 +1,6 @@
 import pytest
 from argparse import Namespace as NS
-from .. import code, util
+from .. import code
 Element = code.Element.Element
 Entry = code.Element.Entry
 import logging
