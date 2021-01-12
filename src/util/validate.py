@@ -36,7 +36,7 @@ date_pattern = re.compile(r'\d{4}-\d{2}-\d{2}')
 def validateDate(s):
 	# https://stackoverflow.com/a/45598540
 	if not date_pattern.match(s):
-		raise ValueError
+		raise ValueError('{} is not a valid date.'.format(repr(s)))
 
 
 
