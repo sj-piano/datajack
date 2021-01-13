@@ -6,9 +6,7 @@ import colorlog
 def configureModuleLogger(args):
 	logger = args.logger
 	logger.propagate = False
-	logLevel = 'error' # default
-	if 'logLevel' in args:
-		logLevel = args.logLevel # override
+	logLevel = args.logLevel if 'logLevel' in args else 'error'
 	logLevels = {
 		'error': logging.ERROR,
 		'warning': logging.WARNING,
@@ -17,14 +15,16 @@ def configureModuleLogger(args):
 	}
 	logLevel = logLevels[logLevel]
 	logger.setLevel(logLevel)
+	def setLevelStr(logLevelStr):
+		logLevel = logLevels[logLevelStr]
+		logger.setLevel(logLevel)
+	logger.setLevelStr = setLevelStr
 	# Construct logFormat.
 	# Example logFormat:
 	# '%(asctime)s %(levelname)-8s [%(name)s: %(lineno)s (%(funcName)s)] %(message)s'
 	# Example logLine:
 	# 2020-11-19 13:14:10 DEBUG    [demo1.basic: 19 (hello)] Entered into basic.hello.
-	loggerName = '%(name)s' # default
-	if 'loggerName' in args:
-		loggerName = args.loggerName # override
+	loggerName = args.loggerName if 'loggerName' in args else '%(name)s'
 	logFormat = '[' + loggerName + ': %(lineno)s (%(funcName)s)] %(message)s'
 	# Note: In "%(levelname)-8s", the '8' pads the levelname length with spaces up to 8 characters, and the hyphen left-aligns the levelname.
 	logFormat = '%(levelname)-8s ' + logFormat
@@ -40,6 +40,7 @@ def configureModuleLogger(args):
 	#logger.addHandler(consoleHandler)
 	# 2) Colored console handler:
 	consoleHandler2 = colorlog.StreamHandler()
+	consoleHandler2.setLevel(logLevel)
 	logFormatColor = logFormat.replace('%(levelname)', '%(log_color)s%(levelname)')
 	logFormatColor = logFormatColor.replace('%(message)', '%(message_log_color)s%(message)')
 	# Example logFormatColor:
