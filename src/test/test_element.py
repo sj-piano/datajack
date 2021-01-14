@@ -88,6 +88,99 @@ def e2():
 	yield e2
 
 
+@pytest.fixture(scope="module")
+def e3():
+	d = """
+<list>
+<title>Fruit</title>
+<item>Orange</item>
+<item>Apple</item>
+</list>
+"""
+	code.Element.setup(NS(logLevel='info'))
+	e3 = Element.fromString(data=d.strip())
+	code.Element.setup(NS(logLevel='debug'))
+	yield e3
+
+
+
+
+### SECTION
+# CRUD tests
+
+
+def test_get(e3):
+	xpath = 'title'
+	e = e3.getOne(xpath)
+	assert e.value == 'Fruit'
+
+
+def test_get_2(e3):
+	xpath = 'item'
+	e_values = [e.value for e in e3.getAll(xpath)]
+	assert sorted('Orange Apple'.split()) == sorted(e_values)
+
+
+def test_set(e3):
+	xpath = 'title'
+	e = e3.getOne(xpath)
+	e.setValue('Foods')
+	assert e.value == 'Foods'
+
+
+def test_add(e3):
+	newEntry = Entry.fromValue('\n')
+	e3.add(newEntry)
+	newElement = Element.fromString(data="<item>Cake</item>")
+	e3.add(newElement)
+	e_values = [e.value for e in e3.getAll('item')]
+	assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
+
+
+def test_add_2(e3):
+	orangeItemIndex = e3.getIndexByValue('item', 'Orange')
+	newEntry = Entry.fromValue('\n')
+	newElement = Element.fromString(data="<item>Cake</item>")
+	newIndex = orangeItemIndex + 1
+	e3.addAll([newEntry, newElement], index = newIndex)
+	e_values = [e.value for e in e3.getAll('item')]
+	assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
+	assert e_values.index('Orange') == 0
+	assert e_values.index('Cake') == 1
+
+
+def test_delete(e3):
+	orangeItem = e3.getOneByValue('item', 'Orange')
+	entry = orangeItem.nextSibling
+	e3.detachAll([orangeItem, entry])
+	e_values = [e.value for e in e3.get('item')]
+	assert e_values == ['Apple']
+	
+
+def test_delete_2(e3):
+	orangeItem = e3.getOneByValue('item', 'Orange')
+	entry = orangeItem.prevSibling
+	e3.detachAll([orangeItem, entry])
+	e_values = [e.value for e in e3.get('item')]
+	assert e_values == ['Apple']
+
+
+def test_prevSibling(e3):
+	appleItem = e3.getOneByValue('item', 'Apple')
+	entry = appleItem.prevSibling
+	assert entry.data == '\n'
+	orangeItem = entry.prevSibling
+	assert orangeItem.value == 'Orange'
+
+
+def test_nextSibling(e3):
+	appleItem = e3.getOneByValue('item', 'Apple')
+	entry = appleItem.nextSibling
+	assert entry.data == '\n'
+	with pytest.raises(KeyError):
+		entry.nextSibling
+
+
 
 
 ### SECTION
