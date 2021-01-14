@@ -692,6 +692,13 @@ class Element(object):
 		if i == parent.nc - 1: raise KeyError
 		return parent.children[i+1]
 
+
+	def hasChild(self, name):
+		n = self.elementChildrenNames.count(name)
+		if n > 1: raise ValueError
+		if n == 1: return True
+		return False
+
 	
 	def detach(self, element):
 		# This removes an element from the list of its parent's children.
