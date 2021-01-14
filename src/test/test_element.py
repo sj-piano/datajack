@@ -88,7 +88,7 @@ def e2():
 	yield e2
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def e3():
 	d = """
 <list>
