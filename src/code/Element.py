@@ -835,7 +835,14 @@ class Entry:
 					success = True
 
 			elif byte == ">":
-				pass
+				if context == DATA:
+					statusMsg = statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex)
+					statusMsg += " Encountered unescaped right angle bracket (>) in Entry data."
+					raise Exception(statusMsg)
+				elif context == ESCAPED:
+					self.data += byte
+					context = DATA
+					success = True
 
 			elif byte == "\\":
 				if context == DATA:
