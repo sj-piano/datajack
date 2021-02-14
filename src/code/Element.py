@@ -383,13 +383,21 @@ class Element(object):
 		return "\n".join(self.treeLines())
 
 
-	def treeLines(self):
+	@property
+	def elementTree(self):
+		return "\n".join(self.treeLines(elementsOnly=True))
+
+
+	def treeLines(self, elementsOnly=False):
 		if self.parent is None:
 			treeLines = ["Tree for " + str(self)]
+		elif elementsOnly:
+			treeLines = [" " + self.name]
 		else:
 			treeLines = [" " + str(self)]
 		for child in self:
-			childLines = child.treeLines()
+			if elementsOnly and child.isEntry: continue
+			childLines = child.treeLines(elementsOnly)
 			childLines = [("-" + x) for x in childLines]
 			treeLines.extend(childLines)
 		return treeLines
