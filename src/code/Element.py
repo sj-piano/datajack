@@ -904,7 +904,8 @@ class Entry:
 		return len(self.data)
 
 
-	def treeLines(self):
+	def treeLines(self, elementsOnly=False):
+		# elementsOnly arg included for compability with Element.treeLines method
 		treeLine = " " + str(self)
 		n = 5 # display this number of bytes from either end of the Entry.
 		m = self.nb
