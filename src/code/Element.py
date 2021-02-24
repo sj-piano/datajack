@@ -612,6 +612,10 @@ class Element(object):
 		return items
 
 
+	def getValues(self, xpath):
+		return [x.value for x in self.getAll(xpath)]
+
+
 	def getElementChildrenWithName(self, name):
 		items = []
 		for child in self.elementChildren:
