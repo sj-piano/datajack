@@ -290,7 +290,17 @@ class Element(object):
 			if not success:
 				statusMsg = statusMsg.format(c=contextNames[context], b=repr(byte), di=dataIndex, ln=lineNumber, li=lineIndex)
 				statusMsg += " Previous bytes: [{p}]. Byte not successfully interpreted.".format(p=data[dataIndex-50:dataIndex])
-				raise Exception(statusMsg)
+				# During normal processing, we try to only enumerate goodness (i.e. whitelist).
+				# Here, we enumerate badness, and try to produce a helpful error message if possible.
+				errorMsg = None
+				if context == START_TAG_NAME:
+					if byte not in elementNameCharacters:
+						errorMsg = 'Tag names can only contain characters in the elementNameCharacters list: [{}]'.format(elementNameCharacters)
+				if errorMsg:
+					errorMsg = '\n\nERROR: ' + errorMsg + '\n'
+				raise Exception(statusMsg + errorMsg)
+
+
 			success = False
 			dataIndex += 1
 			lineIndex += 1
@@ -303,7 +313,11 @@ class Element(object):
 				remainingData = data[dataIndex+1:]
 				msg = "Finished building root element, but there is remaining data: {}".format(repr(remainingData))
 				raise ValueError(msg)
+
+
 		return self
+
+
 
 
 	def rewindBytes(self, nBytes, dataIndex, lineNumber, lineIndex):
