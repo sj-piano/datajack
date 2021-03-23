@@ -48,14 +48,14 @@ deb = logger.debug
 
 
 def test_hello():
-	e = Element()
-	assert e.hello() == 'world'
+  e = Element()
+  assert e.hello() == 'world'
 
 
 def test_hello_2():
-	d = "<hello>world</hello>"
-	e = Element.from_string(data=d)
-	assert e.text == 'world'
+  d = "<hello>world</hello>"
+  e = Element.from_string(data=d)
+  assert e.text == 'world'
 
 
 
@@ -66,7 +66,7 @@ def test_hello_2():
 
 @pytest.fixture(scope="module")
 def e1():
-	d = """<list>
+  d = """<list>
 <title>Fruit</title>
 <item>Orange</item>
 <item>Apple</item>
@@ -84,38 +84,38 @@ def e1():
 </languages>
 </list>
 """
-	code.Element.setup(NS(logLevel='info'))
-	e1 = Element.from_string(data=d.strip())
-	code.Element.setup(NS(logLevel='debug'))
-	yield e1
+  code.Element.setup(NS(logLevel='info'))
+  e1 = Element.from_string(data=d.strip())
+  code.Element.setup(NS(logLevel='debug'))
+  yield e1
 
 
 @pytest.fixture(scope="module")
 def e2():
-	d = """
+  d = """
 <foo>hello
 <bar>mars<bas>ASD</bas></bar>
 </foo>
 """
-	code.Element.setup(NS(logLevel='info'))
-	e2 = Element.from_string(data=d.strip())
-	code.Element.setup(NS(logLevel='debug'))
-	yield e2
+  code.Element.setup(NS(logLevel='info'))
+  e2 = Element.from_string(data=d.strip())
+  code.Element.setup(NS(logLevel='debug'))
+  yield e2
 
 
 @pytest.fixture(scope="function")
 def e3():
-	d = """
+  d = """
 <list>
 <title>Fruit</title>
 <item>Orange</item>
 <item>Apple</item>
 </list>
 """
-	code.Element.setup(NS(logLevel='info'))
-	e3 = Element.from_string(data=d.strip())
-	code.Element.setup(NS(logLevel='debug'))
-	yield e3
+  code.Element.setup(NS(logLevel='info'))
+  e3 = Element.from_string(data=d.strip())
+  code.Element.setup(NS(logLevel='debug'))
+  yield e3
 
 
 
@@ -125,75 +125,75 @@ def e3():
 
 
 def test_get(e3):
-	xpath = 'title'
-	e = e3.get_one(xpath)
-	assert e.value == 'Fruit'
+  xpath = 'title'
+  e = e3.get_one(xpath)
+  assert e.value == 'Fruit'
 
 
 def test_get_2(e3):
-	xpath = 'item'
-	e_values = [e.value for e in e3.get_all(xpath)]
-	assert sorted('Orange Apple'.split()) == sorted(e_values)
+  xpath = 'item'
+  e_values = [e.value for e in e3.get_all(xpath)]
+  assert sorted('Orange Apple'.split()) == sorted(e_values)
 
 
 def test_set(e3):
-	xpath = 'title'
-	e = e3.get_one(xpath)
-	e.set_value('Foods')
-	assert e.value == 'Foods'
+  xpath = 'title'
+  e = e3.get_one(xpath)
+  e.set_value('Foods')
+  assert e.value == 'Foods'
 
 
 def test_add(e3):
-	new_entry = Entry.from_value('\n')
-	e3.add(new_entry)
-	new_element = Element.from_string(data="<item>Cake</item>")
-	e3.add(new_element)
-	e_values = [e.value for e in e3.get_all('item')]
-	assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
+  new_entry = Entry.from_value('\n')
+  e3.add(new_entry)
+  new_element = Element.from_string(data="<item>Cake</item>")
+  e3.add(new_element)
+  e_values = [e.value for e in e3.get_all('item')]
+  assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
 
 
 def test_add_2(e3):
-	orange_item_index = e3.get_index_by_value('item', 'Orange')
-	new_entry = Entry.from_value('\n')
-	new_element = Element.from_string(data="<item>Cake</item>")
-	new_index = orange_item_index + 1
-	e3.addAll([new_entry, new_element], index = new_index)
-	e_values = [e.value for e in e3.get_all('item')]
-	assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
-	assert e_values.index('Orange') == 0
-	assert e_values.index('Cake') == 1
+  orange_item_index = e3.get_index_by_value('item', 'Orange')
+  new_entry = Entry.from_value('\n')
+  new_element = Element.from_string(data="<item>Cake</item>")
+  new_index = orange_item_index + 1
+  e3.addAll([new_entry, new_element], index = new_index)
+  e_values = [e.value for e in e3.get_all('item')]
+  assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
+  assert e_values.index('Orange') == 0
+  assert e_values.index('Cake') == 1
 
 
 def test_delete(e3):
-	orange_item = e3.get_one_by_value('item', 'Orange')
-	entry = orange_item.next_sibling
-	e3.detach_all([orange_item, entry])
-	e_values = [e.value for e in e3.get('item')]
-	assert e_values == ['Apple']
-	
+  orange_item = e3.get_one_by_value('item', 'Orange')
+  entry = orange_item.next_sibling
+  e3.detach_all([orange_item, entry])
+  e_values = [e.value for e in e3.get('item')]
+  assert e_values == ['Apple']
+
 
 def test_delete_2(e3):
-	orange_item = e3.get_one_by_value('item', 'Orange')
-	entry = orange_item.prev_sibling
-	e3.detach_all([orange_item, entry])
-	e_values = [e.value for e in e3.get('item')]
-	assert e_values == ['Apple']
+  orange_item = e3.get_one_by_value('item', 'Orange')
+  entry = orange_item.prev_sibling
+  e3.detach_all([orange_item, entry])
+  e_values = [e.value for e in e3.get('item')]
+  assert e_values == ['Apple']
 
 
 def test_prev_sibling(e3):
-	apple_item = e3.get_one_by_value('item', 'Apple')
-	entry = apple_item.prev_sibling
-	assert entry.data == '\n'
-	orange_item = entry.prev_sibling
-	assert orange_item.value == 'Orange'
+  apple_item = e3.get_one_by_value('item', 'Apple')
+  entry = apple_item.prev_sibling
+  assert entry.data == '\n'
+  orange_item = entry.prev_sibling
+  assert orange_item.value == 'Orange'
 
 
 def test_next_sibling(e3):
-	apple_item = e3.get_one_by_value('item', 'Apple')
-	entry = apple_item.next_sibling
-	assert entry.data == '\n'
-	with pytest.raises(KeyError):
-		entry.next_sibling
+  apple_item = e3.get_one_by_value('item', 'Apple')
+  entry = apple_item.next_sibling
+  assert entry.data == '\n'
+  with pytest.raises(KeyError):
+    entry.next_sibling
 
 
 
@@ -203,72 +203,72 @@ def test_next_sibling(e3):
 
 
 def test_xpath_1(e1):
-	xpath = 'title'
-	e = e1.get(xpath)[0]
-	assert e.value == 'Fruit'
+  xpath = 'title'
+  e = e1.get(xpath)[0]
+  assert e.value == 'Fruit'
 
 
 def test_xpath_2(e1):
-	xpath = 'item'
-	e_list = e1.get(xpath)
-	assert len(e_list) == 3
-	e_values = sorted([e.value for e in e_list])
-	assert e_values == sorted('Orange Apple Cake'.split())
+  xpath = 'item'
+  e_list = e1.get(xpath)
+  assert len(e_list) == 3
+  e_values = sorted([e.value for e in e_list])
+  assert e_values == sorted('Orange Apple Cake'.split())
 
 
 def test_xpath_3(e1):
-	xpath = 'sublist/title'
-	e = e1.get(xpath)[0]
-	assert e.value == 'Planets'
+  xpath = 'sublist/title'
+  e = e1.get(xpath)[0]
+  assert e.value == 'Planets'
 
 
 def test_xpath_4(e1):
-	xpath = 'sublist/planet'
-	e_list = e1.get(xpath)
-	assert len(e_list) == 4
-	e_texts = sorted([e.text for e in e_list])
-	assert e_texts == sorted('1 2 3 4'.split())
+  xpath = 'sublist/planet'
+  e_list = e1.get(xpath)
+  assert len(e_list) == 4
+  e_texts = sorted([e.text for e in e_list])
+  assert e_texts == sorted('1 2 3 4'.split())
 
 
 def test_xpath_5(e1):
-	xpath = 'sublist/planet/name'
-	e_list = e1.get(xpath)
-	assert len(e_list) == 4
-	e_values = sorted([e.value for e in e_list])
-	assert e_values == sorted('Mercury Venus Earth Mars'.split())
+  xpath = 'sublist/planet/name'
+  e_list = e1.get(xpath)
+  assert len(e_list) == 4
+  e_values = sorted([e.value for e in e_list])
+  assert e_values == sorted('Mercury Venus Earth Mars'.split())
 
 
 def test_xpath_6(e1):
-	xpath = '//name'
-	e_list = e1.get(xpath)
-	assert len(e_list) == 4
-	e_values = sorted([e.value for e in e_list])
-	assert e_values == sorted('Mercury Venus Earth Mars'.split())
+  xpath = '//name'
+  e_list = e1.get(xpath)
+  assert len(e_list) == 4
+  e_values = sorted([e.value for e in e_list])
+  assert e_values == sorted('Mercury Venus Earth Mars'.split())
 
 
 def test_xpath_7(e1):
-	xpath = "sublist[@title='Planets']"
-	e_list = e1.get(xpath)
-	assert len(e_list) == 1
-	e = e_list[0]
-	assert e.name == 'sublist'
-	assert e.get_value('title') == 'Planets'
+  xpath = "sublist[@title='Planets']"
+  e_list = e1.get(xpath)
+  assert len(e_list) == 1
+  e = e_list[0]
+  assert e.name == 'sublist'
+  assert e.get_value('title') == 'Planets'
 
 
 def test_xpath_8(e1):
-	xpath = "languages/language[@category='Python']"
-	e_list = e1.get(xpath)
-	assert len(e_list) == 2
-	versions = [e.get_value('version') for e in e_list]
-	assert sorted(versions) == ['2','3']
+  xpath = "languages/language[@category='Python']"
+  e_list = e1.get(xpath)
+  assert len(e_list) == 2
+  versions = [e.get_value('version') for e in e_list]
+  assert sorted(versions) == ['2','3']
 
 
 def test_xpath_9(e1):
-	xpath = "languages/language[@category='Python'][@version='2']"
-	e_list = e1.get(xpath)
-	assert len(e_list) == 1
-	versions = [e.get_value('version') for e in e_list]
-	assert sorted(versions) == ['2']
+  xpath = "languages/language[@category='Python'][@version='2']"
+  e_list = e1.get(xpath)
+  assert len(e_list) == 1
+  versions = [e.get_value('version') for e in e_list]
+  assert sorted(versions) == ['2']
 
 
 
@@ -278,35 +278,35 @@ def test_xpath_9(e1):
 
 
 def test_entry_data(e2):
-	xpath = 'bar'
-	assert e2.get(xpath)[0].entry_data == 'mars'
+  xpath = 'bar'
+  assert e2.get(xpath)[0].entry_data == 'mars'
 
 
 def test_value(e2):
-	xpath = 'bar/bas'
-	assert e2.get(xpath)[0].value == 'ASD'
+  xpath = 'bar/bas'
+  assert e2.get(xpath)[0].value == 'ASD'
 
 
 def test_value2(e2):
-	xpath = 'bar/bas'
-	assert e2.get_one(xpath).value == 'ASD'
+  xpath = 'bar/bas'
+  assert e2.get_one(xpath).value == 'ASD'
 
 
 def basicTests():
-	# blank
-	e = Element()
-	# from text
-	text2 = "<hello>world</hello>"
-	e2 = Element.from_string(data=text2)
-	print e2.hello
-	# with logger
-	text3 = "<foo>hello<bar>mars</bar></foo>"
-	e3 = Element.from_string(data=text3, loggers=[logger])
-	print e3.foo.bar
+  # blank
+  e = Element()
+  # from text
+  text2 = "<hello>world</hello>"
+  e2 = Element.from_string(data=text2)
+  print e2.hello
+  # with logger
+  text3 = "<foo>hello<bar>mars</bar></foo>"
+  e3 = Element.from_string(data=text3, loggers=[logger])
+  print e3.foo.bar
 
 
 
 
 if __name__ == '__main__':
-	main()
+  main()
 
