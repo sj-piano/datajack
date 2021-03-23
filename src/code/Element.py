@@ -153,14 +153,14 @@ class Element(object):
 		# Together, from_string and process_string are a recursive function. from_string will be called on the next Element that we find, and it will then call this function.
 		# Notes:
 		# - An Element can contain 0 items, where an item is an Element or an Entry.
-		# Examples: 
+		# Examples:
 		# - In <hello>world</hello>, the element "hello" contains the entry "world".
 		# - In <a><b>foo</b>bar</a>, the element "a" contains the element "b" and the entry "bar". The element "b" contains the entry "foo".
 		# Notes:
 		# - An entry consists of at least one printable ASCII byte.
 		# - An element consists of two identical tags, each enclosed in angle brackets. The end tag contains an extra forward slash.
 		# - Valid tag names can contain these characters: lower-case letters from a-z, underscore, hyphen, period, digits 0-9.
-		# - As we proceed through the data, we will encounter characters in several contexts: 
+		# - As we proceed through the data, we will encounter characters in several contexts:
 		# -- EMPTY (we haven't started yet)
 		# -- START_TAG_OPEN (we've processed the first character, which must be '<')
 		# -- START_TAG_NAME (we're within the tagName of a start_tag)
