@@ -24,6 +24,8 @@ import src
 Namespace = argparse.Namespace
 join = os.path.join
 isfile = os.path.isfile
+Element = src.code.Element.Element
+Entry = src.code.Element.Entry
 
 
 
@@ -39,11 +41,8 @@ deb = logger.debug
 
 def main():
 
-	epilogString = ''
-
 	parser = argparse.ArgumentParser(
-		description='Command-Line Interface (CLI) for using the datajack package.',
-		epilog=epilogString,
+		description='Command-Line Interface (CLI) for using the datajack package.'
 	)
 	
 	parser.add_argument(
@@ -73,6 +72,8 @@ def main():
 	# Run top-level function (i.e. the appropriate task).
 	if a.task == 'hello':
 		hello(a)
+	elif a.task == 'basic':
+		basic(a)
 	else:
 		msg = "Unrecognised task: {}".format(a.task)
 		raise ValueError(msg)
@@ -98,15 +99,22 @@ def setup(a=Namespace()): # a = arguments.
 
 
 def hello(a):
-	print 'world'
+	e = Element()
+	assert e.hello() == 'world'
 
+
+
+
+def basic(a):
+	input = '<hello>mars</hello>'
+	e = Element.from_string(data=input)
+	assert e.text == 'mars'
 
 
 
 
 if __name__ == '__main__':
 	main()
-
 
 
 
