@@ -16,6 +16,7 @@ Namespace = argparse.Namespace
 
 
 
+
 # Set up logger for this module. By default, it produces no output.
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -107,7 +108,7 @@ class Element(object):
 		with open(filePath) as f:
 			text = f.read()
 			text = text.rstrip('\n') # remove final newline if it exists.
-		return Element.fromString(data=text)
+		return Element.from_string(data=text)
 
 
 	def writeToFile(self, filePath):
@@ -123,7 +124,7 @@ class Element(object):
 
 
 	@classmethod
-	def fromString(self, *args, **kwargs):
+	def from_string(self, *args, **kwargs):
 		# both the root element and any child elements are built using this method.
 		confirmNoArgs(args)
 		required = 'data:s'
@@ -149,7 +150,7 @@ class Element(object):
 
 
 	def processString(self, *args, **kwargs):
-		# Together, fromString and processString are a recursive function. fromString will be called on the next Element that we find, and it will then call this function.
+		# Together, from_string and processString are a recursive function. from_string will be called on the next Element that we find, and it will then call this function.
 		# Notes:
 		# - An Element can contain 0 items, where an item is an Element or an Entry.
 		# Examples: 
@@ -239,7 +240,7 @@ class Element(object):
 					parameters.lineNumber = lineNumber
 					parameters.lineIndex = lineIndex
 					parameters.parent = self
-					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
+					entry, dataIndex, lineNumber, lineIndex = Entry.from_string(**parameters)
 					self.children.append(entry)
 					context = INSIDE_ELEMENT
 					success = True
@@ -259,7 +260,7 @@ class Element(object):
 					parameters.lineNumber = lineNumber
 					parameters.lineIndex = lineIndex
 					parameters.parent = self
-					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
+					entry, dataIndex, lineNumber, lineIndex = Entry.from_string(**parameters)
 					self.children.append(entry)
 					context = INSIDE_ELEMENT
 					success = True
@@ -278,7 +279,7 @@ class Element(object):
 					parameters.lineIndex = lineIndex
 					parameters.parent = self
 					parameters.recursiveDepth = self.recursiveDepth + 1
-					child = Element.fromString(**parameters)
+					child = Element.from_string(**parameters)
 					self.children.append(child)
 					dataIndex = child.finalDataIndex
 					lineNumber = child.finalLineNumber
@@ -294,7 +295,7 @@ class Element(object):
 					parameters.lineNumber = lineNumber
 					parameters.lineIndex = lineIndex
 					parameters.parent = self
-					entry, dataIndex, lineNumber, lineIndex = Entry.fromString(**parameters)
+					entry, dataIndex, lineNumber, lineIndex = Entry.from_string(**parameters)
 					self.children.append(entry)
 					context = INSIDE_ELEMENT
 					success = True
@@ -820,7 +821,7 @@ class Entry:
 
 	
 	@classmethod
-	def fromString(self, *args, **kwargs):
+	def from_string(self, *args, **kwargs):
 		confirmNoArgs(args)
 		entry = Entry()
 		# process data into an Entry.
