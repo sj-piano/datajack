@@ -126,74 +126,74 @@ def e3():
 
 def test_get(e3):
 	xpath = 'title'
-	e = e3.getOne(xpath)
+	e = e3.get_one(xpath)
 	assert e.value == 'Fruit'
 
 
 def test_get_2(e3):
 	xpath = 'item'
-	e_values = [e.value for e in e3.getAll(xpath)]
+	e_values = [e.value for e in e3.get_all(xpath)]
 	assert sorted('Orange Apple'.split()) == sorted(e_values)
 
 
 def test_set(e3):
 	xpath = 'title'
-	e = e3.getOne(xpath)
-	e.setValue('Foods')
+	e = e3.get_one(xpath)
+	e.set_value('Foods')
 	assert e.value == 'Foods'
 
 
 def test_add(e3):
-	newEntry = Entry.fromValue('\n')
-	e3.add(newEntry)
-	newElement = Element.from_string(data="<item>Cake</item>")
-	e3.add(newElement)
-	e_values = [e.value for e in e3.getAll('item')]
+	new_entry = Entry.from_value('\n')
+	e3.add(new_entry)
+	new_element = Element.from_string(data="<item>Cake</item>")
+	e3.add(new_element)
+	e_values = [e.value for e in e3.get_all('item')]
 	assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
 
 
 def test_add_2(e3):
-	orangeItemIndex = e3.getIndexByValue('item', 'Orange')
-	newEntry = Entry.fromValue('\n')
-	newElement = Element.from_string(data="<item>Cake</item>")
-	newIndex = orangeItemIndex + 1
-	e3.addAll([newEntry, newElement], index = newIndex)
-	e_values = [e.value for e in e3.getAll('item')]
+	orange_item_index = e3.get_index_by_value('item', 'Orange')
+	new_entry = Entry.from_value('\n')
+	new_element = Element.from_string(data="<item>Cake</item>")
+	new_index = orange_item_index + 1
+	e3.addAll([new_entry, new_element], index = new_index)
+	e_values = [e.value for e in e3.get_all('item')]
 	assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
 	assert e_values.index('Orange') == 0
 	assert e_values.index('Cake') == 1
 
 
 def test_delete(e3):
-	orangeItem = e3.getOneByValue('item', 'Orange')
-	entry = orangeItem.nextSibling
-	e3.detachAll([orangeItem, entry])
+	orange_item = e3.get_one_by_value('item', 'Orange')
+	entry = orange_item.next_sibling
+	e3.detach_all([orange_item, entry])
 	e_values = [e.value for e in e3.get('item')]
 	assert e_values == ['Apple']
 	
 
 def test_delete_2(e3):
-	orangeItem = e3.getOneByValue('item', 'Orange')
-	entry = orangeItem.prevSibling
-	e3.detachAll([orangeItem, entry])
+	orange_item = e3.get_one_by_value('item', 'Orange')
+	entry = orange_item.prev_sibling
+	e3.detach_all([orange_item, entry])
 	e_values = [e.value for e in e3.get('item')]
 	assert e_values == ['Apple']
 
 
-def test_prevSibling(e3):
-	appleItem = e3.getOneByValue('item', 'Apple')
-	entry = appleItem.prevSibling
+def test_prev_sibling(e3):
+	apple_item = e3.get_one_by_value('item', 'Apple')
+	entry = apple_item.prev_sibling
 	assert entry.data == '\n'
-	orangeItem = entry.prevSibling
-	assert orangeItem.value == 'Orange'
+	orange_item = entry.prev_sibling
+	assert orange_item.value == 'Orange'
 
 
-def test_nextSibling(e3):
-	appleItem = e3.getOneByValue('item', 'Apple')
-	entry = appleItem.nextSibling
+def test_next_sibling(e3):
+	apple_item = e3.get_one_by_value('item', 'Apple')
+	entry = apple_item.next_sibling
 	assert entry.data == '\n'
 	with pytest.raises(KeyError):
-		entry.nextSibling
+		entry.next_sibling
 
 
 
@@ -252,14 +252,14 @@ def test_xpath_7(e1):
 	assert len(e_list) == 1
 	e = e_list[0]
 	assert e.name == 'sublist'
-	assert e.getValue('title') == 'Planets'
+	assert e.get_value('title') == 'Planets'
 
 
 def test_xpath_8(e1):
 	xpath = "languages/language[@category='Python']"
 	e_list = e1.get(xpath)
 	assert len(e_list) == 2
-	versions = [e.getValue('version') for e in e_list]
+	versions = [e.get_value('version') for e in e_list]
 	assert sorted(versions) == ['2','3']
 
 
@@ -267,7 +267,7 @@ def test_xpath_9(e1):
 	xpath = "languages/language[@category='Python'][@version='2']"
 	e_list = e1.get(xpath)
 	assert len(e_list) == 1
-	versions = [e.getValue('version') for e in e_list]
+	versions = [e.get_value('version') for e in e_list]
 	assert sorted(versions) == ['2']
 
 
@@ -277,9 +277,9 @@ def test_xpath_9(e1):
 # Property tests
 
 
-def test_entryData(e2):
+def test_entry_data(e2):
 	xpath = 'bar'
-	assert e2.get(xpath)[0].entryData == 'mars'
+	assert e2.get(xpath)[0].entry_data == 'mars'
 
 
 def test_value(e2):
@@ -289,7 +289,7 @@ def test_value(e2):
 
 def test_value2(e2):
 	xpath = 'bar/bas'
-	assert e2.getOne(xpath).value == 'ASD'
+	assert e2.get_one(xpath).value == 'ASD'
 
 
 def basicTests():
