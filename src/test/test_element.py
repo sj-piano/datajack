@@ -54,7 +54,7 @@ def test_hello():
 
 def test_hello_2():
 	d = "<hello>world</hello>"
-	e = Element.fromString(data=d)
+	e = Element.from_string(data=d)
 	assert e.text == 'world'
 
 
@@ -85,7 +85,7 @@ def e1():
 </list>
 """
 	code.Element.setup(NS(logLevel='info'))
-	e1 = Element.fromString(data=d.strip())
+	e1 = Element.from_string(data=d.strip())
 	code.Element.setup(NS(logLevel='debug'))
 	yield e1
 
@@ -98,7 +98,7 @@ def e2():
 </foo>
 """
 	code.Element.setup(NS(logLevel='info'))
-	e2 = Element.fromString(data=d.strip())
+	e2 = Element.from_string(data=d.strip())
 	code.Element.setup(NS(logLevel='debug'))
 	yield e2
 
@@ -113,7 +113,7 @@ def e3():
 </list>
 """
 	code.Element.setup(NS(logLevel='info'))
-	e3 = Element.fromString(data=d.strip())
+	e3 = Element.from_string(data=d.strip())
 	code.Element.setup(NS(logLevel='debug'))
 	yield e3
 
@@ -146,7 +146,7 @@ def test_set(e3):
 def test_add(e3):
 	newEntry = Entry.fromValue('\n')
 	e3.add(newEntry)
-	newElement = Element.fromString(data="<item>Cake</item>")
+	newElement = Element.from_string(data="<item>Cake</item>")
 	e3.add(newElement)
 	e_values = [e.value for e in e3.getAll('item')]
 	assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
@@ -155,7 +155,7 @@ def test_add(e3):
 def test_add_2(e3):
 	orangeItemIndex = e3.getIndexByValue('item', 'Orange')
 	newEntry = Entry.fromValue('\n')
-	newElement = Element.fromString(data="<item>Cake</item>")
+	newElement = Element.from_string(data="<item>Cake</item>")
 	newIndex = orangeItemIndex + 1
 	e3.addAll([newEntry, newElement], index = newIndex)
 	e_values = [e.value for e in e3.getAll('item')]
@@ -297,11 +297,11 @@ def basicTests():
 	e = Element()
 	# from text
 	text2 = "<hello>world</hello>"
-	e2 = Element.fromString(data=text2)
+	e2 = Element.from_string(data=text2)
 	print e2.hello
 	# with logger
 	text3 = "<foo>hello<bar>mars</bar></foo>"
-	e3 = Element.fromString(data=text3, loggers=[logger])
+	e3 = Element.from_string(data=text3, loggers=[logger])
 	print e3.foo.bar
 
 
