@@ -10,4 +10,8 @@
 <planet>3<name>Earth</name></planet>
 <planet>4<name>Mars</name></planet>
 </sublist>
+<languages>
+<language><category>Python</category><version>2</version></language>
+<language><category>Python</category><version>3</version></language>
+</languages>
 </list>
