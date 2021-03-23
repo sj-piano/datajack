@@ -680,7 +680,6 @@ class Element(object):
 
 	def get_index(self):
 		# look through siblings, and find our own index among them.
-		# nameIndex allows this method to choose one child from among several with the same name.
 		if self.parent == None:
 			raise AttributeError
 		for i, child in enumerate(self.parent.children):
@@ -962,7 +961,6 @@ class Entry:
 
 	def get_index(self):
 		# look through siblings, and find our own index among them.
-		# nameIndex allows this method to choose one child from among several with the same name.
 		if self.parent == None:
 			raise Exception
 		for i, child in enumerate(self.parent.children):
