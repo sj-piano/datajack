@@ -1,0 +1,22 @@
+<transaction>
+<id>1</id>
+<input>
+<txid>
+8482e48391425d88fe30bd4066957000335f58e83f854f997146f41b9493b4ce
+</txid>
+<previous_output_index>9</previous_output_index>
+<private_key>
+0000000000000000000000007468655f6c6962726172795f6f665f626162656c
+</private_key>
+<amount><bitcoin>0.00200000</bitcoin></amount>
+</input>
+<output>
+<address>12RbVkKwHcwHbMZmnSVAyR4g88ZChpQD6f</address>
+<amount><bitcoin>0.00199775</bitcoin></amount>
+</output>
+<fee><satoshi>225</satoshi></fee>
+<notes>
+http://edgecase.net/articles/bitcoin_transaction_test_set_2
+- Transaction 1: 1 input, 1 output
+</notes>
+</transaction>
