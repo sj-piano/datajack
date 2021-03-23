@@ -1,9 +1,23 @@
+# Imports
 import pytest
 from argparse import Namespace as NS
+import logging
+
+
+
+
+# Relative imports
 from .. import code
+from .. import util
+
+
+
+
+# Shortcuts
 Element = code.Element.Element
 Entry = code.Element.Entry
-import logging
+
+
 
 
 # Set up logger for this module.
@@ -291,5 +305,7 @@ def basicTests():
 
 
 
+
 if __name__ == '__main__':
 	main()
+
