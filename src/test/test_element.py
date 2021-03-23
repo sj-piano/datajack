@@ -178,7 +178,7 @@ def test_add_2(e3):
   new_entry = Entry.from_value('\n')
   new_element = Element.from_string(data="<item>Cake</item>")
   new_index = orange_item_index + 1
-  e3.addAll([new_entry, new_element], index = new_index)
+  e3.add_all([new_entry, new_element], index = new_index)
   e_values = [e.value for e in e3.get_all('item')]
   assert sorted('Orange Apple Cake'.split()) == sorted(e_values)
   assert e_values.index('Orange') == 0

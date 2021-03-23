@@ -710,8 +710,8 @@ class Element(object):
 			raise TypeError
 		self.children.insert(index, item)
 
-	
-	def addAll(self, items, index=None):
+
+	def add_all(self, items, index=None):
 		if not isinstance(items, list): raise TypeError
 		if index == None: index = self.nc
 		for i, item in enumerate(items):
