@@ -1,6 +1,19 @@
-from .. import util
+# Imports
 import logging
-from argparse import Namespace
+import argparse
+
+
+
+
+# Relative imports
+from .. import util
+
+
+
+
+# Shortcuts
+Namespace = argparse.Namespace
+
 
 
 # Set up logger for this module. By default, it produces no output.
@@ -8,6 +21,8 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 log = logger.info
 deb = logger.debug
+
+
 
 
 def setup(args=Namespace()):
