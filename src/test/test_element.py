@@ -67,24 +67,8 @@ def test_hello_2():
 
 @pytest.fixture(scope="module")
 def e1():
-  d = """<list>
-<title>Fruit</title>
-<item>Orange</item>
-<item>Apple</item>
-<item>Cake</item>
-<sublist>
-<title>Planets</title>
-<planet>1<name>Mercury</name></planet>
-<planet>2<name>Venus</name></planet>
-<planet>3<name>Earth</name></planet>
-<planet>4<name>Mars</name></planet>
-</sublist>
-<languages>
-<language><category>Python</category><version>2</version></language>
-<language><category>Python</category><version>3</version></language>
-</languages>
-</list>
-"""
+  d_file = '../data/test1.txt'
+  d = pkgutil.get_data(__name__, d_file)
   code.Element.setup(NS(logLevel='info'))
   e1 = Element.from_string(data=d.strip())
   code.Element.setup(NS(logLevel='debug'))
