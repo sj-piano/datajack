@@ -2,6 +2,7 @@
 import pytest
 import argparse
 import logging
+import pkgutil
 
 
 
@@ -116,6 +117,26 @@ def e3():
   e3 = Element.from_string(data=d.strip())
   code.Element.setup(NS(logLevel='debug'))
   yield e3
+
+
+@pytest.fixture(scope="function")
+def e4():
+  d_file = '../data/hello.txt'
+  d = pkgutil.get_data(__name__, d_file)
+  code.Element.setup(NS(logLevel='info'))
+  e4 = Element.from_string(data=d.strip())
+  code.Element.setup(NS(logLevel='debug'))
+  yield e4
+
+
+
+
+### SECTION
+# More basic checks.
+
+
+def test_hello_3(e4):
+  assert e4.text == 'world'
 
 
 
