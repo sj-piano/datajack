@@ -1,6 +1,6 @@
 # Imports
 import pytest
-from argparse import Namespace as NS
+import argparse
 import logging
 
 
@@ -14,6 +14,7 @@ from .. import util
 
 
 # Shortcuts
+NS = argparse.Namespace
 Element = code.Element.Element
 Entry = code.Element.Entry
 
