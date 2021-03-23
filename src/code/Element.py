@@ -613,7 +613,7 @@ class Element(object):
 		return elements
 
 
-	def getOne(self, xpath):
+	def get_one(self, xpath):
 		items = self.get(xpath)
 		if len(items) != 1:
 			raise ValueError("Expected 1 items, but got {n}.".format(n=len(items)))
@@ -621,7 +621,7 @@ class Element(object):
 
 
 	def getValue(self, xpath):
-		return self.getOne(xpath).value
+		return self.get_one(xpath).value
 
 
 	def getValueIfExists(self, xpath):
@@ -632,7 +632,7 @@ class Element(object):
 
 
 	def getBranchValue(self, xpath):
-		return self.getOne(xpath).branchValue
+		return self.get_one(xpath).branchValue
 
 
 	def getAll(self, xpath):
