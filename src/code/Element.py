@@ -81,7 +81,7 @@ context_names = {0: 'EMPTY', 1: 'START_TAG_OPEN', 2: 'START_TAG_NAME',
 class Element(object):
 	"""EML object"""
 
-	
+
 	def __init__(self):
 		self.name = ""
 		self.end_name = ""
@@ -96,8 +96,8 @@ class Element(object):
 		self.final_data_index = 0
 		self.final_line_number = 0
 		self.final_line_index = 0
-	
-	
+
+
 	def hello(self):
 		log('hello')
 		return "world"
@@ -115,7 +115,7 @@ class Element(object):
 		with open(file, 'w') as f:
 			f.write(self.data)
 			f.write('\n')
-	
+
 
 	def write_to_new_file(self, file):
 		if os.path.isfile(file):
@@ -186,20 +186,20 @@ class Element(object):
 		# we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
 		success = False # have we successfully interpreted the current byte?
 		while True:
-			
+
 			try:
 				byte = data[data_index]
 			except IndexError as e:
 				status_msg = status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index)
 				status_msg += " No more data left, but Element is not complete."
 				raise Exception(status_msg)
-			
+
 			if byte == "\n": # we've moved to a new line.
 				line_index = 0
 				line_number += 1
-			
+
 			deb(status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index))
-			
+
 			if byte == "<":
 				if context == EMPTY:
 					context = START_TAG_OPEN
@@ -210,7 +210,7 @@ class Element(object):
 				elif context == INSIDE_ELEMENT:
 					context = TAG_OPEN
 					success = True
-			
+
 			elif byte == ">":
 				if context == START_TAG_NAME:
 					context = START_TAG_CLOSE
@@ -300,7 +300,7 @@ class Element(object):
 					context = INSIDE_ELEMENT
 					success = True
 
-					
+
 
 
 			if not success:
@@ -320,8 +320,8 @@ class Element(object):
 			success = False
 			data_index += 1
 			line_index += 1
-		
-		
+
+
 		if self.parent is None:
 			# This is the root Element of the data.
 			# If there is any data left over, this is an error.
@@ -432,7 +432,7 @@ class Element(object):
 			tree_lines.extend(child_lines)
 		return tree_lines
 
-	
+
 	@property
 	def is_leaf(self):
 		if self.nc == 0:
@@ -700,8 +700,8 @@ class Element(object):
 		entry = Entry.from_value(value)
 		entry.parent = self
 		self.children = [entry]
-	
-	
+
+
 	def add(self, item, index=None):
 		if index == None: index = self.nc
 		if index < 0 or index > self.nc:
@@ -725,7 +725,7 @@ class Element(object):
 		if i == 0: raise KeyError
 		return parent.children[i-1]
 
-	
+
 	@property
 	def next_sibling(self):
 		i = self.get_index()
@@ -740,7 +740,7 @@ class Element(object):
 		if n == 1: return True
 		return False
 
-	
+
 	def detach(self, element):
 		# This removes an element from the list of its parent's children.
 		# Note: This doesn't actually make use of self, so it's not really a method.
@@ -748,13 +748,13 @@ class Element(object):
 		i = element.get_index()
 		children = element.parent.children
 		element.parent.children = children[:i] + children[i+1:]
-	
+
 
 	def detach_all(self, items):
 		if not isinstance(items, list): raise TypeError
 		for item in items:
 			self.detach(item)
-	
+
 
 	def search(self, search_string):
 		line_numbers = []
@@ -806,8 +806,8 @@ class Entry:
 		self.data_index = 0
 		self.line_number = 0
 		self.line_index = 0
-		
-	
+
+
 	@classmethod
 	def from_value(self, value):
 		# This is for creating a new Entry that will be inserted into an existing Element.
@@ -818,7 +818,7 @@ class Entry:
 		entry.data = value
 		return entry
 
-	
+
 	@classmethod
 	def from_string(self, *args, **kwargs):
 		confirmNoArgs(args)
@@ -850,7 +850,7 @@ class Entry:
 		# we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
 		success = False # have we successfully interpreted the current byte?
 		while True:
-			
+
 			try:
 				byte = data[data_index]
 			except IndexError as e:
@@ -911,7 +911,7 @@ class Entry:
 
 		return data_index, line_number, line_index
 
-	
+
 	@staticmethod
 	def rewind_one_byte(data_index, line_number, line_index):
 		data_index -= 1
@@ -976,7 +976,7 @@ class Entry:
 		if i == 0: raise KeyError
 		return parent.children[i-1]
 
-	
+
 	@property
 	def next_sibling(self):
 		i = self.get_index()
