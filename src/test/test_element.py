@@ -30,13 +30,13 @@ deb = logger.debug
 
 # Notes:
 # - "work directory" = directory that contains this file.
-# - Running the command {pytest test_create_transaction_4.py} in the work directory should load and run the tests in this file.
+# - Running the command {pytest src/test/test_element.py} in the work directory should load and run the tests in this file.
 # - Run a specific test:
-# -- pytest test_create_transaction_4.py::test_arg_none
+# -- pytest src/test/test_element.py::test_hello
 # - Run quietly:
-# -- pytest -q test_create_transaction_4.py
+# -- pytest -q src/test/test_element.py
 # - Print log data during a single test:
-# -- pytest -o log_cli=true --log-cli-level=DEBUG --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" test_create_transaction_4.py::test_arg_none
+# -- pytest -o log_cli=true --log-cli-level=DEBUG --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" src/test/test_element.py::test_hello
 # -- This is very useful when you want to manually check the operation of the functions during the test.
 
 
