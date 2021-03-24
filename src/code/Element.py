@@ -13,6 +13,10 @@ from .. import util
 
 # Shortcuts
 Namespace = argparse.Namespace
+confirm_no_args = util.misc.confirm_no_args
+get_required_items = util.misc.get_required_items
+get_optional_items = util.misc.get_optional_items
+DotDict = util.DotDictionary.DotDict
 
 
 
@@ -30,15 +34,6 @@ def setup(args=Namespace()):
   args.logger = logger
   # Configure logger for this module.
   util.moduleLogger.configureModuleLogger(args)
-
-
-
-
-# More imports.
-confirm_no_args = util.misc.confirm_no_args
-get_required_items = util.misc.get_required_items
-get_optional_items = util.misc.get_optional_items
-DotDict = util.DotDictionary.DotDict
 
 
 
