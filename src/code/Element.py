@@ -634,7 +634,7 @@ class Element(object):
     return r[0].value
 
 
-  def getbranch_value(self, xpath):
+  def get_branch_value(self, xpath):
     return self.get_one(xpath).branch_value
 
 
