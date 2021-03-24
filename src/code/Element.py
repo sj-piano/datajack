@@ -124,9 +124,9 @@ class Element(object):
     confirm_no_args(args)
     required = 'data:s'
     data = get_required_items(kwargs, required)
-    optional = 'parent, data_length:i, data_index:i, line_number:i, line_index:i, recursive_depth:i'
-    defaults = (None, len(data), 0, 1, 0, 0)
-    parent, data_length, data_index, line_number, line_index, recursive_depth = get_optional_items(kwargs, optional, defaults)
+    optional = 'parent, data_length:i, data_index:i, line_number:i, line_index:i, recursive_depth:i, verbose:b'
+    defaults = (None, len(data), 0, 1, 0, 0, False)
+    parent, data_length, data_index, line_number, line_index, recursive_depth, verbose = get_optional_items(kwargs, optional, defaults)
     e = Element()
     # process data into an Element tree.
     parameters = DotDict(kwargs)
@@ -136,11 +136,12 @@ class Element(object):
     parameters.line_number = line_number
     parameters.line_index = line_index
     parameters.recursive_depth = recursive_depth
+    parameters.verbose = verbose
     if parent is None:
-      log("Begin parsing data into an Element tree.")
+      deb("Begin parsing data into an Element tree.")
     e.process_string(**parameters)
     if e.parent is None:
-      log("Element parsed. Name = '{name}'. Number of children = {c}.".format(name=e.name, c=e.nc))
+      deb("Element parsed. Name = '{name}'. Number of children = {c}.".format(name=e.name, c=e.nc))
     return e
 
 
@@ -165,8 +166,8 @@ class Element(object):
     # -- END_TAG_OPEN, END_TAG_NAME, END_TAG_CLOSE
     # - Approach: As we encounter each character, we interpret it based on the current context.
     confirm_no_args(args)
-    required = 'parent, data:s, data_length:i, data_index:i, line_number:i, line_index:i, recursive_depth:i'
-    parent, data, data_length, data_index, line_number, line_index, recursive_depth = get_required_items(kwargs, required)
+    required = 'parent, data:s, data_length:i, data_index:i, line_number:i, line_index:i, recursive_depth:i, verbose:b'
+    parent, data, data_length, data_index, line_number, line_index, recursive_depth, verbose = get_required_items(kwargs, required)
     self.parent = parent
     self.data_index = data_index
     self.line_number = line_number
@@ -174,7 +175,8 @@ class Element(object):
     self.recursive_depth = recursive_depth
     parameters = DotDict(kwargs)
     if self.parent is not None:
-      deb("Switch to Element")
+      if verbose:
+        deb("Switch to new Element")
     status_msg = "Element: context [{c}], byte [{b}], data_index [{di}], line_number [{ln}], line_index [{li}]."
     # set initial context
     context = EMPTY
@@ -193,7 +195,8 @@ class Element(object):
         line_index = 0
         line_number += 1
 
-      deb(status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index))
+      if verbose:
+        deb(status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index))
 
       if byte == "<":
         if context == EMPTY:
@@ -208,6 +211,7 @@ class Element(object):
 
       elif byte == ">":
         if context == START_TAG_NAME:
+          deb("New Element: name = '{}'".format(self.name))
           context = START_TAG_CLOSE
           success = True
         elif context == END_TAG_NAME:
@@ -230,11 +234,12 @@ class Element(object):
           context = END_TAG_OPEN
           success = True
         elif context == START_TAG_CLOSE:
-          deb("Switch to Entry.")
+          deb("Switch to new Entry.")
           parameters.data_index = data_index
           parameters.line_number = line_number
           parameters.line_index = line_index
           parameters.parent = self
+          parameters.verbose = verbose
           entry, data_index, line_number, line_index = Entry.from_string(**parameters)
           self.children.append(entry)
           context = INSIDE_ELEMENT
@@ -250,11 +255,12 @@ class Element(object):
           self.name += byte
           success = True
         elif context in [START_TAG_CLOSE, INSIDE_ELEMENT]:
-          deb("Switch to Entry.")
+          deb("Switch to new Entry.")
           parameters.data_index = data_index
           parameters.line_number = line_number
           parameters.line_index = line_index
           parameters.parent = self
+          parameters.verbose = verbose
           entry, data_index, line_number, line_index = Entry.from_string(**parameters)
           self.children.append(entry)
           context = INSIDE_ELEMENT
@@ -274,6 +280,7 @@ class Element(object):
           parameters.line_index = line_index
           parameters.parent = self
           parameters.recursive_depth = self.recursive_depth + 1
+          parameters.verbose = verbose
           child = Element.from_string(**parameters)
           self.children.append(child)
           data_index = child.final_data_index
@@ -290,6 +297,7 @@ class Element(object):
           parameters.line_number = line_number
           parameters.line_index = line_index
           parameters.parent = self
+          parameters.verbose = verbose
           entry, data_index, line_number, line_index = Entry.from_string(**parameters)
           self.children.append(entry)
           context = INSIDE_ELEMENT
@@ -834,8 +842,8 @@ class Entry:
     # Notes:
     # - An entry consists of at least one printable ASCII byte.
     confirm_no_args(args)
-    required = 'data:s, data_length:i, data_index:i, line_number:i, line_index:i, parent'
-    data, data_length, data_index, line_number, line_index, parent = get_required_items(kwargs, required)
+    required = 'data:s, data_length:i, data_index:i, line_number:i, line_index:i, parent, verbose:b'
+    data, data_length, data_index, line_number, line_index, parent, verbose = get_required_items(kwargs, required)
     self.data_index = data_index
     self.line_number = line_number
     self.line_index = line_index
@@ -857,7 +865,8 @@ class Entry:
         line_index = 0
         line_number += 1
 
-      deb(status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index))
+      if verbose:
+        deb(status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index))
 
       if byte == "<":
         if context == DATA:
