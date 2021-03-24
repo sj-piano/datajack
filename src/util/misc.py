@@ -1,5 +1,18 @@
-from operator import itemgetter
+# Imports
+import operator
 import inspect
+
+
+
+
+# Shortcuts
+itemgetter = operator.itemgetter
+
+
+
+
+# Global vars
+types = {'b': bool, 'i': int, 's': str}
 
 
 
@@ -22,7 +35,6 @@ def get_required_items(dictionary, required_str):
     raise TypeError
   required_items = required_str.split(', ')
   results = []
-  types = {'i': int, 's': str}
   for item in required_items:
     if ':' in item:
       key, value_type_char = item.split(':')
@@ -55,7 +67,6 @@ def get_optional_items(dictionary, optional_str, defaults):
     raise TypeError
   optional_items = optional_str.split(', ')
   results = []
-  types = {'i': int, 's': str}
   for i, item in enumerate(optional_items):
     default = defaults[i]
     if ':' in item:
