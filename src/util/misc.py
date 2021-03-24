@@ -4,7 +4,7 @@ import inspect
 
 
 
-def confirmNoArgs(args):
+def confirm_no_args(args):
   callerName = inspect.stack()[1][3]
   if not isinstance(args, tuple):
     raise TypeError
@@ -14,7 +14,7 @@ def confirmNoArgs(args):
 
 
 
-def getRequiredItems(dictionary, requiredStr):
+def get_required_items(dictionary, requiredStr):
   # Example requiredStr: 'data:s, logger'
   if not isinstance(dictionary, dict):
     raise TypeError
@@ -45,7 +45,7 @@ def getRequiredItems(dictionary, requiredStr):
 
 
 
-def getOptionalItems(dictionary, optionalStr, defaults):
+def get_optional_items(dictionary, optionalStr, defaults):
   # Example optionalStr: 'parent, line:i, lineIndex:i'
   if not isinstance(dictionary, dict):
     raise TypeError

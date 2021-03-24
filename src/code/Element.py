@@ -35,9 +35,9 @@ def setup(args=Namespace()):
 
 
 # More imports.
-confirmNoArgs = util.misc.confirmNoArgs
-getRequiredItems = util.misc.getRequiredItems
-getOptionalItems = util.misc.getOptionalItems
+confirm_no_args = util.misc.confirm_no_args
+get_required_items = util.misc.get_required_items
+get_optional_items = util.misc.get_optional_items
 DotDict = util.DotDictionary.DotDict
 
 
@@ -126,12 +126,12 @@ class Element(object):
   @classmethod
   def from_string(self, *args, **kwargs):
     # both the root element and any child elements are built using this method.
-    confirmNoArgs(args)
+    confirm_no_args(args)
     required = 'data:s'
-    data = getRequiredItems(kwargs, required)
+    data = get_required_items(kwargs, required)
     optional = 'parent, data_length:i, data_index:i, line_number:i, line_index:i, recursive_depth:i'
     defaults = (None, len(data), 0, 1, 0, 0)
-    parent, data_length, data_index, line_number, line_index, recursive_depth = getOptionalItems(kwargs, optional, defaults)
+    parent, data_length, data_index, line_number, line_index, recursive_depth = get_optional_items(kwargs, optional, defaults)
     e = Element()
     # process data into an Element tree.
     parameters = DotDict(kwargs)
@@ -169,9 +169,9 @@ class Element(object):
     # -- INSIDE_ELEMENT (we're inside an unfinished Element, and we've just finished a child Element or Entry)
     # -- END_TAG_OPEN, END_TAG_NAME, END_TAG_CLOSE
     # - Approach: As we encounter each character, we interpret it based on the current context.
-    confirmNoArgs(args)
+    confirm_no_args(args)
     required = 'parent, data:s, data_length:i, data_index:i, line_number:i, line_index:i, recursive_depth:i'
-    parent, data, data_length, data_index, line_number, line_index, recursive_depth = getRequiredItems(kwargs, required)
+    parent, data, data_length, data_index, line_number, line_index, recursive_depth = get_required_items(kwargs, required)
     self.parent = parent
     self.data_index = data_index
     self.line_number = line_number
@@ -821,7 +821,7 @@ class Entry:
 
   @classmethod
   def from_string(self, *args, **kwargs):
-    confirmNoArgs(args)
+    confirm_no_args(args)
     entry = Entry()
     # process data into an Entry.
     data_index, line_number, line_index = entry.process_string(**kwargs)
@@ -838,9 +838,9 @@ class Entry:
   def process_string(self, *args, **kwargs):
     # Notes:
     # - An entry consists of at least one printable ASCII byte.
-    confirmNoArgs(args)
+    confirm_no_args(args)
     required = 'data:s, data_length:i, data_index:i, line_number:i, line_index:i, parent'
-    data, data_length, data_index, line_number, line_index, parent = getRequiredItems(kwargs, required)
+    data, data_length, data_index, line_number, line_index, parent = get_required_items(kwargs, required)
     self.data_index = data_index
     self.line_number = line_number
     self.line_index = line_index
