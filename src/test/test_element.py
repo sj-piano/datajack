@@ -69,9 +69,7 @@ def test_hello_2():
 def e1():
   d_file = '../data/test1.txt'
   d = pkgutil.get_data(__name__, d_file)
-  code.Element.setup(NS(logLevel='info'))
   e1 = Element.from_string(data=d.strip())
-  code.Element.setup(NS(logLevel='debug'))
   yield e1
 
 
@@ -82,9 +80,7 @@ def e2():
 <bar>mars<bas>ASD</bas></bar>
 </foo>
 """
-  code.Element.setup(NS(logLevel='info'))
   e2 = Element.from_string(data=d.strip())
-  code.Element.setup(NS(logLevel='debug'))
   yield e2
 
 
@@ -97,9 +93,7 @@ def e3():
 <item>Apple</item>
 </list>
 """
-  code.Element.setup(NS(logLevel='info'))
   e3 = Element.from_string(data=d.strip())
-  code.Element.setup(NS(logLevel='debug'))
   yield e3
 
 
@@ -107,9 +101,7 @@ def e3():
 def e4():
   d_file = '../data/hello.txt'
   d = pkgutil.get_data(__name__, d_file)
-  code.Element.setup(NS(logLevel='info'))
   e4 = Element.from_string(data=d.strip())
-  code.Element.setup(NS(logLevel='debug'))
   yield e4
 
 
