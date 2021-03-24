@@ -289,19 +289,6 @@ def test_value2(e2):
   assert e2.get_one(xpath).value == 'ASD'
 
 
-def basicTests():
-  # blank
-  e = Element()
-  # from text
-  text2 = "<hello>world</hello>"
-  e2 = Element.from_string(data=text2)
-  print e2.hello
-  # with logger
-  text3 = "<foo>hello<bar>mars</bar></foo>"
-  e3 = Element.from_string(data=text3, loggers=[logger])
-  print e3.foo.bar
-
-
 
 
 if __name__ == '__main__':
