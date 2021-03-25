@@ -45,7 +45,7 @@ entry_characters += "\""
 escaped_characters = "<>\\"
 whitespace_characters = " \t\n"
 entry_characters += escaped_characters + whitespace_characters
-# define contexts
+# Define contexts.
 EMPTY = 0
 START_TAG_OPEN = 1
 START_TAG_NAME = 2
@@ -86,7 +86,7 @@ class Element(object):
     self.logger = None
     # data_index, line_number, and line_index exist with reference to the original data (which includes escape characters). They record the location of the start of an element.
     self.data_index = 0
-    self.line_number = 1 # text editors start at line number 1.
+    self.line_number = 1 # Text editors start at line number 1.
     self.line_index = 0
     self.final_data_index = 0
     self.final_line_number = 0
@@ -102,7 +102,7 @@ class Element(object):
   def from_file(klass, file):
     with open(file) as f:
       text = f.read()
-      text = text.rstrip('\n') # remove final newline if it exists.
+      text = text.rstrip('\n') # Remove final newline if it exists.
     return Element.from_string(data=text)
 
 
@@ -120,7 +120,7 @@ class Element(object):
 
   @classmethod
   def from_string(self, *args, **kwargs):
-    # both the root element and any child elements are built using this method.
+    # Both the root element and any child elements are built using this method.
     confirm_no_args(args)
     required = 'data:s'
     data = get_required_items(kwargs, required)
@@ -128,7 +128,7 @@ class Element(object):
     defaults = (None, len(data), 0, 1, 0, 0, False)
     parent, data_length, data_index, line_number, line_index, recursive_depth, verbose = get_optional_items(kwargs, optional, defaults)
     e = Element()
-    # process data into an Element tree.
+    # Process data into an Element tree.
     parameters = DotDict(kwargs)
     parameters.parent = parent
     parameters.data_length = data_length
@@ -178,10 +178,10 @@ class Element(object):
       if verbose:
         deb("Switch to new Element")
     status_msg = "Element: context [{c}], byte [{b}], data_index [{di}], line_number [{ln}], line_index [{li}]."
-    # set initial context
+    # Set initial context.
     context = EMPTY
-    # we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
-    success = False # have we successfully interpreted the current byte?
+    # We test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
+    success = False # Have we successfully interpreted the current byte?
     while True:
 
       try:
@@ -191,7 +191,7 @@ class Element(object):
         status_msg += " No more data left, but Element is not complete."
         raise Exception(status_msg)
 
-      if byte == "\n": # we've moved to a new line.
+      if byte == "\n": # We've moved to a new line.
         line_index = 0
         line_number += 1
 
@@ -216,7 +216,7 @@ class Element(object):
           success = True
         elif context == END_TAG_NAME:
           context = END_TAG_CLOSE
-          # we've arrived at the end of this Element.
+          # We've arrived at the end of this Element.
           if self.name != self.end_name:
             status_msg = status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index)
             status_msg += " Finished building Element, but end_tagName ({e}) is not the same as start_tagName ({s}).".format(e=self.end_name, s=self.name)
