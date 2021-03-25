@@ -342,7 +342,7 @@ class Element(object):
 
 
   def rewind_bytes(self, n_bytes, data_index, line_number, line_index):
-    # this doesn't handle newline bytes.
+    # This doesn't handle newline bytes.
     for i in xrange(n_bytes):
       data_index -= 1
       line_index -= 1
@@ -405,7 +405,7 @@ class Element(object):
 
   @property
   def nc(self):
-    # calculate number of children.
+    # Calculate number of children.
     return len(self.children)
 
 
@@ -477,7 +477,7 @@ class Element(object):
 
   @property
   def escaped_data(self):
-    # insert backslash before any escape characters.
+    # Insert backslash before any escaped characters.
     data = self.start_tag
     for child in self.children:
       if child.is_entry:
@@ -515,7 +515,7 @@ class Element(object):
     return True
 
 
-# example tree:
+# Example tree:
 # <article>
 # <title>James_Sullivan_on_the_nature_of_banks</title>
 # <author_name>stjohn_piano</author_name>
@@ -572,7 +572,7 @@ class Element(object):
     xOriginal = x
     # xpath: ''
     if x == '': return [self]
-    # handle double-slash at begining.
+    # Handle double-slash at begining.
     # xpath: //name
     descendants = False
     if len(x) > 2:
@@ -586,9 +586,9 @@ class Element(object):
     x2 = None
     if x.count('/') > 0:
       sections = x.split('/')
-      x = sections[0] # first section of path
-      x2 = '/'.join(sections[1:]) # rest of path
-    # get predicate if it exists.
+      x = sections[0] # First section of path.
+      x2 = '/'.join(sections[1:]) # Rest of path.
+    # Get predicate if it exists.
     # xpath: link[type='asset']
     # xpath: //list[@title='Guild_Members'][@name='StJohn_Piano']
     predicates = {}
@@ -601,7 +601,7 @@ class Element(object):
         n, v = p.split('=')
         v = v.replace("'","")
         predicates[n] = v
-    # get children / descendants that match conditions.
+    # Get children / descendants that match conditions.
     elements = []
     if not self.is_element_name(x):
       raise ValueError(x)
@@ -685,7 +685,7 @@ class Element(object):
 
 
   def get_index(self):
-    # look through siblings, and find our own index among them.
+    # Look through siblings, and find our own index among them.
     if self.parent == None:
       raise AttributeError
     for i, child in enumerate(self.parent.children):
@@ -806,7 +806,7 @@ class Entry:
 
 
   def __init__(self):
-    self.data = "" # this contains the actual data in bytes of the Entry (after escape characters have been removed)
+    self.data = "" # This contains the actual data in bytes of the Entry (after escape characters have been removed).
     self.parent = None
     # data_index, line_number, and line_index exist with reference to the original data (which includes escape characters). They record the location of the start of an entry.
     self.data_index = 0
@@ -829,10 +829,10 @@ class Entry:
   def from_string(self, *args, **kwargs):
     confirm_no_args(args)
     entry = Entry()
-    # process data into an Entry.
+    # Process data into an Entry.
     data_index, line_number, line_index = entry.process_string(**kwargs)
     n_bytes = len(entry.data)
-    z = 10 # how much of the entry's start/end data to show in the log.
+    z = 10 # How much of the entry's start/end data to show in the log.
     value = entry.data
     if n_bytes > 2 * z:
       value = value[:z] + "..." + value[-z:]
@@ -853,8 +853,8 @@ class Entry:
     self.parent = parent
     status_msg = "Entry: context [{c}], byte [{b}], data_index [{di}], line_number [{ln}], line_index [{li}]."
     context = DATA
-    # we test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
-    success = False # have we successfully interpreted the current byte?
+    # We test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
+    success = False # Have we successfully interpreted the current byte?
     while True:
 
       try:
@@ -864,7 +864,8 @@ class Entry:
         status_msg += " No more data left, but Element is not complete."
         raise Exception(status_msg)
 
-      if byte == "\n": # we've moved to a new line.
+      if byte == "\n":
+        # We've moved to a new line.
         line_index = 0
         line_number += 1
 
@@ -873,8 +874,8 @@ class Entry:
 
       if byte == "<":
         if context == DATA:
-          # we've encountered a new Element.
-          # rewind one byte so that the Element processing loop completes and begins again on this current byte.
+          # We've encountered a new Element.
+          # Rewind one byte so that the Element processing loop completes and begins again on this current byte.
           data_index, line_number, line_index = self.rewind_one_byte(data_index, line_number, line_index)
           break
         elif context == ESCAPED:
@@ -923,7 +924,7 @@ class Entry:
   def rewind_one_byte(data_index, line_number, line_index):
     data_index -= 1
     line_index -= 1
-    # if the current byte is a newline byte, then line_index will now be -1.
+    # If the current byte is a newline byte, then line_index will now be -1.
     if line_index == -1:
       line_index = 0
       line_number -=1
@@ -947,7 +948,7 @@ class Entry:
   def tree_lines(self, elements_only=False):
     # elements_only arg included for compability with Element.tree_lines method
     treeLine = " " + str(self)
-    n = 5 # display this number of bytes from either end of the Entry.
+    n = 5 # Display this number of bytes from either end of the Entry.
     m = self.nb
     if m <= n*2:
       treeLine += ": [{}]".format(repr(self.data))
@@ -967,7 +968,7 @@ class Entry:
 
 
   def get_index(self):
-    # look through siblings, and find our own index among them.
+    # Look through siblings, and find our own index among them.
     if self.parent == None:
       raise Exception
     for i, child in enumerate(self.parent.children):
@@ -994,7 +995,7 @@ class Entry:
 
   @property
   def escaped_data(self):
-    # insert backslash before any escape characters.
+    # Insert backslash before any escaped characters.
     result = ''
     for c in self.data:
       if c in escaped_characters:
@@ -1015,3 +1016,4 @@ class Entry:
 def stop(msg=None):
   if msg: print "\n%s\n" % msg
   import sys; sys.exit()
+
