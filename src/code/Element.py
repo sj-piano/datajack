@@ -368,9 +368,12 @@ class Element(object):
 
   @property
   def element_children(self):
-    for child in self:
-      if child.is_element:
-        yield child
+    return [c for c in self.children if c.is_element]
+
+  @property
+  def element_child(self):
+    # Use: e5.element_child[0].name
+    return self.element_children
 
 
   @property
@@ -380,9 +383,7 @@ class Element(object):
 
   @property
   def entry_children(self):
-    for child in self:
-      if child.is_entry:
-        yield child
+    return [c for c in self.children if c.is_entry]
 
 
   @property
