@@ -44,6 +44,10 @@ deb = logger.debug
 
 
 
+
+
+
+
 ### SECTION
 # Basic checks.
 
@@ -57,6 +61,10 @@ def test_hello_2():
   d = "<hello>world</hello>"
   e = Element.from_string(data=d)
   assert e.text == 'world'
+
+
+
+
 
 
 
@@ -107,12 +115,20 @@ def e4():
 
 
 
+
+
+
+
 ### SECTION
 # More basic checks.
 
 
 def test_hello_3(e4):
   assert e4.text == 'world'
+
+
+
+
 
 
 
@@ -195,6 +211,10 @@ def test_next_sibling(e3):
 
 
 
+
+
+
+
 ### SECTION
 # Basic xpath checks
 
@@ -270,6 +290,10 @@ def test_xpath_9(e1):
 
 
 
+
+
+
+
 ### SECTION
 # Property tests
 
@@ -287,6 +311,10 @@ def test_value(e2):
 def test_value2(e2):
   xpath = 'bar/bas'
   assert e2.get_one(xpath).value == 'ASD'
+
+
+
+
 
 
 
