@@ -113,6 +113,14 @@ def e4():
   yield e4
 
 
+@pytest.fixture(scope="function")
+def e5():
+  d_file = '../data/transaction1.txt'
+  d = pkgutil.get_data(__name__, d_file)
+  e5 = Element.from_string(data=d.strip())
+  yield e5
+
+
 
 
 
@@ -125,6 +133,10 @@ def e4():
 
 def test_hello_3(e4):
   assert e4.text == 'world'
+
+
+def test_tx1_1(e5):
+  assert len(e5.children) == 11
 
 
 
