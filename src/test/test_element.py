@@ -38,7 +38,7 @@ deb = logger.debug
 # - Run quietly:
 # -- pytest -q src/test/test_element.py
 # - Print log data during a single test:
-# -- pytest -o log_cli=true --log-cli-level=DEBUG --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" src/test/test_element.py::test_hello
+# -- pytest -o log_cli=true --log-cli-level=INFO --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" src/test/test_element.py::test_hello
 # -- This is very useful when you want to manually check the operation of the functions during the test.
 
 
