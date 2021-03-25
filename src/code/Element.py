@@ -293,7 +293,9 @@ class Element(object):
         if context in [START_TAG_CLOSE, INSIDE_ELEMENT]:
           deb("Switch to Entry.")
           parameters.data_index = data_index
-          if byte == '\n': line_number -= 1 # we added 1 at the start of this loop.
+          if byte == '\n':
+            # We added 1 at the start of this loop.
+            line_number -= 1
           parameters.line_number = line_number
           parameters.line_index = line_index
           parameters.parent = self
