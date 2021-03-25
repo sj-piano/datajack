@@ -136,8 +136,17 @@ def test_hello_3(e4):
 
 
 def test_tx1_1(e5):
-  assert len(e5.children) == 11
+  assert len(e5.children) == 11 == e5.nc
 
+
+def test_tx1_2(e5):
+  assert e5.element_child[0].name == 'id'
+  assert e5.element_children_names[0] == 'id'
+
+
+def test_tx1_3(e5):
+  assert e5.start_tag == '<transaction>'
+  assert e5.end_tag == '</transaction>'
 
 
 
