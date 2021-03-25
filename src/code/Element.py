@@ -367,6 +367,11 @@ class Element(object):
 
 
   @property
+  def child(self):
+    return self.children
+
+
+  @property
   def element_children(self):
     return [c for c in self.children if c.is_element]
 
@@ -405,11 +410,6 @@ class Element(object):
   @property
   def class_name(self):
     return self.__class__.__name__
-
-
-  @property
-  def child(self):
-    return self.children
 
 
   @property
