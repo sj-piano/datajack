@@ -15,7 +15,7 @@ import json
 
 
 # Local imports
-import src
+import datajack
 
 
 
@@ -24,8 +24,8 @@ import src
 Namespace = argparse.Namespace
 join = os.path.join
 isfile = os.path.isfile
-Element = src.code.Element.Element
-Entry = src.code.Element.Entry
+Element = datajack.code.Element.Element
+Entry = datajack.code.Element.Entry
 
 
 
@@ -85,13 +85,13 @@ def setup(a=Namespace()): # a = arguments.
   a.logger = logger
   a.loggerName = 'cli'
   # Configure logger for this script.
-  src.util.moduleLogger.configureModuleLogger(a)
+  datajack.util.moduleLogger.configureModuleLogger(a)
   # Configure logging levels for datajack package.
   # - By default, it does no logging.
-  # - If src.setup() is run without an argument, it has error-level logging.
-  src.setup(a)
-  # It's possible to configure logging separately for individual modules, with or without running src.setup().
-  #src.code.Element.setup(Namespace(logLevel='error'))
+  # - If datajack.setup() is run without an argument, it has error-level logging.
+  datajack.setup(a)
+  # It's possible to configure logging separately for individual modules, with or without running datajack.setup().
+  #datajack.code.Element.setup(Namespace(logLevel='error'))
   log('Setup complete.')
   deb('Logger is printing debug output.')
 

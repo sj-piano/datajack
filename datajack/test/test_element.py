@@ -32,13 +32,13 @@ deb = logger.debug
 
 # Notes:
 # - "work directory" = directory that contains this file.
-# - Running the command {pytest src/test/test_element.py} in the work directory should load and run the tests in this file.
+# - Running the command {pytest datajack/test/test_element.py} in the work directory should load and run the tests in this file.
 # - Run a specific test:
-# -- pytest src/test/test_element.py::test_hello
+# -- pytest datajack/test/test_element.py::test_hello
 # - Run quietly:
-# -- pytest -q src/test/test_element.py
+# -- pytest -q datajack/test/test_element.py
 # - Print log data during a single test:
-# -- pytest -o log_cli=true --log-cli-level=INFO --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" src/test/test_element.py::test_hello
+# -- pytest -o log_cli=true --log-cli-level=INFO --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" datajack/test/test_element.py::test_hello
 # -- This is very useful when you want to manually check the operation of the functions during the test.
 
 
