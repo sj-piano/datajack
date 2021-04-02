@@ -175,6 +175,7 @@ class Element(object):
     self.line_number = line_number
     self.line_index = line_index
     self.recursive_depth = recursive_depth
+    self.verbose = verbose
     parameters = DotDict(kwargs)
     if self.parent is not None:
       if verbose:
