@@ -12,6 +12,7 @@ from .. import util
 
 
 # Shortcuts
+Namespace = argparse.Namespace
 v = util.validate
 
 
@@ -26,7 +27,7 @@ deb = logger.debug
 
 
 
-def setup(args=argparse.Namespace()):
+def setup(args=Namespace()):
   args.logger = logger
   # Configure logger for this module.
   util.moduleLogger.configureModuleLogger(args)
