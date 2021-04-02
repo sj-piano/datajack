@@ -87,6 +87,8 @@ class Element(object):
     self.final_data_index = 0
     self.final_line_number = 0
     self.final_line_index = 0
+    self.recursive_depth = 0
+    self.verbose = False
 
 
   def hello(self):
