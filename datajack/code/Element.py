@@ -93,7 +93,7 @@ class Element(object):
 
   def hello(self):
     log('hello')
-    return "world"
+    return 'world'
 
 
   @classmethod
@@ -112,7 +112,7 @@ class Element(object):
 
   def write_to_new_file(self, file):
     if os.path.isfile(file):
-      raise OSError("File exists.")
+      raise OSError('File exists.')
     self.writeToFile(file)
 
 
