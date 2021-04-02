@@ -192,7 +192,7 @@ class Element(object):
     # Set initial context.
     context = EMPTY
     # We test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
-    success = False # Have we successfully interpreted the current byte?
+    success = False  # Have we successfully interpreted the current byte?
     while True:
 
       try:
@@ -815,7 +815,8 @@ class Entry:
 
 
   def __init__(self):
-    self.data = "" # This contains the actual data in bytes of the Entry (after escape characters have been removed).
+    # self.data contains the actual data in bytes of the Entry (after the escape characters have been removed).
+    self.data = ""
     self.parent = None
     # data_index, line_number, and line_index exist with reference to the original data (which includes escape characters). They record the location of the start of an entry.
     self.data_index = 0
@@ -978,14 +979,14 @@ class Entry:
 
 
   @property
-  def nb(self): # nb = number of bytes
+  def nb(self):  # nb = number of bytes
     return len(self.data)
 
 
   def tree_lines(self, elements_only=False):
     # elements_only arg included for compability with Element.tree_lines method
     treeLine = " " + str(self)
-    n = 5 # Display this number of bytes from either end of the Entry.
+    n = 5  # Display this number of bytes from either end of the Entry.
     m = self.nb
     if m <= n*2:
       treeLine += ": [{}]".format(repr(self.data))
