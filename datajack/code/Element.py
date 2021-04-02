@@ -198,7 +198,10 @@ class Element(object):
       try:
         byte = data[data_index]
       except IndexError as e:
-        status_msg = status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index)
+        status_msg = status_msg.format(
+          c=context_names[context], b=repr(byte), di=data_index,
+          ln=line_number, li=line_index
+        )
         status_msg += " No more data left, but Element is not complete."
         raise Exception(status_msg)
 
@@ -207,7 +210,10 @@ class Element(object):
         line_number += 1
 
       if verbose:
-        deb(status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index))
+        deb(status_msg.format(
+          c=context_names[context], b=repr(byte), di=data_index,
+          ln=line_number, li=line_index, r=recursive_depth
+        ))
 
       if byte == "<":
         if context == EMPTY:
@@ -229,7 +235,10 @@ class Element(object):
           context = END_TAG_CLOSE
           # We've arrived at the end of this Element.
           if self.name != self.end_name:
-            status_msg = status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index)
+            status_msg = status_msg.format(
+              c=context_names[context], b=repr(byte), di=data_index,
+              ln=line_number, li=line_index, r=recursive_depth
+            )
             status_msg += " Finished building Element, but end_tagName ({e}) is not the same as start_tagName ({s}).".format(e=self.end_name, s=self.name)
             raise Exception(status_msg)
           self.final_data_index = data_index
@@ -318,7 +327,10 @@ class Element(object):
 
 
       if not success:
-        status_msg = status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index)
+        status_msg = status_msg.format(
+          c=context_names[context], b=repr(byte), di=data_index,
+          ln=line_number, li=line_index, r=recursive_depth
+        )
         status_msg += " Previous bytes: [{p}]. Byte not successfully interpreted.".format(p=data[data_index-50:data_index])
         # During normal processing, we try to only enumerate goodness (i.e. whitelist).
         # Here, we enumerate badness, and try to produce a helpful error message if possible.
@@ -898,7 +910,10 @@ class Entry:
       try:
         byte = data[data_index]
       except IndexError as e:
-        status_msg = status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index)
+        status_msg = status_msg.format(
+          c=context_names[context], b=repr(byte), di=data_index,
+          ln=line_number, li=line_index
+        )
         status_msg += " No more data left, but Element is not complete."
         raise Exception(status_msg)
 
@@ -908,13 +923,18 @@ class Entry:
         line_number += 1
 
       if verbose:
-        deb(status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index))
+        deb(status_msg.format(
+          c=context_names[context], b=repr(byte), di=data_index,
+          ln=line_number, li=line_index, r=recursive_depth
+        ))
 
       if byte == "<":
         if context == DATA:
           # We've encountered a new Element.
           # Rewind one byte so that the Element processing loop completes and begins again on this current byte.
-          data_index, line_number, line_index = self.rewind_one_byte(data_index, line_number, line_index)
+          data_index, line_number, line_index = self.rewind_one_byte(
+            data_index, line_number, line_index
+          )
           break
         elif context == ESCAPED:
           self.data += byte
@@ -923,7 +943,10 @@ class Entry:
 
       elif byte == ">":
         if context == DATA:
-          status_msg = status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index)
+          status_msg = status_msg.format(
+            c=context_names[context], b=repr(byte), di=data_index,
+            ln=line_number, li=line_index, r=recursive_depth
+          )
           status_msg += " Encountered unescaped right angle bracket (>) in Entry data."
           raise Exception(status_msg)
         elif context == ESCAPED:
@@ -948,7 +971,10 @@ class Entry:
 
 
       if not success:
-        status_msg = status_msg.format(c=context_names[context], b=repr(byte), di=data_index, ln=line_number, li=line_index)
+        status_msg = status_msg.format(
+          c=context_names[context], b=repr(byte), di=data_index,
+          ln=line_number, li=line_index, r=recursive_depth
+        )
         status_msg += " Previous bytes: [{p}]. Byte not successfully interpreted.".format(p=data[data_index-50:data_index])
         raise Exception(status_msg)
       success = False
