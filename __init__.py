@@ -21,7 +21,7 @@ deb = logger.debug
 
 
 
-def setup(a=Namespace()): # a = arguments.
+def setup(a=Namespace()):  # a = arguments.
   a.logger = logger
   a.loggerName = 'datajack'
   if 'debug' not in a:
@@ -39,3 +39,4 @@ def setup(a=Namespace()): # a = arguments.
   datajack.setup(a2)
   # It's possible to configure logging separately for individual modules, with or without running datajack.setup().
   #datajack.code.Element.setup(Namespace(logLevel='error'))
+

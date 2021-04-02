@@ -81,7 +81,7 @@ def main():
 
 
 
-def setup(a=Namespace()): # a = arguments.
+def setup(a=Namespace()):  # a = arguments.
   a.logger = logger
   a.loggerName = 'cli'
   # Configure logger for this script.

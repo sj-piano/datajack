@@ -83,7 +83,7 @@ class Element(object):
     self.logger = None
     # data_index, line_number, and line_index exist with reference to the original data (which includes escape characters). They record the location of the start of an element.
     self.data_index = 0
-    self.line_number = 1 # Text editors start at line number 1.
+    self.line_number = 1  # Text editors start at line number 1.
     self.line_index = 0
     self.final_data_index = 0
     self.final_line_number = 0
@@ -101,7 +101,7 @@ class Element(object):
   def from_file(klass, file):
     with open(file) as f:
       text = f.read()
-      text = text.rstrip('\n') # Remove final newline if it exists.
+      text = text.rstrip('\n')  # Remove final newline if it exists.
     return Element.from_string(data=text)
 
 
@@ -206,7 +206,7 @@ class Element(object):
         status_msg += " No more data left, but Element is not complete."
         raise Exception(status_msg)
 
-      if byte == "\n": # We've moved to a new line.
+      if byte == "\n":  # We've moved to a new line.
         line_index = 0
         line_number += 1
 
@@ -884,7 +884,7 @@ class Entry:
       data, data_length
     )
     n_bytes = len(entry.data)
-    z = 10 # How much of the entry's start/end data to show in the log.
+    z = 10  # How much of the entry's start/end data to show in the log.
     value = entry.data
     if n_bytes > 2 * z:
       value = value[:z] + "..." + value[-z:]
