@@ -587,7 +587,7 @@ class Element(object):
   # - the result is always a list, which may be empty. use other wrapper functions to return more specific results (e.g. get exactly one result or raise error).
 
 
-  def get(self, x): # x = x
+  def get(self, x):
     # Working principle: Handle any prefixes. Then handle the first section of the xpath. Then recurse.
     deb('\n\n')
     deb('xpath: ' + x)
