@@ -47,47 +47,47 @@ hex_digits = '0123456789abcdef'
 
 
 
-def v_wn(n):
-  validate_whole_number(n)
+def wn(n):
+  whole_number(n)
 
 
-def validate_whole_number(n):
+def whole_number(n):
   # 0 is a whole number.
   if n == 0:
     return
-  validate_positive_integer(n)
+  positive_integer(n)
 
 
-def v_pi(n):
-  validate_positive_integer(n)
+def pi(n):
+  positive_integer(n)
 
 
-def validate_positive_integer(n):
-  validate_integer(n)
+def positive_integer(n):
+  integer(n)
   if n < 0:
     raise ValueError
 
 
-def v_i(n):
-  validate_integer(n)
+def i(n):
+  integer(n)
 
 
-def validate_integer(n):
+def integer(n):
   if not isinstance(n, int):
     raise TypeError
 
 
-def v_b(b):
-  validate_boolean(b)
+def b(b):
+  boolean(b)
 
 
-def validate_boolean(b):
+def boolean(b):
   if type(b) != bool:
     raise TypeError
 
 
-def validate_hex_length(s, n):
-  validate_hex(s)
+def hex_length(s, n):
+  hex(s)
   if not isinstance(n, int):
     raise TypeError
   # 1 byte is 2 hex chars.
@@ -95,18 +95,18 @@ def validate_hex_length(s, n):
     raise ValueError
 
 
-def validate_hex(s):
-  validate_string(s)
+def hex(s):
+  string(s)
   if not all(c in hex_digits for c in s):
     raise ValueError
 
 
-def v_sd(s, dp=2):
-  validate_string_is_decimal(s, dp)
+def sd(s, dp=2):
+  string_is_decimal(s, dp)
 
 
-def validate_string_is_decimal(s, dp=2):  # dp = decimal places
-  validate_string(s)
+def string_is_decimal(s, dp=2):  # dp = decimal places
+  string(s)
   if not isinstance(dp, int):
     raise TypeError
   regex = r'^\d*.\d{%d}$' % dp
@@ -115,45 +115,45 @@ def validate_string_is_decimal(s, dp=2):  # dp = decimal places
     raise ValueError('{s} is not a valid {d}-place decimal.'.format(s=repr(s), d=dp))
 
 
-def v_swn(s):
-  validate_string_is_whole_number(s)
+def swn(s):
+  string_is_whole_number(s)
 
 
-def validate_string_is_whole_number(s):
+def string_is_whole_number(s):
   # 0 is a whole number.
-  validate_string(s)
+  string(s)
   if s == '0':
     return
-  validate_string_is_positive_integer(s)
+  string_is_positive_integer(s)
 
 
-def v_spi(s):
-  validate_string_is_positive_integer(s)
+def spi(s):
+  string_is_positive_integer(s)
 
 
-def validate_string_is_positive_integer(s):
-  validate_string(s)
+def string_is_positive_integer(s):
+  string(s)
   if s == '0':
     raise ValueError('0 is not a positive number.')
   if not s.isdigit():
     raise ValueError('{} does not contain only digits.'.format(repr(s)))
 
 
-def v_sdate(s):
-  validate_string_is_date(s)
+def sdate(s):
+  string_is_date(s)
 
 
-def validate_string_is_date(s):
-  validate_string(s)
+def string_is_date(s):
+  string(s)
   if not date_pattern.match(s):
     raise ValueError('{} is not a valid date.'.format(repr(s)))
 
 
-def v_s(s):
-  validate_string(s)
+def s(s):
+  string(s)
 
 
-def validate_string(s):
+def string(s):
   if not isinstance(s, str):
     raise TypeError
 
