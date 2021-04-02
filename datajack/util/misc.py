@@ -39,6 +39,7 @@ def get_required_items(dictionary, required_str):
   for item in required_items:
     if ':' in item:
       key, value_type_char = item.split(':')
+      # E.g. get 'bool' from 'b'
       value_type = types[value_type_char]
     else:
       key = item
