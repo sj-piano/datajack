@@ -130,13 +130,15 @@ class Element(object):
     e = Element()
     # Process data into an Element tree.
     parameters = DotDict(kwargs)
-    parameters.parent = parent
-    parameters.data_length = data_length
-    parameters.data_index = data_index
-    parameters.line_number = line_number
-    parameters.line_index = line_index
-    parameters.recursive_depth = recursive_depth
-    parameters.verbose = verbose
+    parameters.update({
+      'parent': parent,
+      'data_length': data_length,
+      'data_index': data_index,
+      'line_number': line_number,
+      'line_index': line_index,
+      'recursive_depth': recursive_depth,
+      'verbose': verbose,
+    })
     if parent is None:
       deb("Begin parsing data into an Element tree.")
     e.process_string(**parameters)
@@ -235,11 +237,13 @@ class Element(object):
           success = True
         elif context == START_TAG_CLOSE:
           deb("Switch to new Entry.")
-          parameters.data_index = data_index
-          parameters.line_number = line_number
-          parameters.line_index = line_index
-          parameters.parent = self
-          parameters.verbose = verbose
+          parameters.update({
+            'data_index': data_index,
+            'line_number': line_number,
+            'line_index': line_index,
+            'parent': self,
+            'verbose': verbose,
+          })
           entry, data_index, line_number, line_index = Entry.from_string(**parameters)
           self.children.append(entry)
           context = INSIDE_ELEMENT
@@ -256,11 +260,13 @@ class Element(object):
           success = True
         elif context in [START_TAG_CLOSE, INSIDE_ELEMENT]:
           deb("Switch to new Entry.")
-          parameters.data_index = data_index
-          parameters.line_number = line_number
-          parameters.line_index = line_index
-          parameters.parent = self
-          parameters.verbose = verbose
+          parameters.update({
+            'data_index': data_index,
+            'line_number': line_number,
+            'line_index': line_index,
+            'parent': self,
+            'verbose': verbose,
+          })
           entry, data_index, line_number, line_index = Entry.from_string(**parameters)
           self.children.append(entry)
           context = INSIDE_ELEMENT
@@ -275,12 +281,14 @@ class Element(object):
         elif context == TAG_OPEN:
           deb("Switch to child Element.")
           data_index, line_number, line_index = self.rewind_bytes(1, data_index, line_number, line_index)
-          parameters.data_index = data_index
-          parameters.line_number = line_number
-          parameters.line_index = line_index
-          parameters.parent = self
-          parameters.recursive_depth = self.recursive_depth + 1
-          parameters.verbose = verbose
+          parameters.update({
+            'data_index': data_index,
+            'line_number': line_number,
+            'line_index': line_index,
+            'parent': self,
+            'recursive_depth': self.recursive_depth + 1,
+            'verbose': verbose,
+          })
           child = Element.from_string(**parameters)
           self.children.append(child)
           data_index = child.final_data_index
@@ -292,14 +300,16 @@ class Element(object):
       elif byte in entry_characters:
         if context in [START_TAG_CLOSE, INSIDE_ELEMENT]:
           deb("Switch to Entry.")
-          parameters.data_index = data_index
           if byte == '\n':
             # We added 1 at the start of this loop.
             line_number -= 1
-          parameters.line_number = line_number
-          parameters.line_index = line_index
-          parameters.parent = self
-          parameters.verbose = verbose
+          parameters.update({
+            'data_index': data_index,
+            'line_number': line_number,
+            'line_index': line_index,
+            'parent': self,
+            'verbose': verbose,
+          })
           entry, data_index, line_number, line_index = Entry.from_string(**parameters)
           self.children.append(entry)
           context = INSIDE_ELEMENT
