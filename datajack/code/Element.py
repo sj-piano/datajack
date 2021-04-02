@@ -119,35 +119,47 @@ class Element(object):
 
 
   @classmethod
-  def from_string(self, *args, **kwargs):
-    # Both the root element and any child elements are built using this method.
-    confirm_no_args(args)
-    required = 'data:s'
-    data = get_required_items(kwargs, required)
-    optional = 'parent, data_length:i, data_index:i, line_number:i, line_index:i, recursive_depth:i, verbose:b'
-    defaults = (None, len(data), 0, 1, 0, 0, False)
-    parent, data_length, data_index, line_number, line_index, recursive_depth, verbose = get_optional_items(kwargs, optional, defaults)
-    e = Element()
+  def from_string(self,
+      # data and data_length are not stored as element attributes.
+      data=None,
+      data_length=None,
+      parent=None,
+      data_index=0,
+      line_number=1,
+      line_index=0,
+      recursive_depth=0,
+      verbose=False,
+    ):
+    # Note: The root element and any child elements are built using this method.
+    if data is None:
+      raise ValueError
+    if data_length is None:
+      data_length = len(data)  # default value.
+    # Validate input.
+    v.validate_string(data)
+    v.validate_positive_integer(data_length)
+    v.v_pi(data_index)
+    v.v_pi(line_number)
+    v.v_pi(line_index)
+    v.v_pi(recursive_depth)
+    v.validate_boolean(verbose)
     # Process data into an Element tree.
-    parameters = DotDict(kwargs)
-    parameters.update({
-      'parent': parent,
-      'data_length': data_length,
-      'data_index': data_index,
-      'line_number': line_number,
-      'line_index': line_index,
-      'recursive_depth': recursive_depth,
-      'verbose': verbose,
-    })
+    e = Element()
+    e.parent = parent
+    e.data_index = data_index
+    e.line_number = line_number
+    e.line_index = line_index
+    e.recursive_depth = recursive_depth
+    e.verbose = verbose
     if parent is None:
       deb("Begin parsing data into an Element tree.")
-    e.process_string(**parameters)
+    e.process_string(data, data_length)
     if e.parent is None:
       deb("Element parsed. Name = '{name}'. Number of children = {c}.".format(name=e.name, c=e.nc))
     return e
 
 
-  def process_string(self, *args, **kwargs):
+  def process_string(self, data, data_length):
     # Together, from_string and process_string are a recursive function. from_string will be called on the next Element that we find, and it will then call this function.
     # Notes:
     # - An Element can contain 0 items, where an item is an Element or an Entry.
@@ -167,17 +179,14 @@ class Element(object):
     # -- INSIDE_ELEMENT (we're inside an unfinished Element, and we've just finished a child Element or Entry)
     # -- END_TAG_OPEN, END_TAG_NAME, END_TAG_CLOSE
     # - Approach: As we encounter each character, we interpret it based on the current context.
-    confirm_no_args(args)
-    required = 'parent, data:s, data_length:i, data_index:i, line_number:i, line_index:i, recursive_depth:i, verbose:b'
-    parent, data, data_length, data_index, line_number, line_index, recursive_depth, verbose = get_required_items(kwargs, required)
-    self.parent = parent
-    self.data_index = data_index
-    self.line_number = line_number
-    self.line_index = line_index
-    self.recursive_depth = recursive_depth
-    self.verbose = verbose
-    parameters = DotDict(kwargs)
-    if self.parent is not None:
+    # Load stored values from self.
+    parent = self.parent
+    data_index = self.data_index
+    line_number = self.line_number
+    line_index = self.line_index
+    recursive_depth = self.recursive_depth
+    verbose = self.verbose
+    if parent is not None:
       if verbose:
         deb("Switch to new Element")
     status_msg = "Element: context [{c}], byte [{b}], data_index [{di}], line_number [{ln}], line_index [{li}]."
@@ -228,7 +237,7 @@ class Element(object):
           self.final_line_number = line_number
           self.final_line_index = line_index
           self.complete = True
-          if self.parent is not None:
+          if parent is not None:
             deb("Element parsed. Name = '{name}'. Number of children = {c}.".format(name=self.name, c=len(self.children)))
           break
 
@@ -238,18 +247,15 @@ class Element(object):
           success = True
         elif context == START_TAG_CLOSE:
           deb("Switch to new Entry.")
-          parameters.update({
-            'data_index': data_index,
-            'line_number': line_number,
-            'line_index': line_index,
-            'parent': self,
-            'verbose': verbose,
-          })
-          entry, data_index, line_number, line_index = Entry.from_string(**parameters)
+          entry, data_index, line_number, line_index = Entry.from_string(
+            data=data, data_length=data_length,
+            parent=self, data_index=data_index,
+            line_number=line_number, line_index=line_index,
+            recursive_depth=recursive_depth+1, verbose=verbose,
+          )
           self.children.append(entry)
           context = INSIDE_ELEMENT
           success = True
-
 
       elif byte in element_name_characters:
         if context == START_TAG_OPEN:
@@ -261,14 +267,12 @@ class Element(object):
           success = True
         elif context in [START_TAG_CLOSE, INSIDE_ELEMENT]:
           deb("Switch to new Entry.")
-          parameters.update({
-            'data_index': data_index,
-            'line_number': line_number,
-            'line_index': line_index,
-            'parent': self,
-            'verbose': verbose,
-          })
-          entry, data_index, line_number, line_index = Entry.from_string(**parameters)
+          entry, data_index, line_number, line_index = Entry.from_string(
+            data=data, data_length=data_length,
+            parent=self, data_index=data_index,
+            line_number=line_number, line_index=line_index,
+            recursive_depth=recursive_depth+1, verbose=verbose,
+          )
           self.children.append(entry)
           context = INSIDE_ELEMENT
           success = True
@@ -282,15 +286,12 @@ class Element(object):
         elif context == TAG_OPEN:
           deb("Switch to child Element.")
           data_index, line_number, line_index = self.rewind_bytes(1, data_index, line_number, line_index)
-          parameters.update({
-            'data_index': data_index,
-            'line_number': line_number,
-            'line_index': line_index,
-            'parent': self,
-            'recursive_depth': self.recursive_depth + 1,
-            'verbose': verbose,
-          })
-          child = Element.from_string(**parameters)
+          child = Element.from_string(
+            data=data, data_length=data_length,
+            parent=self, data_index=data_index,
+            line_number=line_number, line_index=line_index,
+            recursive_depth=recursive_depth+1, verbose=verbose,
+          )
           self.children.append(child)
           data_index = child.final_data_index
           line_number = child.final_line_number
@@ -304,14 +305,12 @@ class Element(object):
           if byte == '\n':
             # We added 1 at the start of this loop.
             line_number -= 1
-          parameters.update({
-            'data_index': data_index,
-            'line_number': line_number,
-            'line_index': line_index,
-            'parent': self,
-            'verbose': verbose,
-          })
-          entry, data_index, line_number, line_index = Entry.from_string(**parameters)
+          entry, data_index, line_number, line_index = Entry.from_string(
+            data=data, data_length=data_length,
+            parent=self, data_index=data_index,
+            line_number=line_number, line_index=line_index,
+            recursive_depth=recursive_depth+1, verbose=verbose,
+          )
           self.children.append(entry)
           context = INSIDE_ELEMENT
           success = True
@@ -837,11 +836,40 @@ class Entry:
 
 
   @classmethod
-  def from_string(self, *args, **kwargs):
-    confirm_no_args(args)
-    entry = Entry()
+  def from_string(self,
+      # data and data_length are not stored as entry attributes.
+      data=None,
+      data_length=None,
+      parent=None,
+      data_index=0,
+      line_number=1,
+      line_index=0,
+      recursive_depth=0,
+      verbose=False,
+    ):
+    if data is None:
+      raise ValueError
+    if data_length is None:
+      data_length = len(data)  # default value.
+    # Validate input.
+    v.validate_string(data)
+    v.validate_positive_integer(data_length)
+    v.v_pi(data_index)
+    v.v_pi(line_number)
+    v.v_pi(line_index)
+    v.v_pi(recursive_depth)
+    v.validate_boolean(verbose)
     # Process data into an Entry.
-    data_index, line_number, line_index = entry.process_string(**kwargs)
+    entry = Entry()
+    entry.parent = parent
+    entry.data_index = data_index
+    entry.line_number = line_number
+    entry.line_index = line_index
+    entry.recursive_depth = recursive_depth
+    entry.verbose = verbose
+    data_index, line_number, line_index = entry.process_string(
+      data, data_length
+    )
     n_bytes = len(entry.data)
     z = 10 # How much of the entry's start/end data to show in the log.
     value = entry.data
@@ -852,17 +880,16 @@ class Entry:
     return entry, data_index, line_number, line_index
 
 
-  def process_string(self, *args, **kwargs):
+  def process_string(self, data, data_length):
     # Notes:
     # - An entry consists of at least one printable ASCII byte.
-    confirm_no_args(args)
-    required = 'data:s, data_length:i, data_index:i, line_number:i, line_index:i, parent, verbose:b'
-    data, data_length, data_index, line_number, line_index, parent, verbose = get_required_items(kwargs, required)
-    self.data_index = data_index
-    self.line_number = line_number
-    self.line_index = line_index
-    self.parent = parent
-    status_msg = "Entry: context [{c}], byte [{b}], data_index [{di}], line_number [{ln}], line_index [{li}]."
+    # Load stored values from self.
+    data_index = self.data_index
+    line_number = self.line_number
+    line_index = self.line_index
+    recursive_depth = self.recursive_depth
+    verbose = self.verbose
+    status_msg = "Entry: context [{c}], byte [{b}], data_index [{di}], line_number [{ln}], line_index [{li}], recursive_depth [{r}]."
     context = DATA
     # We test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
     success = False # Have we successfully interpreted the current byte?
