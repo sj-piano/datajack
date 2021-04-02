@@ -22,7 +22,8 @@ def confirm_no_args(args):
   if not isinstance(args, tuple):
     raise TypeError
   if args != ():
-    raise ValueError("Function/method '{c}' doesn't accept positional args.".format(c=caller_name))
+    msg = "Function/method '{c}' doesn't accept positional args.".format(c=caller_name)
+    raise ValueError(msg)
 
 
 
