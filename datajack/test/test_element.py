@@ -15,7 +15,6 @@ from .. import util
 
 
 # Shortcuts
-NS = argparse.Namespace
 Element = code.Element.Element
 Entry = code.Element.Entry
 
