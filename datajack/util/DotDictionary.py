@@ -28,6 +28,7 @@ def main():
 
 class DotDict(dict):
   """dot.notation access to dictionary attributes"""
+  # This is used primarily for passing arguments in an object.
 
   def __init__(self, dictionary=None):
     if dictionary is None:
