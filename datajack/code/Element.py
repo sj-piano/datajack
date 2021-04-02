@@ -187,7 +187,8 @@ class Element(object):
     if parent is not None:
       if verbose:
         deb("Switch to new Element")
-    status_msg = "Element: context [{c}], byte [{b}], data_index [{di}], line_number [{ln}], line_index [{li}]."
+    # Status message template
+    status_msg = "Element: context [{c}], byte [{b}], data_index [{di}], line_number [{ln}], line_index [{li}], recursive_depth [{r}]."
     # Set initial context.
     context = EMPTY
     # We test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
