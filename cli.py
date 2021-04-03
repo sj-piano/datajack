@@ -76,6 +76,8 @@ def main():
     basic(a)
   elif a.task == 'valid':
     valid(a)
+  elif a.task == 'test':
+    test(a)
   else:
     msg = "Unrecognised task: {}".format(a.task)
     raise ValueError(msg)
@@ -123,6 +125,16 @@ def valid(a):
 
 
 
+
+def test(a):
+  d = """
+<list>
+<title>Fruit</title>
+<item>Orange</item>
+<item>Apple</item>
+</list>
+"""
+  e = Element.from_string(data=d.strip(), verbose=True)
 
 
 
