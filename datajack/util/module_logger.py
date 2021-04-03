@@ -27,7 +27,7 @@ def configure_module_logger(a1):
   a = Namespace(**vars(a1))
   logger = a.logger
   logger.propagate = False
-  log_level = a.log_level if 'log_level' in a else 'error'
+  log_level = a.logLevel if 'logLevel' in a else 'error'
   log_level = 'debug' if 'debug' in a and a.debug else log_level
   log_levels = {
     'error': logging.ERROR,
@@ -47,11 +47,11 @@ def configure_module_logger(a1):
   # '%(asctime)s %(levelname)-8s [%(name)s: %(lineno)s (%(funcName)s)] %(message)s'
   # Example logLine:
   # 2020-11-19 13:14:10 DEBUG    [demo1.basic: 19 (hello)] Entered into basic.hello.
-  logger_name = a.logger_name if 'logger_name' in a else '%(name)s'
+  logger_name = a.loggerName if 'loggerName' in a else '%(name)s'
   log_format = '[' + logger_name + ': %(lineno)s (%(funcName)s)] %(message)s'
   # Note: In "%(levelname)-8s", the '8' pads the levelname length with spaces up to 8 characters, and the hyphen left-aligns the levelname.
   log_format = '%(levelname)-8s ' + log_format
-  if 'log_timestamp' in a and a.log_timestamp:
+  if 'logTimestamp' in a and a.logTimestamp:
     log_format = '%(asctime)s ' + log_format
   log_formatter = logging.Formatter(fmt = log_format,
     datefmt = '%Y-%m-%d %H:%M:%S')
@@ -100,8 +100,8 @@ def configure_module_logger(a1):
     console_handler2.setFormatter(log_formatter2)
     logger.addHandler(console_handler2)
   # Set up file handler.
-  if 'log_file_path' in a and a.log_file_path:
-    log_file_path = a.log_file_path
+  if 'logFilePath' in a and a.logFilePath:
+    log_file_path = a.logFilePath
     # Create logFile directory if it doesn't exist.
     log_dir_path = os.path.dirname(log_file_path)
     if log_dir_path != '':
