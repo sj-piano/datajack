@@ -8,6 +8,7 @@ import logging
 Element = datajack.code.Element.Element
 Entry = datajack.code.Element.Entry
 validate = datajack.util.validate
+configure_module_logger = datajack.util.module_logger.configure_module_logger
 
 
 
@@ -31,7 +32,7 @@ def setup(a=Namespace()):  # a = arguments.
   if a.debug == True:
     a.logLevel = 'debug'
   # Configure logger for this script.
-  datajack.util.moduleLogger.configureModuleLogger(a)
+  datajack.util.module_logger.configure_module_logger(a)
   # Configure logging levels for datajack package.
   # - By default, it does no logging.
   # - If datajack.setup() is run without an argument, it has error-level logging.
