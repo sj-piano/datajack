@@ -27,21 +27,21 @@ def configure_module_logger(a1):
   a = Namespace(**vars(a1))
   logger = a.logger
   logger.propagate = False
-  log_level = a.logLevel if 'logLevel' in a else 'error'
-  log_level = 'debug' if 'debug' in a and a.debug else log_level
-  log_levels = {
+  level_str = a.logLevel if 'logLevel' in a else 'error'
+  level_str = 'debug' if 'debug' in a and a.debug else level_str
+  levels = {
     'error': logging.ERROR,
     'warning': logging.WARNING,
     'info': logging.INFO,
     'debug': logging.DEBUG,
   }
-  log_level = log_levels[log_level]
-  logger.setLevel(log_level)
-  # Add a convenience method.
-  def setLevel_str(log_level_str):
-    log_level = log_levels[log_level_str]
-    logger.setLevel(log_level)
-  logger.setLevel_str = setLevel_str
+  level = levels[level_str]
+  logger.setLevel(level)
+  # Add a convenience method, with camelCase to match logging module convention.
+  def setLevelStr(level_str):
+    level = levels[level_str]
+    logger.setLevel(level)
+  logger.setLevelStr = setLevelStr
   # Construct log_format.
   # Example log_format:
   # '%(asctime)s %(levelname)-8s [%(name)s: %(lineno)s (%(funcName)s)] %(message)s'
@@ -90,27 +90,27 @@ def configure_module_logger(a1):
   # 1) Standard console handler:
   if not colorlog_imported:
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(log_level)
+    console_handler.setLevel(level)
     console_handler.setFormatter(log_formatter)
     logger.addHandler(console_handler)
   else:
   # 2) Colored console handler:
     console_handler2 = colorlog.StreamHandler()
-    console_handler2.setLevel(log_level)
+    console_handler2.setLevel(level)
     console_handler2.setFormatter(log_formatter2)
     logger.addHandler(console_handler2)
   # Set up file handler.
   if 'logFilePath' in a and a.logFilePath:
-    log_file_path = a.logFilePath
+    log_file = a.logFilePath
     # Create logFile directory if it doesn't exist.
-    log_dir_path = os.path.dirname(log_file_path)
-    if log_dir_path != '':
-      if not os.path.exists(log_dir_path):
-        os.makedirs(log_dir_path)
+    log_dir = os.path.dirname(log_file)
+    if log_dir != '':
+      if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
     # Note: If log file already exists, new log lines will be appended to it.
-    file_handler = logging.file_handler(log_file_path, mode='a', delay=True)
+    file_handler = logging.file_handler(log_file, mode='a', delay=True)
     # If delay is true, then file opening is deferred until the first call to emit().
-    file_handler.setLevel(log_level)
+    file_handler.setLevel(level)
     # It turns out that the colorLog formatter's ANSI escape codes work in 'cat' & 'tail' (but not vim).
     # 'less' can, with the -R flag.
     # To display in vim, strip the escape chars: $ sed 's|\x1b\[[;0-9]*m||g' somefile | vim -
