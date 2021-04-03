@@ -7,7 +7,7 @@ import re
 
 
 # Relative imports
-from . import moduleLogger
+from . import module_logger
 
 
 
@@ -24,7 +24,7 @@ deb = logger.debug
 def setup(args=Namespace()):
   args.logger = logger
   # Configure logger for this module.
-  moduleLogger.configureModuleLogger(args)
+  module_logger.configure_module_logger(args)
 
 
 

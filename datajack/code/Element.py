@@ -30,7 +30,7 @@ deb = logger.debug
 def setup(args=Namespace()):
   args.logger = logger
   # Configure logger for this module.
-  util.moduleLogger.configureModuleLogger(args)
+  util.module_logger.configure_module_logger(args)
 
 
 

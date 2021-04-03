@@ -89,7 +89,7 @@ def setup(a=Namespace()):  # a = arguments.
   a.logger = logger
   a.loggerName = 'cli'
   # Configure logger for this script.
-  datajack.util.moduleLogger.configureModuleLogger(a)
+  datajack.util.module_logger.configure_module_logger(a)
   # Configure logging levels for datajack package.
   # - By default, it does no logging.
   # - If datajack.setup() is run without an argument, it has error-level logging.

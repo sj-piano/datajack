@@ -1,5 +1,5 @@
 from argparse import Namespace
-import moduleLogger
+import module_logger
 import validate
 
 
