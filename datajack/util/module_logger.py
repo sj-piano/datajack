@@ -13,56 +13,56 @@ Namespace = argparse.Namespace
 
 
 # Non-standard-library imports
-colorLogImported = False
+colorlog_imported = False
 try:
   import colorlog
-  colorLogImported = True
+  colorlog_imported = True
 except:
-  colorLogImported = False
+  colorlog_imported = False
 
 
 
 
-def configureModuleLogger(a1):
+def configure_module_logger(a1):
   a = Namespace(**vars(a1))
   logger = a.logger
   logger.propagate = False
-  logLevel = a.logLevel if 'logLevel' in a else 'error'
-  logLevel = 'debug' if 'debug' in a and a.debug else logLevel
-  logLevels = {
+  log_level = a.log_level if 'log_level' in a else 'error'
+  log_level = 'debug' if 'debug' in a and a.debug else log_level
+  log_levels = {
     'error': logging.ERROR,
     'warning': logging.WARNING,
     'info': logging.INFO,
     'debug': logging.DEBUG,
   }
-  logLevel = logLevels[logLevel]
-  logger.setLevel(logLevel)
+  log_level = log_levels[log_level]
+  logger.setLevel(log_level)
   # Add a convenience method.
-  def setLevelStr(logLevelStr):
-    logLevel = logLevels[logLevelStr]
-    logger.setLevel(logLevel)
-  logger.setLevelStr = setLevelStr
-  # Construct logFormat.
-  # Example logFormat:
+  def setLevel_str(log_level_str):
+    log_level = log_levels[log_level_str]
+    logger.setLevel(log_level)
+  logger.setLevel_str = setLevel_str
+  # Construct log_format.
+  # Example log_format:
   # '%(asctime)s %(levelname)-8s [%(name)s: %(lineno)s (%(funcName)s)] %(message)s'
   # Example logLine:
   # 2020-11-19 13:14:10 DEBUG    [demo1.basic: 19 (hello)] Entered into basic.hello.
-  loggerName = a.loggerName if 'loggerName' in a else '%(name)s'
-  logFormat = '[' + loggerName + ': %(lineno)s (%(funcName)s)] %(message)s'
+  logger_name = a.logger_name if 'logger_name' in a else '%(name)s'
+  log_format = '[' + logger_name + ': %(lineno)s (%(funcName)s)] %(message)s'
   # Note: In "%(levelname)-8s", the '8' pads the levelname length with spaces up to 8 characters, and the hyphen left-aligns the levelname.
-  logFormat = '%(levelname)-8s ' + logFormat
-  if 'logTimestamp' in a and a.logTimestamp:
-    logFormat = '%(asctime)s ' + logFormat
-  logFormatter = logging.Formatter(fmt = logFormat,
+  log_format = '%(levelname)-8s ' + log_format
+  if 'log_timestamp' in a and a.log_timestamp:
+    log_format = '%(asctime)s ' + log_format
+  log_formatter = logging.Formatter(fmt = log_format,
     datefmt = '%Y-%m-%d %H:%M:%S')
-  logFormatter2 = None
-  if colorLogImported:
-    logFormatColor = logFormat.replace('%(levelname)', '%(log_color)s%(levelname)')
-    logFormatColor = logFormatColor.replace('%(message)', '%(message_log_color)s%(message)')
-    # Example logFormatColor:
+  log_formatter2 = None
+  if colorlog_imported:
+    log_format_color = log_format.replace('%(levelname)', '%(log_color)s%(levelname)')
+    log_format_color = log_format_color.replace('%(message)', '%(message_log_color)s%(message)')
+    # Example log_format_color:
     # '%(asctime)s %(log_color)s%(levelname)-8s [%(name)s: %(lineno)s (%(funcName)s)] %(message_log_color)s%(message)s'
-    logFormatter2 = colorlog.ColoredFormatter(
-      logFormatColor,
+    log_formatter2 = colorlog.ColoredFormatter(
+      log_format_color,
       datefmt='%Y-%m-%d %H:%M:%S',
       reset=True, # Clear all formatting (both foreground and background colors).
       # log_colors controls the base text color for particular log levels.
@@ -88,34 +88,34 @@ def configureModuleLogger(a1):
     )
   # Set up console handler.
   # 1) Standard console handler:
-  if not colorLogImported:
-    consoleHandler = logging.StreamHandler()
-    consoleHandler.setLevel(logLevel)
-    consoleHandler.setFormatter(logFormatter)
-    logger.addHandler(consoleHandler)
+  if not colorlog_imported:
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(log_level)
+    console_handler.setFormatter(log_formatter)
+    logger.addHandler(console_handler)
   else:
   # 2) Colored console handler:
-    consoleHandler2 = colorlog.StreamHandler()
-    consoleHandler2.setLevel(logLevel)
-    consoleHandler2.setFormatter(logFormatter2)
-    logger.addHandler(consoleHandler2)
+    console_handler2 = colorlog.StreamHandler()
+    console_handler2.setLevel(log_level)
+    console_handler2.setFormatter(log_formatter2)
+    logger.addHandler(console_handler2)
   # Set up file handler.
-  if 'logFilePath' in a and a.logFilePath:
-    logFilePath = a.logFilePath
+  if 'log_file_path' in a and a.log_file_path:
+    log_file_path = a.log_file_path
     # Create logFile directory if it doesn't exist.
-    logDirPath = os.path.dirname(logFilePath)
-    if logDirPath != '':
-      if not os.path.exists(logDirPath):
-        os.makedirs(logDirPath)
+    log_dir_path = os.path.dirname(log_file_path)
+    if log_dir_path != '':
+      if not os.path.exists(log_dir_path):
+        os.makedirs(log_dir_path)
     # Note: If log file already exists, new log lines will be appended to it.
-    fileHandler = logging.FileHandler(logFilePath, mode='a', delay=True)
+    file_handler = logging.file_handler(log_file_path, mode='a', delay=True)
     # If delay is true, then file opening is deferred until the first call to emit().
-    fileHandler.setLevel(logLevel)
+    file_handler.setLevel(log_level)
     # It turns out that the colorLog formatter's ANSI escape codes work in 'cat' & 'tail' (but not vim).
     # 'less' can, with the -R flag.
     # To display in vim, strip the escape chars: $ sed 's|\x1b\[[;0-9]*m||g' somefile | vim -
-    if not colorLogImported:
-      fileHandler.setFormatter(logFormatter)
+    if not colorlog_imported:
+      file_handler.setFormatter(log_formatter)
     else:
-      fileHandler.setFormatter(logFormatter2)
-    logger.addHandler(fileHandler)
+      file_handler.setFormatter(log_formatter2)
+    logger.addHandler(file_handler)
