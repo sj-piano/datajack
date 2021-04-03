@@ -74,6 +74,8 @@ def main():
     hello(a)
   elif a.task == 'basic':
     basic(a)
+  elif a.task == 'valid':
+    valid(a)
   else:
     msg = "Unrecognised task: {}".format(a.task)
     raise ValueError(msg)
@@ -109,6 +111,18 @@ def basic(a):
   input = '<hello>mars</hello>'
   e = Element.from_string(data=input)
   assert e.text == 'mars'
+
+
+
+
+def valid(a):
+  location = "cli.py:valid()"
+  v = datajack.util.validate
+  foo = 123
+  v.s(foo, 'foo', location)
+
+
+
 
 
 
