@@ -47,9 +47,6 @@ hex_digits = '0123456789abcdef'
 
 
 
-def wn(n):
-  whole_number(n)
-
 
 def whole_number(n):
   # 0 is a whole number.
@@ -57,9 +54,7 @@ def whole_number(n):
     return
   positive_integer(n)
 
-
-def pi(n):
-  positive_integer(n)
+wn = whole_number
 
 
 def positive_integer(n):
@@ -67,23 +62,21 @@ def positive_integer(n):
   if n < 0:
     raise ValueError
 
-
-def i(n):
-  integer(n)
+pi = positive_integer
 
 
 def integer(n):
   if not isinstance(n, int):
     raise TypeError
 
-
-def b(b):
-  boolean(b)
+i = integer
 
 
 def boolean(b):
   if type(b) != bool:
     raise TypeError
+
+b = boolean
 
 
 def hex_length(s, n):
@@ -101,10 +94,6 @@ def hex(s):
     raise ValueError
 
 
-def sd(s, dp=2):
-  string_is_decimal(s, dp)
-
-
 def string_is_decimal(s, dp=2):  # dp = decimal places
   string(s)
   if not isinstance(dp, int):
@@ -114,9 +103,7 @@ def string_is_decimal(s, dp=2):  # dp = decimal places
   if not decimal_pattern.match(s):
     raise ValueError('{s} is not a valid {d}-place decimal.'.format(s=repr(s), d=dp))
 
-
-def swn(s):
-  string_is_whole_number(s)
+sd = string_is_decimal
 
 
 def string_is_whole_number(s):
@@ -126,9 +113,7 @@ def string_is_whole_number(s):
     return
   string_is_positive_integer(s)
 
-
-def spi(s):
-  string_is_positive_integer(s)
+swn = string_is_whole_number
 
 
 def string_is_positive_integer(s):
@@ -138,9 +123,7 @@ def string_is_positive_integer(s):
   if not s.isdigit():
     raise ValueError('{} does not contain only digits.'.format(repr(s)))
 
-
-def sdate(s):
-  string_is_date(s)
+spi = string_is_positive_integer
 
 
 def string_is_date(s):
@@ -148,14 +131,14 @@ def string_is_date(s):
   if not date_pattern.match(s):
     raise ValueError('{} is not a valid date.'.format(repr(s)))
 
-
-def s(s):
-  string(s)
+sdate = string_is_date
 
 
 def string(s):
   if not isinstance(s, str):
     raise TypeError
+
+s = string
 
 
 
