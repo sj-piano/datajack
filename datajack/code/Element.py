@@ -135,13 +135,14 @@ class Element(object):
     if data_length is None:
       data_length = len(data)  # default value.
     # Validate input.
-    v.string(data)
-    v.positive_integer(data_length)
-    v.pi(data_index)
-    v.pi(line_number)
-    v.pi(line_index)
-    v.pi(recursive_depth)
-    v.boolean(verbose)
+    location = 'datajack/code/Element.py:Element:from_string()'
+    v.string(data, 'data', location)
+    v.positive_integer(data_length, 'data_length', location)
+    v.pi(data_index, 'data_index', location)
+    v.pi(line_number, 'line_number', location)
+    v.pi(line_index, 'line_index', location)
+    v.pi(recursive_depth, 'recursive_depth', location)
+    v.boolean(verbose, 'verbose', location)
     # Process data into an Element tree.
     e = Element()
     e.parent = parent
@@ -865,13 +866,14 @@ class Entry:
     if data_length is None:
       data_length = len(data)  # default value.
     # Validate input.
-    v.string(data)
-    v.positive_integer(data_length)
-    v.pi(data_index)
-    v.pi(line_number)
-    v.pi(line_index)
-    v.pi(recursive_depth)
-    v.boolean(verbose)
+    location = 'datajack/code/Element.py:Entry:from_string()'
+    v.string(data, 'data', location)
+    v.positive_integer(data_length, 'data_length', location)
+    v.pi(data_index, 'data_index', location)
+    v.pi(line_number, 'line_number', location)
+    v.pi(line_index, 'line_index', location)
+    v.pi(recursive_depth, 'recursive_depth', location)
+    v.boolean(verbose, 'verbose', location)
     # Process data into an Entry.
     entry = Entry()
     entry.parent = parent
