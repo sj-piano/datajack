@@ -336,7 +336,7 @@ class Element(object):
         status_msg += " Previous bytes: [{p}]. Byte not successfully interpreted.".format(p=data[data_index-50:data_index])
         # During normal processing, we try to only enumerate goodness (i.e. whitelist).
         # Here, we enumerate badness, and try to produce a helpful error message if possible.
-        error_msg = None
+        error_msg = ''
         if context == START_TAG_NAME:
           if byte not in element_name_characters:
             error_msg = 'Tag names can only contain characters in the element_name_characters list: [{}]'.format(element_name_characters)
