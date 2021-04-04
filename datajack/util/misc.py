@@ -16,5 +16,5 @@ def confirm_no_args(args):
 
 
 def stop(msg=None):
-  if msg: print "\n%s\n"%msg
+  if msg: print("\n%s\n" % msg)
   import sys; sys.exit()
