@@ -1,6 +1,7 @@
 # Imports
 import logging
 import argparse
+import string
 
 
 
@@ -366,7 +367,7 @@ class Element(object):
 
   def rewind_bytes(self, n_bytes, data_index, line_number, line_index):
     # This doesn't handle newline bytes.
-    for i in xrange(n_bytes):
+    for i in range(n_bytes):
       data_index -= 1
       line_index -= 1
     return data_index, line_number, line_index
@@ -513,7 +514,9 @@ class Element(object):
 
   @staticmethod
   def delete_whitespace(s):
-    return s.translate(None, whitespace_characters)
+    new_chars = ' ' * len(whitespace_characters)
+    table = str.maketrans(whitespace_characters, new_chars)
+    return s.translate(table)
 
 
   @property
@@ -632,7 +635,7 @@ class Element(object):
       elements = self.get_element_descendants_with_name(x)
     else:
       elements = self.get_element_children_with_name(x)
-    for k, v in predicates.iteritems():
+    for k, v in iter(predicates.items()):
       elements = [e for e in elements if e.get_value_if_exists(k) == v]
     if x2:
       elements2 = []
@@ -1081,6 +1084,6 @@ class Entry:
 
 
 def stop(msg=None):
-  if msg: print "\n%s\n" % msg
+  if msg: print("\n%s\n" % msg)
   import sys; sys.exit()
 
