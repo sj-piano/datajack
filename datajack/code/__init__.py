@@ -1,5 +1,11 @@
-import Element
+# Imports
 from argparse import Namespace
+
+
+
+
+# Relative imports
+from . import Element
 
 
 

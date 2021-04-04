@@ -1,6 +1,14 @@
-import datajack
+# Imports
 from argparse import Namespace
 import logging
+
+
+
+
+# Relative imports
+from . import datajack
+
+
 
 
 # Collect up the things that we want in the immediate namespace of the imported datajack module.
