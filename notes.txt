@@ -7,17 +7,21 @@ Tool for reading and manipulating EML (Edgecase Markup Language).
 
 ### LANGUAGE
 
-Python 2.7.5.
+Python 3.5.2
 
 
 
 ### RUN TESTS
 
 
-$ python run_tests.py
+$ python3 run_tests.py
 
 All tests are designed to be run from the top-level directory ('datajack').
-Example: Paths to data files start at 'src', not 'data'.
+Example: Paths to data files start at 'datajack', not 'data'.
+
+
+
+
 
 
 
