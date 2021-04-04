@@ -4,12 +4,6 @@ import inspect
 
 
 
-# Global vars
-types = {'b': bool, 'i': int, 's': str}
-
-
-
-
 def confirm_no_args(args):
   caller_name = inspect.stack()[1][3]
   if not isinstance(args, tuple):
