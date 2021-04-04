@@ -31,13 +31,13 @@ deb = logger.debug
 
 # Notes:
 # - "work directory" = directory that contains this file.
-# - Running the command {pytest datajack/test/test_element.py} in the work directory should load and run the tests in this file.
+# - Running the command {pytest3 datajack/test/test_element.py} in the work directory should load and run the tests in this file.
 # - Run a specific test:
-# -- pytest datajack/test/test_element.py::test_hello
+# -- pytest3 datajack/test/test_element.py::test_hello
 # - Run quietly:
-# -- pytest -q datajack/test/test_element.py
+# -- pytest3 -q datajack/test/test_element.py
 # - Print log data during a single test:
-# -- pytest -o log_cli=true --log-cli-level=INFO --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" datajack/test/test_element.py::test_hello
+# -- pytest3 -o log_cli=true --log-cli-level=INFO --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" datajack/test/test_element.py::test_hello
 # -- This is very useful when you want to manually check the operation of the functions during the test.
 
 
@@ -76,7 +76,8 @@ def test_hello_2():
 def e1():
   d_file = '../data/test1.txt'
   d = pkgutil.get_data(__name__, d_file)
-  e1 = Element.from_string(data=d.strip())
+  d2 = d.decode('ascii')
+  e1 = Element.from_string(data=d2.strip())
   yield e1
 
 
@@ -108,7 +109,8 @@ def e3():
 def e4():
   d_file = '../data/hello.txt'
   d = pkgutil.get_data(__name__, d_file)
-  e4 = Element.from_string(data=d.strip())
+  d2 = d.decode('ascii')
+  e4 = Element.from_string(data=d2.strip())
   yield e4
 
 
@@ -116,7 +118,8 @@ def e4():
 def e5():
   d_file = '../data/transaction1.txt'
   d = pkgutil.get_data(__name__, d_file)
-  e5 = Element.from_string(data=d.strip())
+  d2 = d.decode('ascii')
+  e5 = Element.from_string(data=d2.strip())
   yield e5
 
 
