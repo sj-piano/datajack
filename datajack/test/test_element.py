@@ -31,7 +31,7 @@ deb = logger.debug
 
 # Notes:
 # - "work directory" = directory that contains this file.
-# - Running the command {pytest3 datajack/test/test_element.py} in the work directory should load and run the tests in this file.
+# - Running the command { pytest3 datajack/test/test_element.py } in the work directory should load and run the tests in this file.
 # - Run a specific test:
 # -- pytest3 datajack/test/test_element.py::test_hello
 # - Run quietly:
