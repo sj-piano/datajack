@@ -1,6 +1,5 @@
 # Imports
 import pytest
-import argparse
 import pkgutil
 
 
@@ -30,6 +29,7 @@ Entry = code.Element.Entry
 # - Print log data during a single test:
 # -- pytest3 -o log_cli=true --log-cli-level=INFO --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" datajack/test/test_element.py::test_hello
 # -- This is very useful when you want to manually check the operation of the functions during the test.
+# Use the pytest -s option if you want print statements in the tests to actually print output.
 
 
 
@@ -44,6 +44,7 @@ Entry = code.Element.Entry
 
 def test_hello():
   e = Element()
+  print('mars')
   assert e.hello() == 'world'
 
 
@@ -325,14 +326,3 @@ def test_value(e2):
 def test_value2(e2):
   xpath = 'bar/bas'
   assert e2.get_one(xpath).value == 'ASD'
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
-  main()
-
