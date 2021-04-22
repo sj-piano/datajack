@@ -1,7 +1,6 @@
 # Imports
 import pytest
 import argparse
-import logging
 import pkgutil
 
 
@@ -17,14 +16,6 @@ from .. import util
 # Shortcuts
 Element = code.Element.Element
 Entry = code.Element.Entry
-
-
-
-
-# Set up logger for this module.
-logger = logging.getLogger(__name__)
-log = logger.info
-deb = logger.debug
 
 
 
