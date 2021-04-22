@@ -1,35 +1,16 @@
 # Imports
-import logging
-from argparse import Namespace
 import re
 
 
 
 
-# Relative imports
-from . import module_logger
+# Notes:
+# - We treat this module as foundational. It shouldn't import anything other than standard library modules.
 
 
 
 
-# Set up logger for this module. By default, it produces no output.
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.NullHandler())
-log = logger.info
-deb = logger.debug
-
-
-
-
-def setup(args=Namespace()):
-  args.logger = logger
-  # Configure logger for this module.
-  module_logger.configure_module_logger(args)
-
-
-
-
-### SECTION
+# ### SECTION
 # Components.
 
 # https://stackoverflow.com/a/45598540
@@ -65,7 +46,7 @@ def build_error_msg(msg, value, name=None, location=None, kind=None):
 
 
 
-### SECTION
+# ### SECTION
 # Basic validation functions.
 # Functions at the bottom are the most basic.
 # Functions further up may use functions below them.
@@ -79,6 +60,7 @@ def whole_number(n, name=None, location=None, kind='whole_number'):
     return
   positive_integer(n, name, location, kind)
 
+
 wn = whole_number
 
 
@@ -89,6 +71,7 @@ def positive_integer(n, name=None, location=None, kind='positive_integer'):
     msg = build_error_msg(msg, n, name, location, kind)
     raise ValueError(msg)
 
+
 pi = positive_integer
 
 
@@ -98,6 +81,7 @@ def integer(n, name=None, location=None, kind='integer'):
     msg = build_error_msg(msg, n, name, location, kind)
     raise TypeError(msg)
 
+
 i = integer
 
 
@@ -106,6 +90,7 @@ def boolean(b, name=None, location=None, kind='boolean'):
     msg = "which has type '{}', not 'bool'.".format(type(b).__name__)
     msg = build_error_msg(msg, b, name, location, kind)
     raise TypeError(msg)
+
 
 b = boolean
 
@@ -120,8 +105,8 @@ def hex_length(s, n, name=None, location=None, kind=None):
     msg = build_error_msg(msg, n, name=name2, location=location, kind=None)
     raise TypeError(msg)
   # 1 byte is 2 hex chars.
-  if len(s) != n*2:
-    msg = "whose length is {} chars, not {} chars.".format(len(s), n*2)
+  if len(s) != n * 2:
+    msg = "whose length is {} chars, not {} chars.".format(len(s), n * 2)
     msg = build_error_msg(msg, s, name, location, kind)
     raise ValueError(msg)
 
@@ -137,7 +122,9 @@ def hex(s, name=None, location=None, kind='hex'):
     raise ValueError(msg)
 
 
-def string_is_decimal(s, dp=2, name=None, location=None, kind='integer'):
+def string_is_decimal(
+    s, dp=2, name=None, location=None, kind='integer',
+    ):
   # dp = decimal places
   string(s, name, location, kind)
   if not isinstance(dp, int):
@@ -152,24 +139,26 @@ def string_is_decimal(s, dp=2, name=None, location=None, kind='integer'):
     msg = build_error_msg(msg, s, name, location, kind)
     raise ValueError(msg)
 
+
 sd = string_is_decimal
 
 
-def string_is_whole_number(s, name=None, location=None,
-    kind='string_is_whole_number'
-  ):
+def string_is_whole_number(
+    s, name=None, location=None, kind='string_is_whole_number',
+    ):
   # 0 is a whole number.
   string(s, name, location, kind)
   if s == '0':
     return
   string_is_positive_integer(s, name, location, kind)
 
+
 swn = string_is_whole_number
 
 
-def string_is_positive_integer(s, name=None, location=None,
-    kind='string_is_positive_integer'
-  ):
+def string_is_positive_integer(
+    s, name=None, location=None, kind='string_is_positive_integer',
+    ):
   string(s, name, location, kind)
   if s == '0':
     raise ValueError('0 is not a positive number.')
@@ -181,6 +170,7 @@ def string_is_positive_integer(s, name=None, location=None,
     msg = build_error_msg(msg, s, name, non_digit_chars, kind)
     raise ValueError(msg)
 
+
 spi = string_is_positive_integer
 
 
@@ -191,6 +181,7 @@ def string_is_date(s, name=None, location=None, kind='string_is_date'):
     msg = build_error_msg(msg, s, name, location, kind)
     raise ValueError(msg)
 
+
 sdate = string_is_date
 
 
@@ -200,7 +191,5 @@ def string(s, name=None, location=None, kind='string'):
     msg = build_error_msg(msg, s, name, location, kind)
     raise TypeError(msg)
 
+
 s = string
-
-
-
