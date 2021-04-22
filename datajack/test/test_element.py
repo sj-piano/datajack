@@ -19,17 +19,29 @@ Entry = code.Element.Entry
 
 
 
+# Setup for this file.
+@pytest.fixture(autouse=True, scope='module')
+def setup_module(pytestconfig):
+  # If log_level is supplied to pytest in the commandline args, then use it to set up the logging in the application code.
+  log_level = pytestconfig.getoption('log_cli_level')
+  if log_level is not None:
+    log_level = log_level.lower()
+    code.setup(log_level = log_level)
+
+
+
+
 # Notes:
-# - "work directory" = directory that contains this file.
-# - Running the command { pytest3 datajack/test/test_element.py } in the work directory should load and run the tests in this file.
+# - Running the command { pytest3 } or the command { pytest3 datajack/test/test_element.py }
+# in the package directory should load and run the tests in this file.
 # - Run a specific test:
 # -- pytest3 datajack/test/test_element.py::test_hello
 # - Run quietly:
+# -- [all tests] pytest3 -q
 # -- pytest3 -q datajack/test/test_element.py
-# - Print log data during a single test:
-# -- pytest3 -o log_cli=true --log-cli-level=INFO --log-format="%(levelname)s [%(lineno)s: %(funcName)s] %(message)s" datajack/test/test_element.py::test_hello
-# -- This is very useful when you want to manually check the operation of the functions during the test.
-# Use the pytest -s option if you want print statements in the tests to actually print output.
+# - Print log output in real-time during a single test:
+# -- pytest3 -s --log-cli-level=INFO datajack/test/test_element.py::test_hello
+# --- Note the use of the pytest -s option. This will cause print statements in the test code itself to also produce output.
 
 
 
