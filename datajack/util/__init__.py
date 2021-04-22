@@ -1,9 +1,3 @@
-# Imports
-from argparse import Namespace
-
-
-
-
 # Relative imports
 from . import module_logger
 from . import validate
@@ -11,7 +5,7 @@ from . import validate
 
 
 
-def setup(args=Namespace()):
-  # Set up the modules in this package.
-  validate.setup(args)
-
+def setup():
+  # Future: Some utility modules may need to have logging configured,
+  # in which case the relevant .setup() methods will be called here.
+  pass
