@@ -72,7 +72,7 @@ def test_hello_2():
 
 
 
-### SECTION
+# ### SECTION
 # Data fixtures
 
 
@@ -304,7 +304,7 @@ def test_xpath_8(e1):
   e_list = e1.get(xpath)
   assert len(e_list) == 2
   versions = [e.get_value('version') for e in e_list]
-  assert sorted(versions) == ['2','3']
+  assert sorted(versions) == ['2', '3']
 
 
 def test_xpath_9(e1):
