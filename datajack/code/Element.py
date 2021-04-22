@@ -67,7 +67,8 @@ END_TAG_NAME = 7
 END_TAG_CLOSE = 8
 DATA = 9
 ESCAPED = 10
-context_names = {0: 'EMPTY', 1: 'START_TAG_OPEN', 2: 'START_TAG_NAME',
+context_names = {
+  0: 'EMPTY', 1: 'START_TAG_OPEN', 2: 'START_TAG_NAME',
   3: 'START_TAG_CLOSE', 4: 'TAG_OPEN', 5: 'INSIDE_ELEMENT',
   6: 'END_TAG_OPEN', 7: 'END_TAG_NAME', 8: 'END_TAG_CLOSE',
   9: 'DATA', 10: 'ESCAPED'
@@ -131,7 +132,8 @@ class Element(object):
 
 
   @classmethod
-  def from_string(self,
+  def from_string(
+      self,
       # data and data_length are not stored as element attributes.
       data=None,
       data_length=None,
@@ -141,7 +143,7 @@ class Element(object):
       line_index=0,
       recursive_depth=0,
       verbose=False,
-    ):
+      ):
     # Note: The root element and any child elements are built using this method.
     if data is None:
       raise ValueError
@@ -468,7 +470,8 @@ class Element(object):
     else:
       tree_lines = [" " + str(self)]
     for child in self:
-      if elements_only and child.is_entry: continue
+      if elements_only and child.is_entry:
+        continue
       child_lines = child.tree_lines(elements_only)
       child_lines = [("-" + x) for x in child_lines]
       tree_lines.extend(child_lines)
@@ -487,7 +490,8 @@ class Element(object):
   @property
   def text(self):
     # Get only the text contained by the element. Ignore its element children.
-    if self.nc == 0: return ''
+    if self.nc == 0:
+      return ''
     return ''.join([child.data for child in self.entry_children])
 
 
@@ -619,14 +623,14 @@ class Element(object):
         x = x[2:]
         descendants = True
         #if self.is_element_name(name):
-          #return self.get_element_descendants_with_name(name)
+        #  return self.get_element_descendants_with_name(name)
     # xpaths that contain sections split by '/'
     # x: 'content/list/title'
     x2 = None
     if x.count('/') > 0:
       sections = x.split('/')
-      x = sections[0] # First section of path.
-      x2 = '/'.join(sections[1:]) # Rest of path.
+      x = sections[0]  # First section of path.
+      x2 = '/'.join(sections[1:])  # Rest of path.
     # Get predicate if it exists.
     # xpath: link[type='asset']
     # xpath: //list[@title='Guild_Members'][@name='StJohn_Piano']
@@ -636,9 +640,9 @@ class Element(object):
       x = sections[0]
       ps = sections[1:]
       for p in ps:
-        p = p.replace('@','').replace(']','')
+        p = p.replace('@', '').replace(']', '')
         n, v = p.split('=')
-        v = v.replace("'","")
+        v = v.replace("'", "")
         predicates[n] = v
     # Get children / descendants that match conditions.
     elements = []
@@ -750,7 +754,8 @@ class Element(object):
 
 
   def add(self, item, index=None):
-    if index is None: index = self.nc
+    if index is None:
+      index = self.nc
     if index < 0 or index > self.nc:
       raise ValueError
     if item.class_name not in ['Element', 'Entry']:
@@ -761,7 +766,8 @@ class Element(object):
   def add_all(self, items, index=None):
     if not isinstance(items, list):
       raise TypeError
-    if index is None: index = self.nc
+    if index is None:
+      index = self.nc
     for i, item in enumerate(items):
       self.add(item, index + i)
 
@@ -874,7 +880,8 @@ class Entry:
 
 
   @classmethod
-  def from_string(self,
+  def from_string(
+      self,
       # data and data_length are not stored as entry attributes.
       data=None,
       data_length=None,
@@ -884,7 +891,7 @@ class Entry:
       line_index=0,
       recursive_depth=0,
       verbose=False,
-    ):
+      ):
     if data is None:
       raise ValueError
     if data_length is None:
@@ -931,7 +938,7 @@ class Entry:
     status_msg = "Entry: context [{c}], byte [{b}], data_index [{di}], line_number [{ln}], line_index [{li}], recursive_depth [{r}]."
     context = DATA
     # We test for (byte + context) combination that we're interested in, and raise an Error if we get any other combination.
-    success = False # Have we successfully interpreted the current byte?
+    success = False  # Have we successfully interpreted the current byte?
     while True:
 
       try:
@@ -1018,7 +1025,7 @@ class Entry:
     # If the current byte is a newline byte, then line_index will now be -1.
     if line_index == -1:
       line_index = 0
-      line_number -=1
+      line_number -= 1
     return data_index, line_number, line_index
 
 
