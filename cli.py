@@ -4,9 +4,9 @@
 
 
 # Imports
+import os
 import sys
 import argparse
-import os
 import logging
 import time
 import json
@@ -15,13 +15,13 @@ import json
 
 
 # Local imports
+# (Can't use relative imports because this is a top-level script)
 import datajack
 
 
 
 
 # Shortcuts
-Namespace = argparse.Namespace
 join = os.path.join
 isfile = os.path.isfile
 Element = datajack.code.Element.Element
@@ -30,11 +30,51 @@ Entry = datajack.code.Element.Entry
 
 
 
-# Set up logger for this module. By default, it produces no output.
+# Notes:
+# - Using keyword function arguments, each of which is on its own line,
+# makes Python code easier to maintain. Arguments can be changed and
+# rearranged much more easily.
+
+
+
+
+# Set up logger for this module. By default, it logs at ERROR level.
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+logger.setLevel(logging.ERROR)
 log = logger.info
 deb = logger.debug
+
+
+
+
+def setup(
+    log_level = 'error',
+    debug = False,
+    log_timestamp = False,
+    log_filepath = None,
+    ):
+  logger_name = 'cli'
+  # Configure logger for this module.
+  datajack.util.module_logger.configure_module_logger(
+    logger = logger,
+    logger_name = logger_name,
+    log_level = log_level,
+    debug = debug,
+    log_timestamp = log_timestamp,
+    log_filepath = log_filepath,
+  )
+  log('Setup complete.')
+  deb('Logger is logging at debug level.')
+  # Configure logging levels for datajack package.
+  # By default, without setup, it produces no log output.
+  # Optionally, the package could be configured here to use a different log level, by e.g. passing in 'error' instead of log_level.
+  datajack.setup(
+    log_level = log_level,
+    debug = debug,
+    log_timestamp = log_timestamp,
+    log_filepath = log_filepath,
+  )
 
 
 
@@ -64,40 +104,42 @@ def main():
     help="Sets logLevel to 'debug'. This overrides --logLevel.",
   )
 
+  parser.add_argument(
+    '-s', '--logTimestamp',
+    action='store_true',
+    help="Choose whether to prepend a timestamp to each log line.",
+  )
+
+  parser.add_argument(
+    '-o', '--logToFile',
+    action='store_true',
+    help="Choose whether to save log output to a file.",
+  )
+
+  parser.add_argument(
+    '-p', '--logFilepath',
+    help="The path to the file that log output will be written to.",
+    default='log_edgecase_client.txt',
+  )
+
   a = parser.parse_args()
 
+  log_filepath = a.logFilepath if a.logToFile else None
+
   # Setup
-  setup(a)
+  setup(
+    log_level = a.logLevel,
+    debug = a.debug,
+    log_timestamp = a.logTimestamp,
+    log_filepath = log_filepath,
+  )
 
   # Run top-level function (i.e. the appropriate task).
-  if a.task == 'hello':
-    hello(a)
-  elif a.task == 'basic':
-    basic(a)
-  elif a.task == 'valid':
-    valid(a)
-  elif a.task == 'test':
-    test(a)
-  else:
-    msg = "Unrecognised task: {}".format(a.task)
-    raise ValueError(msg)
-
-
-
-
-def setup(a=Namespace()):  # a = arguments.
-  a.logger = logger
-  a.loggerName = 'cli'
-  # Configure logger for this script.
-  datajack.util.module_logger.configure_module_logger(a)
-  # Configure logging levels for datajack package.
-  # - By default, it does no logging.
-  # - If datajack.setup() is run without an argument, it has error-level logging.
-  datajack.setup(a)
-  # It's possible to configure logging separately for individual modules, with or without running datajack.setup().
-  #datajack.code.Element.setup(Namespace(logLevel='error'))
-  log('Setup complete.')
-  deb('Logger is printing debug output.')
+  tasks = 'hello basic valid test'.split()
+  if a.task not in tasks:
+    print("Unrecognised task: {}".format(a.task))
+    stop()
+  globals()[a.task](a)  # run task.
 
 
 
@@ -141,6 +183,3 @@ def test(a):
 
 if __name__ == '__main__':
   main()
-
-
-
