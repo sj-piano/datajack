@@ -8,6 +8,21 @@ Pytest 6.1.2
 
 
 
+### Logging approach used in this package
+
+Disadvantages:
+- Some required boilerplate for each Python file that produces log output.
+
+Advantages:
+- Each Python file has its own namespaced logger. The namespace e.g. datajack.datajack.code.Element will appear in the log line.
+- log_level can be set from the cmdline when using cli.py. By default, will log at ERROR level.
+- log_level can be set from the cmdline when using pytest.
+- log_level will propagate down to all the loggers.
+
+Note: During development, you may want to hardcode log levels for particular modules (or git submodules). This can be done by setting e.g. log_level='debug' or log_level='error' in the relevant setup() function.
+
+
+
 
 ### Validation error example
 
