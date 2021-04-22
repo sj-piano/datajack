@@ -79,9 +79,8 @@ def test_hello_2():
 @pytest.fixture(scope="module")
 def e1():
   d_file = '../data/test1.txt'
-  d = pkgutil.get_data(__name__, d_file)
-  d2 = d.decode('ascii')
-  e1 = Element.from_string(data=d2.strip())
+  d = pkgutil.get_data(__name__, d_file).decode('ascii')
+  e1 = Element.from_string(data=d.strip())
   yield e1
 
 
@@ -112,18 +111,16 @@ def e3():
 @pytest.fixture(scope="function")
 def e4():
   d_file = '../data/hello.txt'
-  d = pkgutil.get_data(__name__, d_file)
-  d2 = d.decode('ascii')
-  e4 = Element.from_string(data=d2.strip())
+  d = pkgutil.get_data(__name__, d_file).decode('ascii')
+  e4 = Element.from_string(data=d.strip())
   yield e4
 
 
 @pytest.fixture(scope="function")
 def e5():
   d_file = '../data/transaction1.txt'
-  d = pkgutil.get_data(__name__, d_file)
-  d2 = d.decode('ascii')
-  e5 = Element.from_string(data=d2.strip())
+  d = pkgutil.get_data(__name__, d_file).decode('ascii')
+  e5 = Element.from_string(data=d.strip())
   yield e5
 
 
