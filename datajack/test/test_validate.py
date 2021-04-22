@@ -16,7 +16,7 @@ v = util.validate
 
 
 
-### SECTION
+# ### SECTION
 # Integer validation.
 
 
@@ -78,7 +78,7 @@ def test_string_is_decimal_6():
 
 
 
-### SECTION
+# ### SECTION
 # Date validation.
 
 
@@ -92,8 +92,3 @@ def test_date_2():
 
 def test_date_3():
   pytest.raises(ValueError, v.string_is_date, '1970-01-1')
-
-
-
-
-
