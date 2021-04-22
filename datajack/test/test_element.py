@@ -50,7 +50,7 @@ def setup_module(pytestconfig):
 
 
 
-### SECTION
+# ### SECTION
 # Basic checks.
 
 
@@ -133,7 +133,7 @@ def e5():
 
 
 
-### SECTION
+# ### SECTION
 # More basic checks.
 
 
@@ -160,7 +160,7 @@ def test_tx1_3(e5):
 
 
 
-### SECTION
+# ### SECTION
 # CRUD tests
 
 
@@ -242,7 +242,7 @@ def test_next_sibling(e3):
 
 
 
-### SECTION
+# ### SECTION
 # Basic xpath checks
 
 
@@ -321,7 +321,7 @@ def test_xpath_9(e1):
 
 
 
-### SECTION
+# ### SECTION
 # Property tests
 
 
