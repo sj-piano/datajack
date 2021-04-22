@@ -727,7 +727,7 @@ class Element(object):
 
   def get_index(self):
     # Look through siblings, and find our own index among them.
-    if self.parent == None:
+    if self.parent is None:
       raise AttributeError
     for i, child in enumerate(self.parent.children):
       if id(child) == id(self):
@@ -750,7 +750,7 @@ class Element(object):
 
 
   def add(self, item, index=None):
-    if index == None: index = self.nc
+    if index is None: index = self.nc
     if index < 0 or index > self.nc:
       raise ValueError
     if item.class_name not in ['Element', 'Entry']:
@@ -761,7 +761,7 @@ class Element(object):
   def add_all(self, items, index=None):
     if not isinstance(items, list):
       raise TypeError
-    if index == None: index = self.nc
+    if index is None: index = self.nc
     for i, item in enumerate(items):
       self.add(item, index + i)
 
@@ -1060,7 +1060,7 @@ class Entry:
 
   def get_index(self):
     # Look through siblings, and find our own index among them.
-    if self.parent == None:
+    if self.parent is None:
       raise Exception
     for i, child in enumerate(self.parent.children):
       if id(child) == id(self):
