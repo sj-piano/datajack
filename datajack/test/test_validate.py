@@ -1,6 +1,5 @@
 # Imports
 import pytest
-import logging
 
 
 
@@ -13,14 +12,6 @@ from .. import util
 
 # Shortcuts
 v = util.validate
-
-
-
-
-# Set up logger for this module.
-logger = logging.getLogger(__name__)
-log = logger.info
-deb = logger.debug
 
 
 
