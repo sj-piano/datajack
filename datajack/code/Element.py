@@ -609,7 +609,8 @@ class Element(object):
     deb('xpath: ' + x)
     xOriginal = x
     # xpath: ''
-    if x == '': return [self]
+    if x == '':
+      return [self]
     # Handle double-slash at begining.
     # xpath: //name
     descendants = False
@@ -670,8 +671,10 @@ class Element(object):
 
   def get_value_if_exists(self, xpath):
     r = self.get(xpath)
-    if len(r) == 0: return ''
-    elif len(r) > 1: raise ValueError
+    if len(r) == 0:
+      return ''
+    elif len(r) > 1:
+      raise ValueError
     return r[0].value
 
 
@@ -756,7 +759,8 @@ class Element(object):
 
 
   def add_all(self, items, index=None):
-    if not isinstance(items, list): raise TypeError
+    if not isinstance(items, list):
+      raise TypeError
     if index == None: index = self.nc
     for i, item in enumerate(items):
       self.add(item, index + i)
@@ -766,7 +770,8 @@ class Element(object):
   def prev_sibling(self):
     i = self.get_index()
     parent = self.parent
-    if i == 0: raise KeyError
+    if i == 0:
+      raise KeyError
     return parent.children[i-1]
 
 
@@ -774,14 +779,17 @@ class Element(object):
   def next_sibling(self):
     i = self.get_index()
     parent = self.parent
-    if i == parent.nc - 1: raise KeyError
+    if i == parent.nc - 1:
+      raise KeyError
     return parent.children[i+1]
 
 
   def has_child(self, name):
     n = self.element_children_names.count(name)
-    if n > 1: raise ValueError
-    if n == 1: return True
+    if n > 1:
+      raise ValueError
+    if n == 1:
+      return True
     return False
 
 
@@ -795,7 +803,8 @@ class Element(object):
 
 
   def detach_all(self, items):
-    if not isinstance(items, list): raise TypeError
+    if not isinstance(items, list):
+      raise TypeError
     for item in items:
       self.detach(item)
 
@@ -1063,7 +1072,8 @@ class Entry:
   def prev_sibling(self):
     i = self.get_index()
     parent = self.parent
-    if i == 0: raise KeyError
+    if i == 0:
+      raise KeyError
     return parent.children[i-1]
 
 
@@ -1071,7 +1081,8 @@ class Entry:
   def next_sibling(self):
     i = self.get_index()
     parent = self.parent
-    if i == parent.nc - 1: raise KeyError
+    if i == parent.nc - 1:
+      raise KeyError
     return parent.children[i+1]
 
 
@@ -1096,6 +1107,8 @@ class Entry:
 
 
 def stop(msg=None):
-  if msg: print("\n%s\n" % msg)
-  import sys; sys.exit()
+  if msg:
+    print("\n%s\n" % msg)
+  import sys
+  sys.exit()
 
