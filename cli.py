@@ -146,7 +146,9 @@ def main():
 
 def hello(a):
   e = Element()
-  assert e.hello() == 'world'
+  value = e.hello()
+  assert value == 'world'
+  print(value)
 
 
 
