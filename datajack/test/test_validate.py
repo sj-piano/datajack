@@ -83,12 +83,12 @@ def test_string_is_decimal_6():
 
 
 def test_date():
-  v.string_is_date('1970-01-01')
+  v.validate_string_is_date('1970-01-01')
 
 
 def test_date_2():
-  pytest.raises(ValueError, v.string_is_date, 'foo')
+  pytest.raises(ValueError, v.validate_string_is_date, 'foo')
 
 
 def test_date_3():
-  pytest.raises(ValueError, v.string_is_date, '1970-01-1')
+  pytest.raises(ValueError, v.validate_string_is_date, '1970-01-1')

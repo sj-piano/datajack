@@ -35,13 +35,13 @@ def configure_module_logger(
     log_timestamp, log_filepath,
     ):
   # Validate input.
-  v.string(logger_name, 'logger_name', 'configure_module_logger')
-  v.string(log_level, 'log_level', 'configure_module_logger')
-  v.boolean(debug, 'debug', 'configure_module_logger')
+  v.validate_string(logger_name, 'logger_name', 'configure_module_logger')
+  v.validate_string(log_level, 'log_level', 'configure_module_logger')
+  v.validate_boolean(debug, 'debug', 'configure_module_logger')
   if log_timestamp is not None:
-    v.boolean(log_timestamp, 'log_timestamp', 'configure_module_logger')
+    v.validate_boolean(log_timestamp, 'log_timestamp', 'configure_module_logger')
   if log_filepath is not None:
-    v.string(log_filepath, 'log_filepath', 'configure_module_logger')
+    v.validate_string(log_filepath, 'log_filepath', 'configure_module_logger')
   # Configure logger.
   logger.propagate = False
   level_str = log_level
