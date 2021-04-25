@@ -8,8 +8,6 @@ import os
 import sys
 import argparse
 import logging
-import time
-import json
 
 
 
@@ -22,8 +20,6 @@ import datajack
 
 
 # Shortcuts
-join = os.path.join
-isfile = os.path.isfile
 Element = datajack.code.Element.Element
 Entry = datajack.code.Element.Entry
 
@@ -179,6 +175,15 @@ def test(a):
 </list>
 """
   e = Element.from_string(data=d.strip(), verbose=True)
+
+
+
+
+def stop(msg=None):
+  if msg is not None:
+    print(msg)
+  import sys
+  sys.exit()
 
 
 

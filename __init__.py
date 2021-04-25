@@ -14,8 +14,6 @@ from . import datajack
 # So that from outside this package we can do e.g. datajack.Element()
 Element = datajack.code.Element.Element
 Entry = datajack.code.Element.Entry
-validate = datajack.util.validate
-configure_module_logger = datajack.util.module_logger.configure_module_logger
 
 
 
