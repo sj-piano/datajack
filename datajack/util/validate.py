@@ -6,6 +6,8 @@ import re
 
 # Notes:
 # - We treat this module as foundational. It shouldn't import anything other than standard library modules.
+# - Functions at the bottom are the most basic.
+# -- Functions further up may use functions below them.
 
 
 
@@ -48,57 +50,55 @@ def build_error_msg(msg, value, name=None, location=None, kind=None):
 
 # ### SECTION
 # Basic validation functions.
-# Functions at the bottom are the most basic.
-# Functions further up may use functions below them.
 
 
 
 
-def whole_number(n, name=None, location=None, kind='whole_number'):
+def validate_whole_number(n, name=None, location=None, kind='whole_number'):
   # 0 is a whole number.
   if n == 0:
     return
-  positive_integer(n, name, location, kind)
+  validate_positive_integer(n, name, location, kind)
 
 
-wn = whole_number
+wn = validate_whole_number
 
 
-def positive_integer(n, name=None, location=None, kind='positive_integer'):
-  integer(n, name, location, kind)
+def validate_positive_integer(n, name=None, location=None, kind='positive_integer'):
+  validate_integer(n, name, location, kind)
   if n < 0:
     msg = "which is less than 0."
     msg = build_error_msg(msg, n, name, location, kind)
     raise ValueError(msg)
 
 
-pi = positive_integer
+pi = validate_positive_integer
 
 
-def integer(n, name=None, location=None, kind='integer'):
+def validate_integer(n, name=None, location=None, kind='integer'):
   if not isinstance(n, int):
     msg = "which has type '{}', not 'int'.".format(type(n).__name__)
     msg = build_error_msg(msg, n, name, location, kind)
     raise TypeError(msg)
 
 
-i = integer
+i = validate_integer
 
 
-def boolean(b, name=None, location=None, kind='boolean'):
+def validate_boolean(b, name=None, location=None, kind='boolean'):
   if type(b) != bool:
     msg = "which has type '{}', not 'bool'.".format(type(b).__name__)
     msg = build_error_msg(msg, b, name, location, kind)
     raise TypeError(msg)
 
 
-b = boolean
+b = validate_boolean
 
 
-def hex_length(s, n, name=None, location=None, kind=None):
+def validate_hex_length(s, n, name=None, location=None, kind=None):
   if kind is None:
     kind = 'hex_length_{}_bytes'.format(n)
-  hex(s, name, location, kind)
+  validate_hex(s, name, location, kind)
   if not isinstance(n, int):
     msg = "which has type '{}', not 'int'.".format(type(n).__name__)
     name2 = 'n (i.e. the hex length)'
@@ -111,8 +111,8 @@ def hex_length(s, n, name=None, location=None, kind=None):
     raise ValueError(msg)
 
 
-def hex(s, name=None, location=None, kind='hex'):
-  string(s, name, location, kind)
+def validate_hex(s, name=None, location=None, kind='hex'):
+  validate_string(s, name, location, kind)
   # find indices of non-hex characters in the string.
   indices = [i for i in range(len(s)) if s[i] not in hex_digits]
   if len(indices) > 0:
@@ -122,11 +122,11 @@ def hex(s, name=None, location=None, kind='hex'):
     raise ValueError(msg)
 
 
-def string_is_decimal(
+def validate_string_is_decimal(
     s, dp=2, name=None, location=None, kind='integer',
     ):
   # dp = decimal places
-  string(s, name, location, kind)
+  validate_string(s, name, location, kind)
   if not isinstance(dp, int):
     msg = "which has type '{}', not 'int'.".format(type(dp).__name__)
     name2 = 'dp (i.e. the number of decimal places)'
@@ -140,26 +140,26 @@ def string_is_decimal(
     raise ValueError(msg)
 
 
-sd = string_is_decimal
+sd = validate_string_is_decimal
 
 
-def string_is_whole_number(
+def validate_string_is_whole_number(
     s, name=None, location=None, kind='string_is_whole_number',
     ):
   # 0 is a whole number.
-  string(s, name, location, kind)
+  validate_string(s, name, location, kind)
   if s == '0':
     return
-  string_is_positive_integer(s, name, location, kind)
+  validate_string_is_positive_integer(s, name, location, kind)
 
 
-swn = string_is_whole_number
+swn = validate_string_is_whole_number
 
 
-def string_is_positive_integer(
+def validate_string_is_positive_integer(
     s, name=None, location=None, kind='string_is_positive_integer',
     ):
-  string(s, name, location, kind)
+  validate_string(s, name, location, kind)
   if s == '0':
     raise ValueError('0 is not a positive number.')
   # find indices of non-digit characters in the string.
@@ -171,25 +171,25 @@ def string_is_positive_integer(
     raise ValueError(msg)
 
 
-spi = string_is_positive_integer
+spi = validate_string_is_positive_integer
 
 
-def string_is_date(s, name=None, location=None, kind='string_is_date'):
-  string(s, name, location, kind)
+def validate_string_is_date(s, name=None, location=None, kind='string_is_date'):
+  validate_string(s, name, location, kind)
   if not date_pattern.match(s):
     msg = 'which is not a valid YYYY-MM-DD date string.'
     msg = build_error_msg(msg, s, name, location, kind)
     raise ValueError(msg)
 
 
-sdate = string_is_date
+sdate = validate_string_is_date
 
 
-def string(s, name=None, location=None, kind='string'):
+def validate_string(s, name=None, location=None, kind='string'):
   if not isinstance(s, str):
     msg = "which has type '{}', not 'str'.".format(type(s).__name__)
     msg = build_error_msg(msg, s, name, location, kind)
     raise TypeError(msg)
 
 
-s = string
+s = validate_string
