@@ -42,8 +42,7 @@ def setup(
     log_timestamp = log_timestamp,
     log_filepath = log_filepath,
   )
-  log('Setup complete.')
-  deb('Logger is logging at debug level.')
+  deb('Setup complete.')
 
 
 
