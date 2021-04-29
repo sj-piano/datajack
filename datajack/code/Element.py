@@ -861,6 +861,32 @@ class Element(object):
       i = s.find(p, i+1)
 
 
+  def contains_tree_of(self, other, recursive_depth = 1):
+    # other = other element
+    msg = ""
+    result = False
+    for child in other.element_children:
+      if child.name not in self.element_children_names:
+        msg += "\nParsing message:"
+        msg += " Expected to find child element {} at level {}" \
+          .format(repr(child.name), recursive_depth)
+        msg += ", but did not."
+        return result, msg
+      # Select children with this particular element name.
+      # Then recursively check that each of these contains the tree of the other's child.
+      selected = self.get_element_children_with_name(child.name)
+      for child2 in selected:
+        result, msg = child2.contains_tree_of(child, recursive_depth+1)
+        if not result:
+          return result, msg
+    result = True
+    return result, msg
+
+
+
+
+
+
 
 
 
