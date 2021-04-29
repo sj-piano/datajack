@@ -432,6 +432,15 @@ class Element(object):
 
 
   @property
+  def element_descendants(self):
+    items = []
+    items.extend(self.element_children)
+    for child in self.element_children:
+      items.extend(child.element_descendants)
+    return items
+
+
+  @property
   def start_tag(self):
     return "<" + self.name + ">"
 
