@@ -782,6 +782,21 @@ class Element(object):
 
 
   @property
+  def path_from_root(self):
+    # This path should be usable as the xpath argument to the get() method.
+    if self.recursive_depth == 0:
+      return ''
+    if self.recursive_depth == 1:
+      return self.name
+    p = self.parent
+    path = p.name + '/' + self.name
+    while p.recursive_depth > 1:
+      p = p.parent
+      path = p.name + '/' + path
+    return path
+
+
+  @property
   def prev_sibling(self):
     i = self.get_index()
     parent = self.parent
