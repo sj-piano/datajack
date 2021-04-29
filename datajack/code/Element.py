@@ -414,6 +414,7 @@ class Element(object):
   def element_children(self):
     return [c for c in self.children if c.is_element]
 
+
   @property
   def element_child(self):
     # Use: e5.element_child[0].name
@@ -457,8 +458,8 @@ class Element(object):
 
 
   @property
-  def elementTree(self):
-    return "\n".join(self.tree_lines(elements_only=True))
+  def element_tree(self):
+    return "\n".join(self.tree_lines(elements_only=True)).strip()
 
 
   def tree_lines(self, elements_only=False):
@@ -1044,14 +1045,14 @@ class Entry:
 
   def tree_lines(self, elements_only=False):
     # elements_only arg included for compability with Element.tree_lines method
-    treeLine = " " + str(self)
+    tree_line = " " + str(self)
     n = 5  # Display this number of bytes from either end of the Entry.
     m = self.nb
     if m <= n*2:
-      treeLine += ": [{}]".format(repr(self.data))
+      tree_line += ": [{}]".format(repr(self.data))
     else:
-      treeLine += ": [{} ... {}]".format(repr(self.data[:n]), repr(self.data[-n:]))
-    return [treeLine]
+      tree_line += ": [{} ... {}]".format(repr(self.data[:n]), repr(self.data[-n:]))
+    return [tree_line]
 
 
   @property
