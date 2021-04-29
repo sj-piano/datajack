@@ -106,13 +106,13 @@ def main():
   )
 
   parser.add_argument(
-    '-o', '--logToFile',
+    '-x', '--logToFile',
     action='store_true',
     help="Choose whether to save log output to a file.",
   )
 
   parser.add_argument(
-    '-p', '--logFilepath',
+    '-z', '--logFilepath',
     help="The path to the file that log output will be written to.",
     default='log_edgecase_client.txt',
   )
