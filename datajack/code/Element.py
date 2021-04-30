@@ -216,7 +216,7 @@ class Element(object):
       except IndexError as e:
         status_msg = status_msg.format(
           c=context_names[context], b=repr(byte), di=data_index,
-          ln=line_number, li=line_index
+          ln=line_number, li=line_index, r=recursive_depth
         )
         status_msg += " No more data left, but Element is not complete."
         raise Exception(status_msg)
@@ -996,7 +996,7 @@ class Entry:
       except IndexError as e:
         status_msg = status_msg.format(
           c=context_names[context], b=repr(byte), di=data_index,
-          ln=line_number, li=line_index
+          ln=line_number, li=line_index, r=recursive_depth
         )
         status_msg += " No more data left, but Element is not complete."
         raise Exception(status_msg)
