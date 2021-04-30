@@ -111,7 +111,7 @@ class Element(object):
 
 
   @classmethod
-  def from_file(klass, file):
+  def from_file(cls, file):
     with open(file) as f:
       text = f.read()
       text = text.rstrip('\n')  # Remove final newline if it exists.
@@ -132,7 +132,7 @@ class Element(object):
 
   @classmethod
   def from_string(
-      self,
+      cls,
       # data and data_length are not stored as element attributes.
       data=None,
       data_length=None,
@@ -919,7 +919,7 @@ class Entry:
 
 
   @classmethod
-  def from_value(self, value):
+  def from_value(cls, value):
     # This is for creating a new Entry that will be inserted into an existing Element.
     for byte in value:
       if byte not in entry_characters:
@@ -931,7 +931,7 @@ class Entry:
 
   @classmethod
   def from_string(
-      self,
+      cls,
       # data and data_length are not stored as entry attributes.
       data=None,
       data_length=None,
