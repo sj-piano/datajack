@@ -823,6 +823,44 @@ class Element(object):
     return False
 
 
+  def insert_child(self, input, index=None):
+    # Notes:
+    # - Insert the input element at the specified index in the list of children.
+    # - If no index is specified, append the input element to the list of children.
+    # - If index==len(self.children), append the input element to the list of children.
+    # - If the input element is a string, make it into an Entry.
+		# - Return the index at which the new element has been added to the list of children.
+    n = self.nc
+    if isinstance(input, Element) or isinstance(input, Entry):
+      pass
+    elif isinstance(input, str):
+      input = Entry.from_value(input)
+    else:
+      raise ValueError
+    if index is None:
+      # Note: index could be 0, so don't use: 'if not index'
+      index = n
+    v.validate_integer(index)
+    if index > n:
+      raise ValueError
+    if index > -1:
+      if index in [n, -1]:
+        self.children.append(input)
+      else:
+        self.children.insert(index, input)
+      return index
+    # Handle negative indices.
+    # We shift once to the right.
+    # This means that using index=-2 will insert the input at the second-to-last position.
+    # Use index -(n + 1) to insert the input at the first position.
+    if index < (-n):
+      raise ValueError
+    index_original = index
+    index += 1
+    self.children.insert(index, input)
+    return index_original
+
+
   def detach(self, element):
     # This removes an element from the list of its parent's children.
     # Note: This doesn't actually make use of self, so it's not really a method.
@@ -921,6 +959,8 @@ class Entry:
   @classmethod
   def from_value(cls, value):
     # This is for creating a new Entry that will be inserted into an existing Element.
+    if not isinstance(value, str):
+      raise ValueError
     for byte in value:
       if byte not in entry_characters:
         raise ValueError
