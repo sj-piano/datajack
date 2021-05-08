@@ -921,6 +921,29 @@ class Element(object):
     return result, msg
 
 
+  def matches_tree_of(self, other):
+    # other = other element
+    msg = ""
+    result = False
+    x = sorted(self.element_children_names)
+    y = sorted(other.element_children_names)
+    if x != y:
+      msg += "\nMessage from Element parsing:"
+      msg += "\nExpected that list of element children's names:"
+      msg += "\n({})".format(str(x))
+      msg += "\nwould match list of comparison element's list of element children's names:"
+      msg += "\n({})".format(str(y))
+      return result, msg
+    # Recursively check each of the element children.
+    # Compare each child against all the comparison element's children that have the same name.
+    for child in self.element_children:
+      selected = other.get_element_children_with_name(child.name)
+      for child2 in selected:
+        result2, msg2 = child.matches_tree_of(child2)
+        if not result2:
+          return result2, msg2
+    result = True
+    return result, msg
 
 
 
