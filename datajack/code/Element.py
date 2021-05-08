@@ -905,7 +905,7 @@ class Element(object):
     result = False
     for child in other.element_children:
       if child.name not in self.element_children_names:
-        msg += "\nParsing message:"
+        msg += "\nMessage from Element parsing:"
         msg += " Expected to find child element {} at level {}" \
           .format(repr(child.name), recursive_depth)
         msg += ", but did not."
@@ -914,9 +914,9 @@ class Element(object):
       # Then recursively check that each of these contains the tree of the other's child.
       selected = self.get_element_children_with_name(child.name)
       for child2 in selected:
-        result, msg = child2.contains_tree_of(child, recursive_depth+1)
-        if not result:
-          return result, msg
+        result2, msg2 = child2.contains_tree_of(child, recursive_depth+1)
+        if not result2:
+          return result2, msg2
     result = True
     return result, msg
 
