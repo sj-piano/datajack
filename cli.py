@@ -87,7 +87,7 @@ def main():
   )
 
   parser.add_argument(
-    '-l', '--logLevel', type=str,
+    '-l', '--logLevel', type=str, dest='log_level',
     choices=['debug', 'info', 'warning', 'error'],
     help="Choose logging level (default: '%(default)s').",
     default='info',
@@ -100,33 +100,35 @@ def main():
   )
 
   parser.add_argument(
-    '-s', '--logTimestamp',
+    '-s', '--logTimestamp', dest='log_timestamp',
     action='store_true',
     help="Choose whether to prepend a timestamp to each log line.",
   )
 
   parser.add_argument(
-    '-x', '--logToFile',
+    '-x', '--logToFile', dest='log_to_file',
     action='store_true',
     help="Choose whether to save log output to a file.",
   )
 
   parser.add_argument(
-    '-z', '--logFile',
+    '-z', '--logFile', dest='log_file',
     help="The path to the file that log output will be written to.",
     default='log_edgecase_client.txt',
   )
 
   a = parser.parse_args()
 
-  log_file = a.logFile if a.logToFile else None
+  # Check and analyse arguments.
+  if not a.log_to_file:
+    a.log_file = None
 
   # Setup
   setup(
-    log_level = a.logLevel,
+    log_level = a.log_level,
     debug = a.debug,
-    log_timestamp = a.logTimestamp,
-    log_file = log_file,
+    log_timestamp = a.log_timestamp,
+    log_file = a.log_file,
   )
 
   # Run top-level function (i.e. the appropriate task).
