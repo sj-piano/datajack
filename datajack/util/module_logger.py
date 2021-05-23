@@ -32,7 +32,7 @@ except Exception as e:
 
 def configure_module_logger(
     logger, logger_name, log_level, debug,
-    log_timestamp, log_filepath,
+    log_timestamp, log_file,
     ):
   # Validate input.
   v.validate_string(logger_name, 'logger_name', 'configure_module_logger')
@@ -40,8 +40,8 @@ def configure_module_logger(
   v.validate_boolean(debug, 'debug', 'configure_module_logger')
   if log_timestamp is not None:
     v.validate_boolean(log_timestamp, 'log_timestamp', 'configure_module_logger')
-  if log_filepath is not None:
-    v.validate_string(log_filepath, 'log_filepath', 'configure_module_logger')
+  if log_file is not None:
+    v.validate_string(log_file, 'log_file', 'configure_module_logger')
   # Configure logger.
   logger.propagate = False
   level_str = log_level
@@ -121,8 +121,7 @@ def configure_module_logger(
     console_handler2.setFormatter(log_formatter2)
     logger.addHandler(console_handler2)
   # Set up file handler.
-  if log_filepath:
-    log_file = log_filepath
+  if log_file:
     # Create log_file directory if it doesn't exist.
     log_dir = os.path.dirname(log_file)
     if log_dir != '':

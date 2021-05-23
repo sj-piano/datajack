@@ -25,7 +25,7 @@ def setup(
     log_level = 'error',
     debug = False,
     log_timestamp = False,
-    log_filepath = None,
+    log_file = None,
     ):
   # Configure logger for this module.
   util.module_logger.configure_module_logger(
@@ -34,7 +34,7 @@ def setup(
     log_level = log_level,
     debug = debug,
     log_timestamp = log_timestamp,
-    log_filepath = log_filepath,
+    log_file = log_file,
   )
   deb('Setup complete.')
   # Configure modules further down in this package.
@@ -42,5 +42,5 @@ def setup(
     log_level = log_level,
     debug = debug,
     log_timestamp = log_timestamp,
-    log_filepath = log_filepath,
+    log_file = log_file,
   )
