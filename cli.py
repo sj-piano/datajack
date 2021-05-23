@@ -132,8 +132,9 @@ def main():
   # Run top-level function (i.e. the appropriate task).
   tasks = 'hello basic valid test'.split()
   if a.task not in tasks:
-    print("Unrecognised task: {}".format(a.task))
-    stop()
+    msg = "Unrecognised task: {}".format(a.task)
+    msg += "\nTask list: {}".format(tasks)
+    stop(msg)
   globals()[a.task](a)  # run task.
 
 
