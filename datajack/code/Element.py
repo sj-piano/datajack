@@ -618,7 +618,6 @@ class Element(object):
 
   def get(self, x):
     # Working principle: Handle any prefixes. Then handle the first section of the xpath. Then recurse.
-    deb('\n\n')
     deb('xpath: ' + x)
     xOriginal = x
     # xpath: ''
