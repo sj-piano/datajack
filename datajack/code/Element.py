@@ -1,6 +1,7 @@
 # Imports
 import logging
 import string
+import json
 
 
 
@@ -860,6 +861,12 @@ class Element(object):
     return index_original
 
 
+  def pop_child(self, name):
+    child = self.get_one(name)
+    self.detach(child)
+    return child
+
+
   def detach(self, element):
     # This removes an element from the list of its parent's children.
     # Note: This doesn't actually make use of self, so it's not really a method.
@@ -945,6 +952,96 @@ class Element(object):
     return result, msg
 
 
+  def create_copy(self):
+    return Element.from_string(self.escaped_data)
+
+
+  @property
+  def element_children_names_are_unique(self):
+    names = self.element_children_names
+    if len(names) == len(set(names)):
+      return True
+    return False
+
+
+  def to_dict(self):
+    if self.is_leaf:
+      return {self.name: self.value}
+    result = {self.name: {}}
+    result_value = result[self.name]
+    # We preserve Entry data only if the parent Element is a leaf element.
+    for child in self.element_children:
+      name = child.name
+      if self.element_children_names.count(name) == 1:
+        result_value.update(child.to_dict())
+      # We translate multiple children with the same name into a list value.
+      else:
+        if name not in result_value.keys():
+          result_value[name] = []
+        if child.is_leaf:
+          result_value[name].append(child.value)
+        else:
+          d = child.to_dict()
+          value = list(d.values())[0]
+          result_value[name].append(value)
+    return result
+
+
+  def to_json(self):
+    d = self.to_dict()
+    return json.dumps(d, sort_keys=True)
+
+
+  def to_json_pretty(self):
+    d = self.to_dict()
+    return json.dumps(d, indent=2, sort_keys=True)
+
+
+  @classmethod
+  def from_dict(self, d=None, recursive_depth=0):
+    if d is None:
+      raise ValueError
+    e = Element()
+    keys = list(d.keys())
+    if len(keys) != 1:
+      raise KeyError
+    e.name = keys[0]
+    e.end_name = e.name
+    e.recursive_depth = recursive_depth
+    child_value = d[e.name]
+    def n():
+      # Add newlines to make the output more readable.
+      return Entry.from_value('\n')
+    if type(child_value) == str:
+      child = Entry.from_value(child_value)
+      e.children.append(child)
+    elif type(child_value) == dict:
+      for key, value in sorted(child_value.items()):
+        # Make sure that value is a list, so that we can iterate over it.
+        # This way, we translate a list to a sequence of Elements with the same name.
+        if type(value) == list:
+          values = value
+        else:
+          values = [value]
+        for v in values:
+          d2 = {key: v}
+          child = Element.from_dict(d2, e.recursive_depth + 1)
+          child.parent = self
+          e.children.extend([n(), child])
+      e.children.append(n())
+    else:
+      raise TypeError
+    e.complete = True
+    return e
+
+
+  @classmethod
+  def from_json(self, s=None):
+    if s is None:
+      raise ValueError
+    d = json.loads(s)
+    e = Element.from_dict(d)
+    return e
 
 
 
@@ -1216,6 +1313,9 @@ class Entry:
         result += c
     return result
 
+
+  def create_copy(self):
+    return Entry.from_string(self.escaped_data)
 
 
 
