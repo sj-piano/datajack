@@ -1,6 +1,7 @@
 # Imports
 import pytest
 import pkgutil
+import json
 
 
 
@@ -335,3 +336,145 @@ def test_value(e2):
 def test_value2(e2):
   xpath = 'bar/bas'
   assert e2.get_one(xpath).value == 'ASD'
+
+
+
+
+# ### SECTION
+# Conversion tests
+
+
+def test_to_dict():
+  s = """
+<list>
+<title>Fruit</title>
+<item>Orange</item>
+</list>
+"""
+  e = Element.from_string(data=s.strip())
+  d = e.to_dict()
+  d_json = json.dumps(d, sort_keys=True)
+  expected_json = '{"list": {"item": "Orange", "title": "Fruit"}}'
+  assert d_json == expected_json
+
+
+def test_to_dict_2():
+  s = """
+<list>
+<title>Fruit</title>
+<item>Orange</item>
+<item>Apple</item>
+</list>
+"""
+  expected = {
+    "list": {
+      "item": [
+        "Orange",
+        "Apple"
+      ],
+      "title": "Fruit"
+    }
+  }
+  e = Element.from_string(data=s.strip())
+  d = e.to_dict()
+  d_json = json.dumps(d, sort_keys=True)
+  expected_json = json.dumps(expected, sort_keys=True)
+  assert d_json == expected_json
+
+
+def test_to_dict_3():
+  # Entry data that is _not_ in a leaf element will be ignored.
+  s = """
+<foo>hello
+<bar>mars<bas>ASD</bas></bar>
+</foo>
+"""
+  e = Element.from_string(data=s.strip())
+  d = e.to_dict()
+  expected = {
+    'foo': {
+      'bar': {
+        'bas': 'ASD'
+      }
+    }
+  }
+  expected_json = json.dumps(expected, sort_keys=True)
+  d_json = json.dumps(d, sort_keys=True)
+  assert d_json == expected_json
+
+
+def test_from_dict():
+  d = {'hello': 'world'}
+  e = Element.from_dict(d)
+  s = "<hello>world</hello>"
+  expected = Element.from_string(s)
+  assert e.to_json() == expected.to_json()
+
+
+def test_from_dict_2():
+  d = {
+    "hello": {
+      "foo": [
+        "1",
+        "2",
+        {
+          "b": "a"
+        }
+      ],
+      "bar": "arf"
+    }
+  }
+  e = Element.from_dict(d)
+  s = """
+<hello>
+<foo>1</foo>
+<foo>2</foo>
+<foo>3<b>a</b></foo>
+<bar>arf</bar>
+</hello>
+"""
+  expected = Element.from_string(s.strip())
+  assert e.to_json() == expected.to_json()
+
+
+def test_from_json(e1):
+  j = e1.to_json()
+  y = Element.from_json(j)
+  result, msg = y.matches_tree_of(e1)
+  if not result:
+    raise ValueError(msg)
+  assert result == True
+
+
+def test_to_json(e5):
+  d = {
+    "transaction": {
+      "fee": {
+        "satoshi": "225"
+      },
+      "id": "1",
+      "input": {
+        "amount": {
+          "bitcoin": "0.00200000"
+        },
+        "previous_output_index": "9",
+        "private_key": " 0000000000000000000000007468655f6c6962726172795f6f665f626162656c ",
+        "txid": " 8482e48391425d88fe30bd4066957000335f58e83f854f997146f41b9493b4ce "
+      },
+      "notes": " http://edgecase.net/articles/bitcoin_transaction_test_set_2 - Transaction 1: 1 input, 1 output ",
+      "output": {
+        "address": "12RbVkKwHcwHbMZmnSVAyR4g88ZChpQD6f",
+        "amount": {
+          "bitcoin": "0.00199775"
+        }
+      }
+    }
+  }
+  expected = json.dumps(d, sort_keys=True)
+  j = e5.to_json()
+  assert j == expected
+
+
+
+
+
