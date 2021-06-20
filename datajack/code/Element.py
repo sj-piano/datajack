@@ -682,13 +682,22 @@ class Element(object):
     return self.get_one(xpath).value
 
 
-  def get_value_if_exists(self, xpath):
+  def get_if_exists(self, xpath):
     r = self.get(xpath)
     if len(r) == 0:
-      return ''
+      return None
     elif len(r) > 1:
-      raise ValueError
-    return r[0].value
+      msg = "Expected exactly 0 or 1 result for xpath={}. Instead, found {} results."
+      msg = msg.format(repr(xpath), len(r))
+      raise ValueError(msg)
+    return r[0]
+
+
+  def get_value_if_exists(self, xpath):
+    r = self.get_if_exists(xpath)
+    if r is None:
+      return None
+    return r.value
 
 
   def get_branch_value(self, xpath):
