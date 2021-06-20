@@ -674,7 +674,7 @@ class Element(object):
   def get_one(self, xpath):
     items = self.get(xpath)
     if len(items) != 1:
-      raise ValueError("Expected 1 items, but got {n}.".format(n=len(items)))
+      raise ValueError("Expected 1 item, but got {n}.".format(n=len(items)))
     return items[0]
 
 
@@ -698,7 +698,7 @@ class Element(object):
   def get_all(self, xpath):
     items = self.get(xpath)
     if len(items) == 0:
-      raise ValueError("Expected at least 1 items, but got 0.")
+      raise ValueError("Expected at least 1 item, but got 0.")
     return items
 
 
