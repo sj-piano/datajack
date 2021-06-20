@@ -443,7 +443,7 @@ def test_from_json(e1):
   result, msg = y.matches_tree_of(e1)
   if not result:
     raise ValueError(msg)
-  assert result == True
+  assert result
 
 
 def test_to_json(e5):

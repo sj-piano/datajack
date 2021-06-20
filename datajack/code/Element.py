@@ -829,7 +829,7 @@ class Element(object):
     # - If no index is specified, append the input element to the list of children.
     # - If index==len(self.children), append the input element to the list of children.
     # - If the input element is a string, make it into an Entry.
-		# - Return the index at which the new element has been added to the list of children.
+    # - Return the index at which the new element has been added to the list of children.
     n = self.nc
     if isinstance(input, Element) or isinstance(input, Entry):
       pass
@@ -1009,9 +1009,11 @@ class Element(object):
     e.end_name = e.name
     e.recursive_depth = recursive_depth
     child_value = d[e.name]
+
     def n():
       # Add newlines to make the output more readable.
       return Entry.from_value('\n')
+
     if type(child_value) == str:
       child = Entry.from_value(child_value)
       e.children.append(child)
