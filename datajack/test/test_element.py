@@ -475,6 +475,25 @@ def test_to_json(e5):
   assert j == expected
 
 
+def test_get_if_exists(e3):
+  x = e3.get_if_exists('foo')
+  assert not x
+
+
+def test_get_if_exists_2(e3):
+  x = e3.get_if_exists('title')
+  assert x.value == 'Fruit'
+
+
+def test_get_if_exists_3(e3):
+  with pytest.raises(ValueError):
+    x = e3.get_if_exists('item')
+
+
+
+
+
+
 
 
 
