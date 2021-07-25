@@ -34,6 +34,9 @@ def configure_module_logger(
     logger, logger_name, log_level, debug,
     log_timestamp, log_file,
     ):
+  # Avoid continually setting up a new logger on every new web request.
+  if hasattr(logger, 'initialised') and logger.initialised:
+    return
   # Validate input.
   v.validate_string(logger_name, 'logger_name', 'configure_module_logger')
   v.validate_string(log_level, 'log_level', 'configure_module_logger')
@@ -139,3 +142,4 @@ def configure_module_logger(
     else:
       file_handler.setFormatter(log_formatter2)
     logger.addHandler(file_handler)
+  logger.initialised = True
