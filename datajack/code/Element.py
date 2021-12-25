@@ -526,6 +526,16 @@ class Element(object):
 
 
   @property
+  def content(self):
+    # Same as .data, except without the topmost element's start and end tags.
+    # The tags of the children are included.
+    n1 = len(self.start_tag)
+    n2 = len(self.end_tag)
+    result = self.data[n1:-n2]
+    return result
+
+
+  @property
   def escaped_data(self):
     # Insert backslash before any escaped characters.
     data = self.start_tag
