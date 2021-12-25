@@ -648,21 +648,28 @@ class Element(object):
     x2 = None
     if x.count('/') > 0:
       sections = x.split('/')
-      x = sections[0]  # First section of path.
+      x = sections[0]  # We process only the first section of path.
       x2 = '/'.join(sections[1:])  # Rest of path.
     # Get predicate if it exists.
     # xpath: link[type='asset']
     # xpath: //list[@title='Guild_Members'][@name='StJohn_Piano']
+    # xpath: structure/number_of_columns/row[1]/index
     predicates = {}
+    number = None
     if x.count('[') > 0:
       sections = x.split('[')
       x = sections[0]
       ps = sections[1:]
       for p in ps:
         p = p.replace('@', '').replace(']', '')
-        n, v = p.split('=')
-        v = v.replace("'", "")
-        predicates[n] = v
+        if '=' in p:
+          k, v = p.split('=')
+          v = v.replace("'", "")
+          predicates[k] = v
+        elif p.isdigit():  # e.g. [1]
+          number = int(p)
+        else:
+          raise Exception
     # Get children / descendants that match conditions.
     elements = []
     if not self.is_element_name(x):
@@ -671,6 +678,8 @@ class Element(object):
       elements = self.get_element_descendants_with_name(x)
     else:
       elements = self.get_element_children_with_name(x)
+    if number is not None:  # e.g. [1] predicate.
+      elements = [elements[number]]
     for k, v in iter(predicates.items()):
       elements = [e for e in elements if e.get_value_if_exists(k) == v]
     if x2:
