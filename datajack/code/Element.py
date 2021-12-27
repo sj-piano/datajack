@@ -911,6 +911,14 @@ class Element(object):
       self.detach(item)
 
 
+  def replace(self, name, new_child_element):
+    # Replace a child with another element.
+    # Note: "name" can be a path.
+    child = self.get_one(name)
+    i = child.get_index()
+    child.parent.children[i] = new_child_element
+
+
   def search(self, search_string):
     line_numbers = []
     for child in self.children:
