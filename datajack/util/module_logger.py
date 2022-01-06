@@ -57,12 +57,14 @@ def configure_module_logger(
   }
   level = levels[level_str]
   logger.setLevel(level)
+  logger.level_str = level_str
   # Add a convenience method.
   # Use camelCase to match logging module convention.
 
   def setLevelStr(level_str):
     level = levels[level_str]
     logger.setLevel(level)
+    logger.level_str = level_str
 
   logger.setLevelStr = setLevelStr
   # Construct log_format.
