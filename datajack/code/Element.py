@@ -518,7 +518,7 @@ class Element(object):
     data = self.start_tag
     for child in self.children:
       if child.is_entry:
-        data += child.data
+        data += child.escaped_data
       elif child.is_element:
         data += child.data
     data += self.end_tag
