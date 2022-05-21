@@ -272,7 +272,7 @@ class Element(object):
           success = True
         elif context == START_TAG_CLOSE:
           deb("Switch to new Entry.")
-          entry, data_index, line_number, line_index = Entry.from_string(
+          entry, data_index, line_number, line_index = Entry.from_string_section(
             data=data, data_length=data_length,
             parent=self, data_index=data_index,
             line_number=line_number, line_index=line_index,
@@ -292,7 +292,7 @@ class Element(object):
           success = True
         elif context in [START_TAG_CLOSE, INSIDE_ELEMENT]:
           deb("Switch to new Entry.")
-          entry, data_index, line_number, line_index = Entry.from_string(
+          entry, data_index, line_number, line_index = Entry.from_string_section(
             data=data, data_length=data_length,
             parent=self, data_index=data_index,
             line_number=line_number, line_index=line_index,
@@ -330,7 +330,7 @@ class Element(object):
           if byte == '\n':
             # We added 1 at the start of this loop.
             line_number -= 1
-          entry, data_index, line_number, line_index = Entry.from_string(
+          entry, data_index, line_number, line_index = Entry.from_string_section(
             data=data, data_length=data_length,
             parent=self, data_index=data_index,
             line_number=line_number, line_index=line_index,
@@ -785,7 +785,7 @@ class Element(object):
     if not self.is_leaf:
       raise ValueError
     # Result: This leaf Element has a single Entry child with the new value.
-    entry = Entry.from_value(value)
+    entry = Entry.from_string(value)
     entry.parent = self
     self.children = [entry]
 
@@ -862,7 +862,7 @@ class Element(object):
     if isinstance(input, Element) or isinstance(input, Entry):
       pass
     elif isinstance(input, str):
-      input = Entry.from_value(input)
+      input = Entry.from_string(input)
     else:
       raise ValueError
     if index is None:
@@ -1048,10 +1048,10 @@ class Element(object):
 
     def n():
       # Add newlines to make the output more readable.
-      return Entry.from_value('\n')
+      return Entry.from_string('\n')
 
     if type(child_value) == str:
-      child = Entry.from_value(child_value)
+      child = Entry.from_string(child_value)
       e.children.append(child)
     elif type(child_value) == dict:
       for key, value in sorted(child_value.items()):
@@ -1114,8 +1114,8 @@ class Entry:
 
 
   @classmethod
-  def from_value(cls, value):
-    # This is for creating a new Entry that will be inserted into an existing Element.
+  def from_string(cls, value):
+    # This is for creating a new standalone Entry (which will be inserted into an Element).
     if not isinstance(value, str):
       raise ValueError
     for byte in value:
@@ -1126,8 +1126,9 @@ class Entry:
     return entry
 
 
+  # This is for creating an Entry object from a string section of data that we're processing into an Element.
   @classmethod
-  def from_string(
+  def from_string_section(
       cls,
       # data and data_length are not stored as entry attributes.
       data=None,

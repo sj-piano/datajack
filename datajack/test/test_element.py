@@ -182,7 +182,7 @@ def test_set(e3):
 
 
 def test_add(e3):
-  new_entry = Entry.from_value('\n')
+  new_entry = Entry.from_string('\n')
   e3.add(new_entry)
   new_element = Element.from_string(data="<item>Cake</item>")
   e3.add(new_element)
@@ -192,7 +192,7 @@ def test_add(e3):
 
 def test_add_2(e3):
   orange_item_index = e3.get_index_by_value('item', 'Orange')
-  new_entry = Entry.from_value('\n')
+  new_entry = Entry.from_string('\n')
   new_element = Element.from_string(data="<item>Cake</item>")
   new_index = orange_item_index + 1
   e3.add_all([new_entry, new_element], index = new_index)
