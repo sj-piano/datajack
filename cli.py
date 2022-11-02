@@ -87,7 +87,7 @@ def main():
   )
 
   parser.add_argument(
-    '-l', '--logLevel', type=str, dest='log_level',
+    '-l', '--log-level', type=str, dest='log_level',
     choices=['debug', 'info', 'warning', 'error'],
     help="Choose logging level (default: '%(default)s').",
     default='info',
@@ -100,19 +100,19 @@ def main():
   )
 
   parser.add_argument(
-    '-s', '--logTimestamp', dest='log_timestamp',
+    '-s', '--log-timestamp', dest='log_timestamp',
     action='store_true',
     help="Choose whether to prepend a timestamp to each log line.",
   )
 
   parser.add_argument(
-    '-x', '--logToFile', dest='log_to_file',
+    '-x', '--log-to-file', dest='log_to_file',
     action='store_true',
     help="Choose whether to save log output to a file.",
   )
 
   parser.add_argument(
-    '-z', '--logFile', dest='log_file',
+    '-z', '--log-file', dest='log_file',
     help="The path to the file that log output will be written to.",
     default='log_datajack.txt',
   )
