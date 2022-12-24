@@ -153,10 +153,10 @@ class Element(object):
     location = 'datajack/code/Element.py:Element:from_string()'
     v.validate_string(data, 'data', location)
     v.validate_positive_integer(data_length, 'data_length', location)
-    v.pi(data_index, 'data_index', location)
+    v.validate_whole_number(data_index, 'data_index', location)
     v.pi(line_number, 'line_number', location)
-    v.pi(line_index, 'line_index', location)
-    v.pi(recursive_depth, 'recursive_depth', location)
+    v.wn(line_index, 'line_index', location)
+    v.wn(recursive_depth, 'recursive_depth', location)
     v.validate_boolean(verbose, 'verbose', location)
     # Process data into an Element tree.
     e = Element()
@@ -1148,10 +1148,10 @@ class Entry:
     location = 'datajack/code/Element.py:Entry:from_string()'
     v.validate_string(data, 'data', location)
     v.validate_positive_integer(data_length, 'data_length', location)
-    v.pi(data_index, 'data_index', location)
+    v.validate_whole_number(data_index, 'data_index', location)
     v.pi(line_number, 'line_number', location)
-    v.pi(line_index, 'line_index', location)
-    v.pi(recursive_depth, 'recursive_depth', location)
+    v.wn(line_index, 'line_index', location)
+    v.wn(recursive_depth, 'recursive_depth', location)
     v.validate_boolean(verbose, 'verbose', location)
     # Process data into an Entry.
     entry = Entry()
