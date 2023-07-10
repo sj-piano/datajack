@@ -132,7 +132,9 @@ def validate_string_is_decimal(
     name2 = 'dp (i.e. the number of decimal places)'
     msg = build_error_msg(msg, dp, name=name2, location=location, kind=None)
     raise TypeError(msg)
-  regex = r'^\d*.\d{%d}$' % dp
+  # Notes:
+  # - Optional minus sign at the beginning.
+  regex = r'^-?\d*.\d{%d}$' % dp
   decimal_pattern = re.compile(regex)
   if not decimal_pattern.match(s):
     msg = 'which is not a valid {}-decimal-place decimal value.'.format(dp)
